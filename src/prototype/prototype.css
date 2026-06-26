@@ -1,0 +1,11 @@
+@tailwind utilities;
+@tailwind components;
+
+/* ── Prototype nav responsive ───────────────────────────────── */
+@media (max-width: 900px) {
+  .proto-contact-bar { display: none !important; }
+  .proto-quote-btn   { display: none !important; }
+  .proto-hamburger   { display: flex !important; }
+  .proto-nav-desktop { display: none !important; }
+  .proto-mobile-menu { display: block !important; }
+}
