@@ -1,4 +1,5 @@
 import logo from '../assets/logo.png'
+import { socialLinks } from '../prototype/home/data/index.js'
 
 const styles = {
   footer: { background: '#080F2B', padding: '3rem 2rem 1.5rem' },
@@ -59,6 +60,43 @@ export default function Footer() {
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="square"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
                 DMCC Business Centre, Dubai, UAE
               </div>
+            </div>
+
+            {/* Social accounts */}
+            <div style={{ display: 'flex', gap: '0.625rem', marginTop: '1.25rem' }}>
+              {socialLinks.map(({ label, href, path }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Ensurio First on ${label}`}
+                  title={label}
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: '1px solid rgba(255,255,255,0.15)',
+                    color: 'rgba(255,255,255,0.5)',
+                    flexShrink: 0,
+                    transition: 'color 0.2s, border-color 0.2s',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = 'var(--teal)'
+                    e.currentTarget.style.borderColor = 'var(--teal)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = 'rgba(255,255,255,0.5)'
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)'
+                  }}
+                >
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d={path} />
+                  </svg>
+                </a>
+              ))}
             </div>
           </div>
 

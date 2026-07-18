@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { useIsMobile } from '../hooks/useIsMobile.js'
 
 const credentials = [
+  'LLB — Bachelor of Laws',
   'ACII — Chartered Insurance Institute',
   'CBUAE Licensed Insurance Consultant (License No. 143)',
   '25+ Years in UAE & International Insurance Markets',
@@ -9,7 +10,7 @@ const credentials = [
   'Independent Claims Advocate & Legal Advisory',
 ]
 
-const credentialBadges = ['ACII Qualified', 'CBUAE License 143', 'Insurance Technical & Legal Consultant']
+const credentialBadges = ['LLB', 'ACII Qualified', 'CBUAE License 143', 'Insurance Technical & Legal Consultant']
 
 export default function ProtoFounder() {
   const isMobile = useIsMobile()
@@ -48,7 +49,7 @@ export default function ProtoFounder() {
 
             {/* Credential badge overlay at bottom */}
             <div style={{ position: 'absolute', bottom: '1.5rem', left: '1.5rem', right: '1.5rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-              {['ACII', 'CBUAE Lic. 143', '25+ Yrs'].map((badge) => (
+              {['LLB', 'ACII', 'CBUAE Lic. 143', '25+ Yrs'].map((badge) => (
                 <div key={badge} style={{ padding: '4px 10px', border: '1px solid var(--teal)', borderRadius: 0, fontFamily: 'var(--font-body)', fontSize: '11px', fontWeight: 600, color: 'var(--teal)', background: 'rgba(0,184,153,0.08)' }}>
                   {badge}
                 </div>
@@ -88,7 +89,7 @@ export default function ProtoFounder() {
             </p>
             {!isMobile && (
               <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--text-mid)', lineHeight: 1.8, marginBottom: '1.75rem' }}>
-                As a CBUAE-licensed consultant and ACII-qualified professional, Fredrick operates independently of any insurer — meaning his advice is always in the client's best interest.
+                As a CBUAE-licensed consultant who is both law-qualified (LLB) and ACII-qualified, Fredrick operates independently of any insurer — meaning his advice is always in the client's best interest.
               </p>
             )}
 

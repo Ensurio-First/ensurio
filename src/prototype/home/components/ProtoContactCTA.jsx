@@ -3,8 +3,8 @@ import { Mail, Phone, MapPin } from 'lucide-react'
 import { useIsMobile } from '../hooks/useIsMobile.js'
 
 const contactItems = [
-  { Icon: Mail, label: 'Email', value: 'info@insurefirst.ae' },
-  { Icon: Phone, label: 'Phone', value: '+971 50 000 0000' },
+  { Icon: Mail, label: 'Email', value: 'consult@insurefirst.ae' },
+  { Icon: Phone, label: 'Phone', value: '+971 50 976 5976' },
   { Icon: MapPin, label: 'Location', value: 'Dubai, United Arab Emirates' },
 ]
 
@@ -63,7 +63,7 @@ export default function ProtoContactCTA() {
               Book a Consultation
             </a>
             <a
-              href="tel:+971000000000"
+              href="tel:+971509765976"
               style={{
                 display: 'block',
                 padding: '0.875rem 1.75rem',

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link, useLocation } from 'react-router-dom'
 import logo from '../assets/logo.png'
+import { socialLinks } from '../prototype/home/data/index.js'
 
 const NAV_LINKS = [
   { label: 'Risk Management', to: '/risk-management' },
@@ -31,9 +32,31 @@ export default function Navbar() {
               DMCC Business Centre, Dubai
             </span>
           </div>
-          <span style={{ color: 'var(--teal)', fontWeight: 600, fontSize: '11px', letterSpacing: '0.02em' }} className="topbar-rebrand">
-            ✦ Now operating as Ensurio First
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <span style={{ color: 'var(--teal)', fontWeight: 600, fontSize: '11px', letterSpacing: '0.02em' }} className="topbar-rebrand">
+              ✦ Now operating as Ensurio First
+            </span>
+            {/* Social accounts */}
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              {socialLinks.map(({ label, href, path }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Ensurio First on ${label}`}
+                  title={label}
+                  style={{ display: 'flex', alignItems: 'center', color: 'rgba(255,255,255,0.65)', transition: 'color 0.2s' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--teal)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.65)')}
+                >
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d={path} />
+                  </svg>
+                </a>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 

@@ -1,4 +1,5 @@
 import logoImg from '../../../assets/insure-first-logo.svg'
+import { socialLinks } from '../data/index.js'
 import { useIsMobile } from '../hooks/useIsMobile.js'
 
 const footerLinks = {
@@ -52,6 +53,46 @@ export default function ProtoFooter() {
                 Independent insurance consultancy. CBUAE Licensed.
               </p>
             )}
+
+            {/* Social accounts */}
+            <div style={{ display: 'flex', gap: '0.625rem', marginTop: isMobile ? '1rem' : '1.5rem' }}>
+              {socialLinks.map(({ label, href, path }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Insure First on ${label}`}
+                  title={label}
+                  style={{
+                    width: '34px',
+                    height: '34px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: '1px solid rgba(255,255,255,0.18)',
+                    color: 'rgba(255,255,255,0.65)',
+                    borderRadius: 0,
+                    flexShrink: 0,
+                    transition: 'color 0.15s, border-color 0.15s, background 0.15s',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = 'var(--teal)'
+                    e.currentTarget.style.borderColor = 'var(--teal)'
+                    e.currentTarget.style.background = 'rgba(0,184,153,0.08)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = 'rgba(255,255,255,0.65)'
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.18)'
+                    e.currentTarget.style.background = 'transparent'
+                  }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d={path} />
+                  </svg>
+                </a>
+              ))}
+            </div>
           </div>
 
           {/* Link columns */}

@@ -4,6 +4,7 @@ import { useIsMobile } from '../hooks/useIsMobile.js'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
 import logoImg from '../../../assets/insure-first-logo.svg'
+import { socialLinks } from '../data/index.js'
 
 const NAV_LINKS = [
   { label: 'Home', href: '/' },
@@ -60,8 +61,41 @@ export default function ProtoNav() {
           <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 4rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
             <span>www.insurefirst.ae is powered by Fredrick Insurance Consultant licensed by CBUAE — LICENSE 143</span>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
-              {['f', 'in', 'ig'].map((s) => (
-                <span key={s} style={{ width: '20px', height: '20px', background: 'var(--light-bg)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 700, cursor: 'pointer', color: 'var(--text-mid)' }}>{s}</span>
+              {socialLinks.map(({ label, href, path }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Insure First on ${label}`}
+                  title={label}
+                  style={{
+                    width: '22px',
+                    height: '22px',
+                    background: 'var(--light-bg)',
+                    border: '1px solid var(--border)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'var(--text-mid)',
+                    flexShrink: 0,
+                    transition: 'color 0.15s, border-color 0.15s, background 0.15s',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = 'var(--teal)'
+                    e.currentTarget.style.borderColor = 'var(--teal)'
+                    e.currentTarget.style.background = 'var(--teal-pale)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = 'var(--text-mid)'
+                    e.currentTarget.style.borderColor = 'var(--border)'
+                    e.currentTarget.style.background = 'var(--light-bg)'
+                  }}
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d={path} />
+                  </svg>
+                </a>
               ))}
             </div>
           </div>

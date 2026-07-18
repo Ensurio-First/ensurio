@@ -23,7 +23,7 @@ export default function ProtoTestimonials() {
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: '1px', background: 'var(--border)' }}>
           {testimonials.map((t, i) => (
             <motion.div
-              key={t.name}
+              key={t.id}
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -79,7 +79,7 @@ export default function ProtoTestimonials() {
                     {t.name}
                   </div>
                   <div style={{ fontFamily: 'var(--font-body)', fontSize: '12px', color: 'var(--text-muted)' }}>
-                    {t.role}, {t.company}
+                    {t.role ? `${t.role}, ${t.company}` : t.company}
                   </div>
                 </div>
               </div>
