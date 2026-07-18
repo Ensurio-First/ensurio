@@ -1,6 +1,6 @@
 # Ensurio First — React Landing Page
 
-## Setup 01
+## Setup
 
 ```bash
 # 1. Create a new Vite React project
