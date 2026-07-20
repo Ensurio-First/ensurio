@@ -106,23 +106,26 @@ export default function ProtoNav() {
       <div style={{ background: 'var(--white)', borderBottom: '1px solid var(--border)', padding: '0' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto', padding: isMobile ? '0 0.75rem' : '0 4rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '80px', gap: '2rem' }}>
 
-          {/* Logo */}
-          <Link to="/" style={{ flexShrink: 0, textDecoration: 'none' }}>
+          {/* Logo + legal entity name */}
+          <Link to="/" style={{ flexShrink: 0, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: isMobile ? '8px' : '12px' }}>
             <img src={logoImg} alt="Insure First" style={{ height: isMobile ? '32px' : '44px', width: 'auto', display: 'block' }} />
+            <span style={{ borderLeft: '1px solid var(--border)', paddingLeft: isMobile ? '8px' : '12px', fontFamily: 'var(--font-body)', fontSize: isMobile ? '10px' : '12px', fontWeight: 600, lineHeight: 1.3, color: 'var(--navy)', letterSpacing: '0.01em', whiteSpace: 'nowrap' }}>
+              Ensurio First<br />RMC FZC
+            </span>
           </Link>
 
-          {/* Contact info — hidden on mobile */}
-          <div style={{ display: 'flex', gap: '2.5rem', flexWrap: 'wrap' }} className="proto-contact-bar">
+          {/* Contact info — hidden below the desktop breakpoint (see prototype.css) */}
+          <div style={{ display: 'flex', gap: '1.75rem', flexWrap: 'nowrap', alignItems: 'center' }} className="proto-contact-bar">
             {[
-              { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="square"><rect x="2" y="4" width="20" height="16"/><polyline points="2,4 12,13 22,4"/></svg>, label: 'Email Address', value: 'consult@insurefirst.ae, lobo@insurefirst.ae', href: 'mailto:consult@insurefirst.ae' },
+              { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="square"><rect x="2" y="4" width="20" height="16"/><polyline points="2,4 12,13 22,4"/></svg>, label: 'Email Address', value: 'consult@insurefirst.ae', href: 'mailto:consult@insurefirst.ae' },
               { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="square"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 014 6a2 2 0 012-2z"/></svg>, label: 'Phone Number', value: '0509765976', href: 'tel:+971509765976' },
               { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="square"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>, label: 'Our Location', value: 'Dubai, U.A.E', href: '#' },
             ].map(({ icon, label, value, href }) => (
-              <a key={label} href={href} style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
+              <a key={label} href={href} style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', flexShrink: 0 }}>
                 <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'var(--teal-pale)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--teal)', flexShrink: 0 }}>
                   {icon}
                 </div>
-                <div>
+                <div style={{ whiteSpace: 'nowrap' }}>
                   <div style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--teal)', marginBottom: '2px' }}>{label}</div>
                   <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--navy)' }}>{value}</div>
                 </div>
