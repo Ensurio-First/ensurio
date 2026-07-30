@@ -1,12 +1,11 @@
 import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import { Clock } from 'lucide-react'
-import { insights } from '../data/index.js'
+import { blogPosts } from '../data/blog.js'
 import { useIsMobile } from '../hooks/useIsMobile.js'
-import blogDubai    from '../../../assets/blog-dubai.jpg'
-import blogSigning  from '../../../assets/blog-signing.jpg'
-import blogBusiness from '../../../assets/blog-business.jpg'
 
-const blogImages = [blogDubai, blogSigning, blogBusiness]
+// Home page shows the three most recent posts; the full list lives at /blog.
+const insights = blogPosts.slice(0, 3)
 
 export default function ProtoInsights() {
   const isMobile = useIsMobile()
@@ -25,9 +24,9 @@ export default function ProtoInsights() {
               From Our Blog
             </h2>
           </div>
-          <a href="#" style={{ fontFamily: 'var(--font-body)', fontSize: '13px', fontWeight: 600, color: 'var(--teal)', textDecoration: 'none', whiteSpace: 'nowrap' }}>
+          <Link to="/blog" style={{ fontFamily: 'var(--font-body)', fontSize: '13px', fontWeight: 600, color: 'var(--teal)', textDecoration: 'none', whiteSpace: 'nowrap' }}>
             View All Insights →
-          </a>
+          </Link>
         </div>
 
         {/* Cards */}
@@ -44,13 +43,13 @@ export default function ProtoInsights() {
               onMouseLeave={e => e.currentTarget.querySelector('img').style.transform = 'scale(1)'}
             >
               {/* Image */}
-              <div style={{ overflow: 'hidden', height: isMobile ? '180px' : '200px', flexShrink: 0 }}>
+              <Link to={`/blog/${article.slug}`} style={{ display: 'block', overflow: 'hidden', height: isMobile ? '180px' : '200px', flexShrink: 0 }}>
                 <img
-                  src={blogImages[i]}
+                  src={article.image}
                   alt={article.title}
                   style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block', transition: 'transform 0.4s ease' }}
                 />
-              </div>
+              </Link>
 
               {/* Content */}
               <div style={{ padding: isMobile ? '1rem' : '1.5rem', display: 'flex', flexDirection: 'column', flex: 1, borderTop: '3px solid var(--teal)' }}>
@@ -62,8 +61,10 @@ export default function ProtoInsights() {
                 )}
 
                 {/* Title */}
-                <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem', fontWeight: 700, color: 'var(--navy)', marginBottom: isMobile ? '0' : '0.6rem', lineHeight: 1.4, flex: isMobile ? 0 : 1 }}>
-                  {article.title}
+                <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem', fontWeight: 700, marginBottom: isMobile ? '0' : '0.6rem', lineHeight: 1.4, flex: isMobile ? 0 : 1 }}>
+                  <Link to={`/blog/${article.slug}`} style={{ color: 'var(--navy)', textDecoration: 'none' }}>
+                    {article.title}
+                  </Link>
                 </h3>
 
                 {/* Excerpt — hidden on mobile */}
@@ -84,9 +85,9 @@ export default function ProtoInsights() {
                       </div>
                     )}
                   </div>
-                  <a href="#" style={{ fontFamily: 'var(--font-body)', fontSize: '12px', fontWeight: 600, color: 'var(--teal)', textDecoration: 'none' }}>
+                  <Link to={`/blog/${article.slug}`} style={{ fontFamily: 'var(--font-body)', fontSize: '12px', fontWeight: 600, color: 'var(--teal)', textDecoration: 'none' }}>
                     Read More →
-                  </a>
+                  </Link>
                 </div>
               </div>
             </motion.article>

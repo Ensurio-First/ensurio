@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import './styles/tokens.css'
 import './styles/responsive.css'
@@ -9,21 +10,39 @@ import RiskManagementPage from './pages/RiskManagementPage'
 import ManagementConsultancyPage from './pages/ManagementConsultancyPage'
 import ServicesPage from './pages/ServicesPage'
 import ContactPage from './pages/ContactPage'
+import BlogPage from './pages/BlogPage'
+import BlogPostPage from './pages/BlogPostPage'
 import PrototypeHome from './prototype/home/index.jsx'
 
-const PROTO_PATHS = ['/', '/services', '/contact']
+const PROTO_PATHS = ['/', '/services', '/contact', '/blog']
+
+// Reset scroll to the top on route change, but leave in-page anchor
+// navigation (e.g. /services#solutions) to scroll to its target.
+function ScrollToTop() {
+  const { pathname, hash } = useLocation()
+  useEffect(() => {
+    if (!hash) window.scrollTo(0, 0)
+  }, [pathname, hash])
+  return null
+}
 
 export default function App() {
   const location = useLocation()
-  const isPrototype = PROTO_PATHS.includes(location.pathname) || location.pathname.startsWith('/prototype')
+  const isPrototype =
+    PROTO_PATHS.includes(location.pathname) ||
+    location.pathname.startsWith('/prototype') ||
+    location.pathname.startsWith('/blog')
 
   return (
     <>
+      <ScrollToTop />
       {!isPrototype && <Navbar />}
       <Routes>
         <Route path="/" element={<PrototypeHome />} />
         <Route path="/services" element={<ServicesPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/blog" element={<BlogPage />} />
+        <Route path="/blog/:slug" element={<BlogPostPage />} />
         <Route path="/risk-management" element={<RiskManagementPage />} />
         <Route path="/management-consultancy" element={<ManagementConsultancyPage />} />
       </Routes>

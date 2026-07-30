@@ -41,7 +41,7 @@ const NAV_LINKS = [
     ],
   },
   { label: 'Claims Support', href: '/services#claims-support' },
-  { label: 'Insights', href: '/#insights' },
+  { label: 'Insights', href: '/blog' },
   { label: 'About', href: '/#founder' },
   { label: 'Contact Us', href: '/contact' },
 ]
