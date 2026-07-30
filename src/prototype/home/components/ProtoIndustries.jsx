@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import { industries } from '../data/index.js'
 import { useIsMobile } from '../hooks/useIsMobile.js'
 
@@ -22,7 +23,7 @@ export default function ProtoIndustries() {
   const isMobile = useIsMobile()
 
   return (
-    <section style={{ background: 'var(--white)', padding: isMobile ? '3rem 0' : '5rem 0' }}>
+    <section id="industries" style={{ background: 'var(--white)', padding: isMobile ? '3rem 0' : '5rem 0' }}>
       <div style={{ maxWidth: '1280px', margin: '0 auto', padding: isMobile ? '0 0.75rem' : '0 4rem' }}>
 
         {/* Header */}
@@ -47,8 +48,8 @@ export default function ProtoIndustries() {
           {industries.map((industry, i) => {
             const img = imageMap[industry.name]
             return (
+              <Link key={industry.name} to={`/industries/${industry.name.toLowerCase()}`} style={{ textDecoration: 'none', display: 'block' }}>
               <motion.div
-                key={industry.name}
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -81,6 +82,7 @@ export default function ProtoIndustries() {
                   </p>
                 </div>
               </motion.div>
+              </Link>
             )
           })}
         </div>

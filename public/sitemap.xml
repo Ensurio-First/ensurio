@@ -16,6 +16,14 @@
   <url><loc>https://www.insurefirst.ae/who-we-help/operations-managers</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://www.insurefirst.ae/who-we-help/individuals-families</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
 
+  <!-- Industries -->
+  <url><loc>https://www.insurefirst.ae/industries/construction</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.insurefirst.ae/industries/manufacturing</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.insurefirst.ae/industries/logistics</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.insurefirst.ae/industries/hospitality</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.insurefirst.ae/industries/aviation</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.insurefirst.ae/industries/engineering</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+
   <!-- Insurance Services — category hubs -->
   <url><loc>https://www.insurefirst.ae/insurance-services/business</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.insurefirst.ae/insurance-services/specialist</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
