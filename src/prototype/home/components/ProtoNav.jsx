@@ -19,6 +19,18 @@ const NAV_LINKS = [
     ],
   },
   {
+    label: 'Industries',
+    href: '/#industries',
+    dropdown: [
+      { label: 'Construction', href: '/industries/construction' },
+      { label: 'Manufacturing', href: '/industries/manufacturing' },
+      { label: 'Logistics', href: '/industries/logistics' },
+      { label: 'Hospitality', href: '/industries/hospitality' },
+      { label: 'Aviation', href: '/industries/aviation' },
+      { label: 'Engineering', href: '/industries/engineering' },
+    ],
+  },
+  {
     label: 'Solutions',
     href: '/services#solutions',
     dropdown: [
