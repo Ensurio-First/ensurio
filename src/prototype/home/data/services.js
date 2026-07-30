@@ -1161,3 +1161,19 @@ export const servicePages = [
 export function getServiceBySlug(slug) {
   return servicePages.find((s) => s.slug === slug)
 }
+
+// Category hub pages — each lists the lines whose `category` matches `title`.
+export const serviceCategories = [
+  { slug: 'business', title: 'Business Insurance', tagline: 'Cover for the assets, income, liabilities, and vehicles your business depends on.', intro: 'The foundation cover for any UAE business — from property and business interruption to liability, workforce, and motor fleet.', image: industryManufacturing },
+  { slug: 'specialist', title: 'Specialist Insurance', tagline: 'Tailored cover for complex, high-value, and industry-specific risks.', intro: 'For trade, construction, energy, aviation, and other specialist exposures — placed with dedicated underwriters who understand them.', image: industryLogistics },
+  { slug: 'professional', title: 'Professional Protection', tagline: 'Protect your firm, your leadership, and your data from professional and management risk.', intro: 'Professional indemnity, directors & officers, cyber, and management liability for modern, advice-led, and regulated businesses.', image: blogSigning },
+  { slug: 'personal', title: 'Personal Insurance', tagline: 'Protect your family, health, home, and income.', intro: 'Life, health, home, and personal accident cover for individuals and families across the UAE.', image: heroHandshake },
+]
+
+export function getCategoryBySlug(slug) {
+  return serviceCategories.find((c) => c.slug === slug)
+}
+
+export function getServicesByCategory(title) {
+  return servicePages.filter((s) => s.category === title)
+}

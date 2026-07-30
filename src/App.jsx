@@ -13,6 +13,7 @@ import ContactPage from './pages/ContactPage'
 import BlogPage from './pages/BlogPage'
 import BlogPostPage from './pages/BlogPostPage'
 import ServicePage from './pages/ServicePage'
+import CategoryHubPage from './pages/CategoryHubPage'
 import PrototypeHome from './prototype/home/index.jsx'
 
 const PROTO_PATHS = ['/', '/services', '/contact', '/blog', '/risk-management', '/management-consultancy']
@@ -46,6 +47,7 @@ export default function App() {
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog/:slug" element={<BlogPostPage />} />
         <Route path="/insurance/:slug" element={<ServicePage />} />
+        <Route path="/insurance-services/:category" element={<CategoryHubPage />} />
         <Route path="/risk-management" element={<RiskManagementPage />} />
         <Route path="/management-consultancy" element={<ManagementConsultancyPage />} />
       </Routes>
