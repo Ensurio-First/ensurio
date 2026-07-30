@@ -12,7 +12,6 @@ npm install
 npm install framer-motion react-hook-form
 
 # 3. Replace the src/ folder with the provided files
-
 # 4. Run
 npm run dev
 ```
