@@ -22,12 +22,12 @@ const NAV_LINKS = [
     label: 'Solutions',
     href: '/services#solutions',
     dropdown: [
-      { label: 'Insurance Audit', href: '/services#solutions' },
-      { label: 'Risk Assessment', href: '/services#solutions' },
-      { label: 'Policy Review', href: '/services#solutions' },
-      { label: 'Claims Advisory', href: '/services#solutions' },
-      { label: 'Legal Claims Support', href: '/services#solutions' },
-      { label: 'Coverage Gap Analysis', href: '/services#solutions' },
+      { label: 'Insurance Audit', href: '/solutions/insurance-audit' },
+      { label: 'Risk Assessment', href: '/solutions/risk-assessment' },
+      { label: 'Policy Review', href: '/solutions/policy-review' },
+      { label: 'Claims Advisory', href: '/solutions/claims-advisory' },
+      { label: 'Legal Claims Support', href: '/solutions/legal-claims-support' },
+      { label: 'Coverage Gap Analysis', href: '/solutions/coverage-gap-analysis' },
     ],
   },
   {
