@@ -26,6 +26,7 @@ export const blogPosts = [
     author: 'Fredrick Lobo',
     image: blogDubai,
     imageAlt: 'Gold and diamond jewelry business in Dubai protected with Jewelers Block Insurance',
+    serviceLink: { label: 'Jewelers Block Insurance', href: '/insurance/jewelers-block' },
     body: [
       { type: 'p', text: 'Whether you own a luxury boutique in Dubai Mall, a gold trading business in Deira Gold Souk, or a wholesale diamond company in DMCC, your inventory is one of your biggest financial investments. This guide explains what Jewelers Block Insurance covers, who needs it, what it costs, and how Insure First can help you secure the right protection.' },
       { type: 'stathero', big: 'AED 10M+', headline: 'can sit in a single showroom safe overnight.', text: 'One theft, robbery, or transit loss can erase years of work. Jewelers Block Insurance is built for exactly that exposure — protecting gold, diamonds, watches, and precious stock that ordinary business insurance ignores.', stats: [
@@ -157,6 +158,7 @@ export const blogPosts = [
     author: 'Fredrick Lobo',
     image: heroHandshake,
     imageAlt: 'UAE employer arranging group medical insurance for employees',
+    serviceLink: { label: 'Health & Medical Insurance', href: '/insurance/health-medical' },
     body: [
       { type: 'p', text: 'In the UAE, providing health insurance to your employees is not a perk — it is a legal obligation. Every employer in Dubai and Abu Dhabi must arrange compliant medical cover for their staff, and the rules are actively enforced. Beyond compliance, a well-designed group plan is one of the most valued benefits you can offer, helping you attract and keep good people.' },
       { type: 'stathero', big: 'Mandatory', headline: 'Every employee in the UAE must be medically insured by their employer.', text: 'Health cover is regulated emirate by emirate — DHA in Dubai, DOH in Abu Dhabi — and non-compliance carries fines and visa consequences. Group medical is both a legal duty and a genuine benefit.', stats: [
@@ -235,6 +237,7 @@ export const blogPosts = [
     author: 'Fredrick Lobo',
     image: industryConstruction,
     imageAlt: 'Construction project in Dubai protected by Contractors All Risks insurance',
+    serviceLink: { label: 'Engineering & Construction Insurance', href: '/insurance/engineering-construction' },
     body: [
       { type: 'p', text: 'Construction is one of the UAE’s largest and most visible industries — and one of its riskiest. A single fire, flood, collapse, or accident on site can cost millions and derail a project’s timeline. Contractors’ All Risks (CAR) insurance is the specialist cover built to protect a construction project from ground-breaking to handover.' },
       { type: 'stathero', big: 'One event', headline: 'can wipe out a project’s entire margin overnight.', text: 'CAR insurance protects the works, the materials, the plant, and the public around a site — under a single project policy that runs for the full build period.', stats: [
@@ -314,6 +317,7 @@ export const blogPosts = [
     author: 'Fredrick Lobo',
     image: industryLogistics,
     imageAlt: 'Business vehicle fleet in the UAE covered by motor fleet insurance',
+    serviceLink: { label: 'Motor Fleet Insurance', href: '/insurance/motor-fleet' },
     body: [
       { type: 'p', text: 'From delivery vans and trucks to buses, taxis, and construction vehicles, thousands of UAE businesses depend on the road. Insuring each vehicle separately is slow, expensive, and hard to manage. Motor fleet insurance solves that by bringing every vehicle under a single policy — with one renewal, one point of contact, and usually a better rate.' },
       { type: 'stathero', big: '3+ vehicles', headline: 'is usually all it takes to move to a single fleet policy.', text: 'A fleet policy insures all of your vehicles together, cover follows the vehicle rather than a named driver, and you add or remove vehicles as your business changes.', stats: [
@@ -395,6 +399,7 @@ export const blogPosts = [
     author: 'Fredrick Lobo',
     image: blogSigning,
     imageAlt: 'UAE professional services firm protected by professional indemnity insurance',
+    serviceLink: { label: 'Professional Indemnity Insurance', href: '/insurance/professional-indemnity' },
     body: [
       { type: 'p', text: 'If clients pay your business for its advice, designs, or expertise, you carry a risk that ordinary business insurance does not touch: the risk of being blamed for a professional mistake. An engineering error, a missed deadline, a flawed recommendation — any of these can lead to a claim for financial loss. Professional Indemnity (PI) insurance is the cover built to respond.' },
       { type: 'stathero', big: 'One mistake', headline: 'in your professional work can cost far more than a year’s fees.', text: 'PI covers your legal liability — and the cost of defending it — when a client alleges your advice, design, or service caused them a financial loss. In the UAE it is increasingly required by regulators and clients alike.', stats: [
@@ -471,6 +476,7 @@ export const blogPosts = [
     author: 'Fredrick Lobo',
     image: industryManufacturing,
     imageAlt: 'UAE workforce covered by workmen’s compensation and employer’s liability insurance',
+    serviceLink: { label: "Employer's Liability & Workmen's Compensation", href: '/insurance/employers-liability' },
     body: [
       { type: 'p', text: 'Under UAE Labour Law, an employer is responsible for compensating employees who are injured, disabled, or killed as a result of their work. That is a legal duty, not a choice — and for a serious incident, the cost can run into hundreds of thousands of dirhams. Workmen’s Compensation and Employer’s Liability insurance are the covers that stand behind that obligation.' },
       { type: 'stathero', big: 'Labour Law', headline: 'makes every UAE employer liable for work-related injury.', text: 'From site labour to office staff, an employer must meet the compensation set out in UAE Labour Law when a worker is hurt on the job. Insurance turns an unpredictable liability into a managed cost.', stats: [
@@ -638,6 +644,7 @@ export const blogPosts = [
     author: 'Fredrick Lobo',
     image: blogBusiness,
     imageAlt: 'UAE business protected against cyber attacks with cyber insurance',
+    serviceLink: { label: 'Cyber Insurance', href: '/insurance/cyber' },
     body: [
       { type: 'p', text: 'Every business in the UAE now runs on data — customer records, payment details, emails, and systems that never stop. That connectivity is also an exposure. A single ransomware attack or data breach can halt operations, trigger regulatory scrutiny under the UAE’s data protection law, and cost far more than most owners expect. Cyber insurance is the cover built for this modern risk.' },
       { type: 'stathero', big: 'Not if, when', headline: 'every connected business is now a target for cyber attack.', text: 'Cyber insurance covers the cost of responding to an attack, the income you lose while systems are down, and your liability to customers whose data is exposed — a risk no traditional policy was designed to carry.', stats: [
@@ -724,6 +731,7 @@ export const blogPosts = [
     author: 'Fredrick Lobo',
     image: blogDubai,
     imageAlt: 'Commercial property in Dubai protected by fire and allied perils insurance',
+    serviceLink: { label: 'Commercial Property Insurance', href: '/insurance/commercial-property' },
     body: [
       { type: 'p', text: 'The building you operate from, the stock on your shelves, the machinery on your floor — these are the physical foundation of your business. A single fire, flood, or major incident can destroy them in hours. Property insurance, written on a fire and allied perils basis, is the cover that puts your business back on its feet.' },
       { type: 'stathero', big: 'Everything you built', headline: 'can be gone in a single fire or flood.', text: 'Property insurance protects your buildings, contents, stock, and equipment against fire and a wide range of other perils — reinstating the assets your business depends on to trade.', stats: [
@@ -800,6 +808,7 @@ export const blogPosts = [
     author: 'Fredrick Lobo',
     image: industryHospitality,
     imageAlt: 'UAE business premises covered by public liability insurance',
+    serviceLink: { label: 'Public & Product Liability', href: '/insurance/public-liability' },
     body: [
       { type: 'p', text: 'The moment your business deals with the public — customers in a shop, guests in a restaurant, visitors on a site — you carry a risk you cannot fully control: someone getting hurt, or their property damaged, because of your operations. Public liability insurance covers your legal responsibility when that happens, and in the UAE it is often a condition of doing business at all.' },
       { type: 'stathero', big: 'A slip, a spill', headline: 'and your business is liable to a complete stranger.', text: 'Public liability covers your legal liability — and the cost of defending it — when your business causes injury to a third party or damage to their property. Malls, landlords, and contracts routinely require it.', stats: [
@@ -879,6 +888,7 @@ export const blogPosts = [
     author: 'Fredrick Lobo',
     image: blogSigning,
     imageAlt: 'UAE company board protected by directors and officers liability insurance',
+    serviceLink: { label: 'Directors & Officers (D&O) Insurance', href: '/insurance/directors-officers' },
     body: [
       { type: 'p', text: 'When you sit on a board or run a company, the decisions you make can expose you personally — not just the business. A regulator investigation, a shareholder dispute, or an allegation of mismanagement can lead to a claim against a director’s own assets. Directors & Officers (D&O) insurance is the cover built to protect the people who lead, and in the UAE’s tightening regulatory environment it is more relevant than ever.' },
       { type: 'stathero', big: 'Personal liability', headline: 'a director’s own assets can be on the line for a boardroom decision.', text: 'D&O protects directors and officers against claims arising from their management of the business — paying defence costs and settlements that company policies were never designed to cover.', stats: [
@@ -969,6 +979,7 @@ export const blogPosts = [
     author: 'Fredrick Lobo',
     image: blogBusiness,
     imageAlt: 'UAE trading business protected against buyer default by trade credit insurance',
+    serviceLink: { label: 'Trade Credit Insurance', href: '/insurance/trade-credit' },
     body: [
       { type: 'p', text: 'In a trading hub like the UAE, selling on credit terms is simply how business is done. But every unpaid invoice is a risk, and a single large customer going insolvent can wipe out a year of hard-won profit. Trade credit insurance protects one of your biggest and least-protected assets — the money your customers owe you.' },
       { type: 'stathero', big: 'Unpaid invoices', headline: 'a single customer default can sink an otherwise healthy business.', text: 'Trade credit insurance covers you against non-payment when a buyer becomes insolvent or fails to pay — turning your receivables from a risk into a protected asset.', stats: [
@@ -1050,6 +1061,7 @@ export const blogPosts = [
     author: 'Fredrick Lobo',
     image: industryEngineering,
     imageAlt: 'UAE energy and oil facility protected by specialist energy insurance',
+    serviceLink: { label: 'Energy & Oil Insurance', href: '/insurance/energy-oil' },
     body: [
       { type: 'p', text: 'Energy is at the heart of the UAE economy, and few sectors carry risk on the same scale. A single incident at a facility, rig, or pipeline can involve enormous asset values, complex liabilities, and environmental exposure. Energy and oil insurance is the specialist cover, placed with dedicated energy underwriters, that protects operations across the sector.' },
       { type: 'stathero', big: 'High value, high risk', headline: 'energy assets carry exposures few standard insurers can handle.', text: 'From onshore facilities to offshore platforms, energy insurance protects physical assets, business income, and third-party and environmental liabilities under specialist wordings.', stats: [
@@ -1130,6 +1142,7 @@ export const blogPosts = [
     author: 'Fredrick Lobo',
     image: industryAviation,
     imageAlt: 'Aircraft in the UAE protected by specialist aviation insurance',
+    serviceLink: { label: 'Aviation Insurance', href: '/insurance/aviation' },
     body: [
       { type: 'p', text: 'The UAE is one of the world’s great aviation hubs, home to major airlines, busy airports, and a growing private and business-jet fleet. Aviation is also a sector where a single incident can reach a scale — in both value and liability — that no other business faces. Aviation insurance is the specialist cover that protects the aircraft, the people aboard, and everyone on the ground.' },
       { type: 'stathero', big: 'One incident', headline: 'in aviation can reach a scale no other business faces.', text: 'Aviation insurance combines hull cover for the aircraft itself with substantial passenger and third-party liability — under specialist wordings placed in the aviation market.', stats: [
