@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Update the domain below if the live site uses a different one. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Core -->
+  <url><loc>https://www.insurefirst.ae/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://www.insurefirst.ae/services</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.insurefirst.ae/contact</loc><changefreq>yearly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.insurefirst.ae/blog</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.insurefirst.ae/risk-management</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.insurefirst.ae/management-consultancy</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+
+  <!-- Who We Help -->
+  <url><loc>https://www.insurefirst.ae/who-we-help/business-owners</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.insurefirst.ae/who-we-help/finance-managers</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.insurefirst.ae/who-we-help/operations-managers</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.insurefirst.ae/who-we-help/individuals-families</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+
+  <!-- Insurance Services — category hubs -->
+  <url><loc>https://www.insurefirst.ae/insurance-services/business</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.insurefirst.ae/insurance-services/specialist</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.insurefirst.ae/insurance-services/professional</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.insurefirst.ae/insurance-services/personal</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+
+  <!-- Insurance line pages -->
+  <url><loc>https://www.insurefirst.ae/insurance/marine-cargo</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.insurefirst.ae/insurance/aviation</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.insurefirst.ae/insurance/engineering-construction</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.insurefirst.ae/insurance/energy-oil</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.insurefirst.ae/insurance/jewelers-block</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.insurefirst.ae/insurance/trade-credit</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.insurefirst.ae/insurance/commercial-property</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.insurefirst.ae/insurance/business-interruption</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.insurefirst.ae/insurance/public-liability</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.insurefirst.ae/insurance/employers-liability</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.insurefirst.ae/insurance/motor-fleet</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.insurefirst.ae/insurance/professional-indemnity</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.insurefirst.ae/insurance/directors-officers</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.insurefirst.ae/insurance/cyber</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.insurefirst.ae/insurance/management-liability</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.insurefirst.ae/insurance/life-critical-illness</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.insurefirst.ae/insurance/health-medical</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.insurefirst.ae/insurance/home-contents</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.insurefirst.ae/insurance/personal-accident</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+  <!-- Solution pages -->
+  <url><loc>https://www.insurefirst.ae/solutions/insurance-audit</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.insurefirst.ae/solutions/risk-assessment</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.insurefirst.ae/solutions/policy-review</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.insurefirst.ae/solutions/claims-advisory</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.insurefirst.ae/solutions/legal-claims-support</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.insurefirst.ae/solutions/coverage-gap-analysis</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+  <!-- Blog articles -->
+  <url><loc>https://www.insurefirst.ae/blog/jewelers-block-insurance-dubai</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.insurefirst.ae/blog/group-medical-insurance-uae</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.insurefirst.ae/blog/contractors-all-risks-insurance-dubai</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.insurefirst.ae/blog/motor-fleet-insurance-uae</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.insurefirst.ae/blog/professional-indemnity-insurance-uae</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.insurefirst.ae/blog/workmen-compensation-employers-liability-uae</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.insurefirst.ae/blog/marine-cargo-insurance-dubai</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.insurefirst.ae/blog/cyber-insurance-uae</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.insurefirst.ae/blog/property-fire-insurance-uae</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.insurefirst.ae/blog/public-liability-insurance-uae</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.insurefirst.ae/blog/directors-and-officers-liability-uae</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.insurefirst.ae/blog/trade-credit-insurance-uae</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.insurefirst.ae/blog/energy-oil-insurance-uae</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.insurefirst.ae/blog/aviation-insurance-uae</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+
+</urlset>

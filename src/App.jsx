@@ -15,6 +15,7 @@ import BlogPostPage from './pages/BlogPostPage'
 import ServicePage from './pages/ServicePage'
 import CategoryHubPage from './pages/CategoryHubPage'
 import SolutionPage from './pages/SolutionPage'
+import AudiencePage from './pages/AudiencePage'
 import PrototypeHome from './prototype/home/index.jsx'
 
 const PROTO_PATHS = ['/', '/services', '/contact', '/blog', '/risk-management', '/management-consultancy']
@@ -36,7 +37,8 @@ export default function App() {
     location.pathname.startsWith('/prototype') ||
     location.pathname.startsWith('/blog') ||
     location.pathname.startsWith('/insurance') ||
-    location.pathname.startsWith('/solutions')
+    location.pathname.startsWith('/solutions') ||
+    location.pathname.startsWith('/who-we-help')
 
   return (
     <>
@@ -51,6 +53,7 @@ export default function App() {
         <Route path="/insurance/:slug" element={<ServicePage />} />
         <Route path="/insurance-services/:category" element={<CategoryHubPage />} />
         <Route path="/solutions/:slug" element={<SolutionPage />} />
+        <Route path="/who-we-help/:slug" element={<AudiencePage />} />
         <Route path="/risk-management" element={<RiskManagementPage />} />
         <Route path="/management-consultancy" element={<ManagementConsultancyPage />} />
       </Routes>

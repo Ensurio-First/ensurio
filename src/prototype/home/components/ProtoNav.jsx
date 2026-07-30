@@ -12,10 +12,10 @@ const NAV_LINKS = [
     label: 'Who We Help',
     href: '/services#who-we-help',
     dropdown: [
-      { label: 'Business Owners', href: '/services#who-we-help' },
-      { label: 'Finance Managers', href: '/services#who-we-help' },
-      { label: 'Operations Managers', href: '/services#who-we-help' },
-      { label: 'Individuals & Families', href: '/services#who-we-help' },
+      { label: 'Business Owners', href: '/who-we-help/business-owners' },
+      { label: 'Finance Managers', href: '/who-we-help/finance-managers' },
+      { label: 'Operations Managers', href: '/who-we-help/operations-managers' },
+      { label: 'Individuals & Families', href: '/who-we-help/individuals-families' },
     ],
   },
   {

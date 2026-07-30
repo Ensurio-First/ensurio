@@ -1,0 +1,143 @@
+import { useEffect } from 'react'
+import { motion } from 'framer-motion'
+import { Link, useParams, Navigate } from 'react-router-dom'
+import { ArrowRight, Phone, ShieldCheck } from 'lucide-react'
+import ProtoNav from '../prototype/home/components/ProtoNav'
+import ProtoFooter from '../prototype/home/components/ProtoFooter'
+import { Block } from '../prototype/home/components/contentBlocks'
+import { useIsMobile } from '../prototype/home/hooks/useIsMobile'
+import { getAudienceBySlug } from '../prototype/home/data/audiences.js'
+import '../prototype/prototype.css'
+
+export default function AudiencePage() {
+  const { slug } = useParams()
+  const isMobile = useIsMobile()
+  const aud = getAudienceBySlug(slug)
+
+  useEffect(() => {
+    if (!aud) return
+    const prevTitle = document.title
+    document.title = aud.metaTitle || `${aud.title} | Insure First`
+    let meta = document.querySelector('meta[name="description"]')
+    let created = false
+    if (!meta) {
+      meta = document.createElement('meta')
+      meta.setAttribute('name', 'description')
+      document.head.appendChild(meta)
+      created = true
+    }
+    const prevDesc = meta.getAttribute('content')
+    meta.setAttribute('content', aud.metaDescription || aud.tagline)
+    return () => {
+      document.title = prevTitle
+      if (created) meta.remove()
+      else if (prevDesc !== null) meta.setAttribute('content', prevDesc)
+    }
+  }, [aud])
+
+  if (!aud) return <Navigate to="/services" replace />
+
+  return (
+    <div style={{ fontFamily: 'Inter, sans-serif', background: '#fff', color: '#111827' }}>
+      <ProtoNav />
+      <main>
+        {/* Hero */}
+        <section style={{ position: 'relative', borderBottom: '3px solid var(--teal)', overflow: 'hidden' }}>
+          {aud.image && <img src={aud.image} alt="" aria-hidden="true" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 30%' }} />}
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(13,27,75,0.8)' }} />
+          <div style={{ position: 'relative', zIndex: 1, maxWidth: '1280px', margin: '0 auto', padding: isMobile ? '3rem 0.75rem' : '4.5rem 4rem' }}>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.1rem', flexWrap: 'wrap' }}>
+                <Link to="/" style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', textDecoration: 'none', fontFamily: 'var(--font-body)' }}>Home</Link>
+                <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '12px' }}>/</span>
+                <span style={{ fontSize: '13px', color: 'var(--teal)', fontFamily: 'var(--font-body)', fontWeight: 600 }}>Who We Help</span>
+              </div>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--teal)', marginBottom: '0.6rem' }}>{aud.subtitle}</p>
+              <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: isMobile ? '1.9rem' : 'clamp(2rem, 3.6vw, 3rem)', fontWeight: 800, color: 'var(--white)', letterSpacing: '-0.02em', lineHeight: 1.15, marginBottom: '1.1rem', maxWidth: '760px' }}>
+                {aud.title}
+              </h1>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: isMobile ? '15px' : '17px', color: 'rgba(255,255,255,0.72)', lineHeight: 1.7, maxWidth: '640px', marginBottom: '1.75rem' }}>
+                {aud.tagline}
+              </p>
+              <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: aud.badges ? '1.75rem' : 0 }}>
+                <Link to="/contact" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '13px 26px', background: 'var(--teal)', color: '#fff', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700, textDecoration: 'none' }}>
+                  Book a Free Review <ArrowRight size={15} />
+                </Link>
+                <a href="tel:+971509765976" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '13px 26px', background: 'transparent', color: '#fff', border: '1px solid rgba(255,255,255,0.32)', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700, textDecoration: 'none' }}>
+                  <Phone size={15} /> Call Us
+                </a>
+              </div>
+              {aud.badges && (
+                <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
+                  {aud.badges.map((b) => (
+                    <span key={b} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.14)', padding: '6px 12px', fontFamily: 'var(--font-body)', fontSize: '12px', color: 'rgba(255,255,255,0.8)', fontWeight: 600 }}>
+                      <ShieldCheck size={13} color="var(--teal)" /> {b}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Body */}
+        <article style={{ background: 'var(--white)', padding: isMobile ? '2.5rem 0' : '4rem 0' }}>
+          <div style={{ maxWidth: '1280px', margin: '0 auto', padding: isMobile ? '0 0.75rem' : '0 4rem' }}>
+            {aud.body.map((block, i) => (
+              <Block key={i} block={block} isMobile={isMobile} />
+            ))}
+          </div>
+        </article>
+
+        {/* Recommended cover — links to the service pages for this audience */}
+        {aud.relatedServices && aud.relatedServices.length > 0 && (
+          <section style={{ background: 'var(--light-bg)', padding: isMobile ? '2.5rem 0' : '3.5rem 0', borderTop: '1px solid var(--border)' }}>
+            <div style={{ maxWidth: '1280px', margin: '0 auto', padding: isMobile ? '0 0.75rem' : '0 4rem' }}>
+              <p style={{ fontSize: '11px', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--teal)', fontWeight: 700, fontFamily: 'var(--font-body)', marginBottom: '0.5rem' }}>
+                Recommended for you
+              </p>
+              <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: isMobile ? '1.4rem' : '1.8rem', fontWeight: 800, color: 'var(--navy)', letterSpacing: '-0.02em', margin: '0 0 1.5rem' }}>
+                Cover worth reviewing
+              </h2>
+              <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)', gap: '1px', background: 'var(--border)' }}>
+                {aud.relatedServices.map((s) => (
+                  <Link key={s.href} to={s.href} style={{ textDecoration: 'none', background: 'var(--white)', display: 'block' }}>
+                    <div
+                      style={{ padding: isMobile ? '1.1rem' : '1.4rem', borderTop: '3px solid var(--teal)', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '1rem', transition: 'background 0.2s' }}
+                      onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--light-bg)' }}
+                      onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--white)' }}
+                    >
+                      <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: isMobile ? '0.95rem' : '1.05rem', fontWeight: 700, color: 'var(--navy)', margin: 0, lineHeight: 1.3 }}>{s.label}</h3>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', color: 'var(--teal-dark)', fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '13px' }}>Explore <ArrowRight size={14} /></span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Final CTA */}
+        <section style={{ background: 'var(--navy)', borderTop: '3px solid var(--teal)', padding: isMobile ? '2.75rem 0' : '3.75rem 0' }}>
+          <div style={{ maxWidth: '1280px', margin: '0 auto', padding: isMobile ? '0 0.75rem' : '0 4rem', textAlign: 'center' }}>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: isMobile ? '1.5rem' : '2rem', fontWeight: 800, color: 'var(--white)', letterSpacing: '-0.02em', marginBottom: '0.75rem' }}>
+              Let's review your cover together
+            </h2>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'rgba(255,255,255,0.66)', lineHeight: 1.7, maxWidth: '540px', margin: '0 auto 1.75rem' }}>
+              Book a no-obligation consultation with an independent advisor — we work for you, not the insurer.
+            </p>
+            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+              <Link to="/contact" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 28px', background: 'var(--teal)', color: '#fff', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700, textDecoration: 'none' }}>
+                Book a Consultation <ArrowRight size={15} />
+              </Link>
+              <a href="tel:+971509765976" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 28px', background: 'transparent', color: '#fff', border: '1px solid rgba(255,255,255,0.3)', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700, textDecoration: 'none' }}>
+                <Phone size={15} /> Call an Advisor
+              </a>
+            </div>
+          </div>
+        </section>
+      </main>
+      <ProtoFooter />
+    </div>
+  )
+}
