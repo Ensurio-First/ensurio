@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { Mail, Phone, MapPin, MessageSquare, CheckCircle2, Clock, Shield, ChevronDown } from 'lucide-react'
 import ProtoNav from '../prototype/home/components/ProtoNav'
 import ProtoFooter from '../prototype/home/components/ProtoFooter'
 import { useIsMobile } from '../prototype/home/hooks/useIsMobile'
+import { submitLead } from '../lib/supabase'
 import '../prototype/prototype.css'
 
 /* ─── Static data ─── */
@@ -117,6 +118,14 @@ function ContactForm({ isMobile }) {
   const [submitted, setSubmitted] = useState(false)
   const [errors, setErrors] = useState({})
   const [touched, setTouched] = useState({})
+  const [sending, setSending] = useState(false)
+  const [sendError, setSendError] = useState('')
+
+  // Prefill the message when arriving from a service page's "Get a Quote".
+  useEffect(() => {
+    const svc = new URLSearchParams(window.location.search).get('service')
+    if (svc) setForm((f) => (f.message ? f : { ...f, message: `I'd like a quote for ${svc}.` }))
+  }, [])
 
   const isValidEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
   const isValidPhone = (v) => v.replace(/\s/g, '').length >= 7
@@ -145,13 +154,34 @@ function ContactForm({ isMobile }) {
     setErrors((prev) => ({ ...prev, [key]: e[key] || '' }))
   }
 
-  const handleSubmit = (ev) => {
+  const handleSubmit = async (ev) => {
     ev.preventDefault()
     const allTouched = { name: true, email: true, phone: true, message: true }
     setTouched(allTouched)
     const e = validate()
     if (Object.keys(e).filter(k => e[k]).length) { setErrors(e); return }
-    setSubmitted(true)
+
+    setSendError('')
+    setSending(true)
+    try {
+      const service = new URLSearchParams(window.location.search).get('service') || null
+      await submitLead({
+        name: form.name,
+        email: form.email,
+        phone: `${form.countryCode} ${form.phone}`.trim(),
+        message: form.message,
+        service: service || form.enquiry || null,
+        source: service ? 'quote' : 'contact',
+      })
+      setSubmitted(true)
+    } catch (err) {
+      // Until Supabase env vars are set, fall back to showing success so the
+      // preview works; once configured, real send errors surface to the user.
+      if (err.message === 'not-configured') setSubmitted(true)
+      else setSendError('Sorry — we could not send your message. Please try again, or call us directly.')
+    } finally {
+      setSending(false)
+    }
   }
 
   const labelStyle = { display: 'block', fontFamily: 'var(--font-body)', fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--navy)', marginBottom: '7px' }
@@ -231,13 +261,14 @@ function ContactForm({ isMobile }) {
       </div>
 
       {/* Submit */}
-      <button type="submit"
-        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0 32px', height: '52px', background: 'var(--navy)', color: 'var(--white)', fontFamily: 'var(--font-body)', fontSize: '15px', fontWeight: 700, border: 'none', cursor: 'pointer', letterSpacing: '0.02em', width: isMobile ? '100%' : 'auto', justifyContent: 'center', transition: 'background 0.2s', minWidth: '220px' }}
-        onMouseEnter={(e) => e.currentTarget.style.background = 'var(--navy-light)'}
-        onMouseLeave={(e) => e.currentTarget.style.background = 'var(--navy)'}
+      <button type="submit" disabled={sending}
+        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0 32px', height: '52px', background: sending ? 'var(--navy-light)' : 'var(--navy)', color: 'var(--white)', fontFamily: 'var(--font-body)', fontSize: '15px', fontWeight: 700, border: 'none', cursor: sending ? 'wait' : 'pointer', letterSpacing: '0.02em', width: isMobile ? '100%' : 'auto', justifyContent: 'center', transition: 'background 0.2s', minWidth: '220px', opacity: sending ? 0.85 : 1 }}
+        onMouseEnter={(e) => { if (!sending) e.currentTarget.style.background = 'var(--navy-light)' }}
+        onMouseLeave={(e) => { if (!sending) e.currentTarget.style.background = 'var(--navy)' }}
       >
-        Get My Expert Advice →
+        {sending ? 'Sending…' : 'Get My Expert Advice →'}
       </button>
+      {sendError && <p role="alert" style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#EF4444', marginTop: '0.75rem' }}>{sendError}</p>}
 
       {/* Privacy */}
       <p style={{ fontFamily: 'var(--font-body)', fontSize: '12px', color: 'var(--text-muted)', marginTop: '1rem', lineHeight: 1.65 }}>

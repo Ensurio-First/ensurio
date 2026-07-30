@@ -3,6 +3,9 @@ import FamilyCheck from '../components/DiagnosticTool/FamilyCheck'
 import AboutSection from '../components/AboutSection'
 import aboutImg from '../assets/advisor-documents.jpg'
 import ContactSection from '../components/ContactSection'
+import ProtoNav from '../prototype/home/components/ProtoNav'
+import ProtoFooter from '../prototype/home/components/ProtoFooter'
+import '../prototype/prototype.css'
 import { useWindowWidth } from '../hooks/useWindowWidth'
 import advisorImg from '../assets/advisor-agreement.jpg'
 
@@ -82,6 +85,7 @@ export default function ManagementConsultancyPage() {
 
   return (
     <>
+      <ProtoNav />
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section style={{ background: 'var(--white)', borderBottom: '1px solid var(--border)', padding: '3.5rem 2rem 4.5rem', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: '-120px', left: '-80px', width: '640px', height: '640px', background: 'radial-gradient(circle, rgba(0,184,153,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
@@ -243,6 +247,7 @@ export default function ManagementConsultancyPage() {
 
       {/* ── Contact + Map ────────────────────────────────────────────────── */}
       <ContactSection />
+      <ProtoFooter />
     </>
   )
 }

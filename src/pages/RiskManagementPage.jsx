@@ -4,8 +4,11 @@ import PremiumCheck from '../components/DiagnosticTool/PremiumCheck'
 import AboutSection from '../components/AboutSection'
 import aboutImg from '../assets/advisor-handshake.jpg'
 import ContactSection from '../components/ContactSection'
+import ProtoNav from '../prototype/home/components/ProtoNav'
+import ProtoFooter from '../prototype/home/components/ProtoFooter'
 import { useWindowWidth } from '../hooks/useWindowWidth'
 import advisorImg from '../assets/advisor-couple.jpg'
+import '../prototype/prototype.css'
 
 const IOP_PHASES = [
   { num: '01', title: 'Policy Audit & Technical Alignment', desc: 'Meticulous audit of coverage, deductibles, warranties, exclusions, and premium alignment against your actual risk footprint.' },
@@ -29,6 +32,7 @@ export default function RiskManagementPage() {
 
   return (
     <>
+      <ProtoNav />
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section style={{ background: 'var(--white)', borderBottom: '1px solid var(--border)', padding: '3.5rem 2rem 4.5rem', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: '-120px', right: '-80px', width: '640px', height: '640px', background: 'radial-gradient(circle, rgba(0,184,153,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
@@ -190,6 +194,7 @@ export default function RiskManagementPage() {
 
       {/* ── Contact + Map ────────────────────────────────────────────────── */}
       <ContactSection />
+      <ProtoFooter />
     </>
   )
 }

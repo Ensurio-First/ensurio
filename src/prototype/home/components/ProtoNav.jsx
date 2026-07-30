@@ -41,6 +41,14 @@ const NAV_LINKS = [
     ],
   },
   { label: 'Claims Support', href: '/services#claims-support' },
+  {
+    label: 'Consultancy',
+    href: '/risk-management',
+    dropdown: [
+      { label: 'Risk Management Consultancy', href: '/risk-management' },
+      { label: 'Management Consultancy', href: '/management-consultancy' },
+    ],
+  },
   { label: 'Insights', href: '/blog' },
   { label: 'About', href: '/#founder' },
   { label: 'Contact Us', href: '/contact' },

@@ -12,9 +12,10 @@ import ServicesPage from './pages/ServicesPage'
 import ContactPage from './pages/ContactPage'
 import BlogPage from './pages/BlogPage'
 import BlogPostPage from './pages/BlogPostPage'
+import ServicePage from './pages/ServicePage'
 import PrototypeHome from './prototype/home/index.jsx'
 
-const PROTO_PATHS = ['/', '/services', '/contact', '/blog']
+const PROTO_PATHS = ['/', '/services', '/contact', '/blog', '/risk-management', '/management-consultancy']
 
 // Reset scroll to the top on route change, but leave in-page anchor
 // navigation (e.g. /services#solutions) to scroll to its target.
@@ -31,7 +32,8 @@ export default function App() {
   const isPrototype =
     PROTO_PATHS.includes(location.pathname) ||
     location.pathname.startsWith('/prototype') ||
-    location.pathname.startsWith('/blog')
+    location.pathname.startsWith('/blog') ||
+    location.pathname.startsWith('/insurance')
 
   return (
     <>
@@ -43,6 +45,7 @@ export default function App() {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog/:slug" element={<BlogPostPage />} />
+        <Route path="/insurance/:slug" element={<ServicePage />} />
         <Route path="/risk-management" element={<RiskManagementPage />} />
         <Route path="/management-consultancy" element={<ManagementConsultancyPage />} />
       </Routes>

@@ -550,6 +550,7 @@ export const blogPosts = [
     author: 'Fredrick Lobo',
     image: industryLogistics,
     imageAlt: 'Cargo containers in transit through Dubai covered by marine cargo insurance',
+    serviceLink: { label: 'Marine Cargo Insurance', href: '/insurance/marine-cargo' },
     body: [
       { type: 'p', text: 'Dubai is one of the world’s great trade and re-export hubs, and goods move through it by sea, air, and land in enormous volumes. Every one of those journeys carries risk — damage, theft, loss, and delay. Marine cargo insurance is the specialist cover that protects the value of your goods from the moment they leave the supplier to the moment they arrive.' },
       { type: 'stathero', big: 'Door to door', headline: 'your goods are exposed at every leg of the journey.', text: 'From the seller’s warehouse to the buyer’s door — by ship, plane, or truck — marine cargo insurance protects the value of your shipment against loss and damage in transit.', stats: [
