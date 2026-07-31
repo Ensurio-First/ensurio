@@ -14,6 +14,7 @@ import SolutionPage from './pages/SolutionPage'
 import AudiencePage from './pages/AudiencePage'
 import IndustryPage from './pages/IndustryPage'
 import AboutPage from './pages/AboutPage'
+import QuoteModal from './components/QuoteModal'
 import PrototypeHome from './prototype/home/index.jsx'
 
 // Reset scroll to the top on route change, but leave in-page anchor
@@ -45,6 +46,7 @@ export default function App() {
         <Route path="/risk-management" element={<RiskManagementPage />} />
         <Route path="/management-consultancy" element={<ManagementConsultancyPage />} />
       </Routes>
+      <QuoteModal />
     </>
   )
 }

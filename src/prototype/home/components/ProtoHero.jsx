@@ -1,6 +1,7 @@
 import { CheckCircle2, ArrowRight } from 'lucide-react'
 import heroImg from '../../../assets/hero-handshake.jpg'
 import { useIsMobile } from '../hooks/useIsMobile.js'
+import { openQuote } from '../../../lib/quote'
 
 export default function ProtoHero() {
   const isMobile = useIsMobile()
@@ -74,34 +75,34 @@ export default function ProtoHero() {
 
           {/* CTAs */}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '2rem' }}>
-            <a
-              href="#contact"
+            <button
+              onClick={() => openQuote({ service: 'Free Consultation', source: 'home-hero', heading: 'Book a free consultation' })}
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: '7px',
                 background: 'var(--teal)', color: 'var(--white)',
                 padding: '13px 24px', fontSize: '13.5px', fontWeight: 700,
-                textDecoration: 'none', fontFamily: 'var(--font-body)',
+                border: 'none', cursor: 'pointer', fontFamily: 'var(--font-body)',
                 transition: 'background 0.2s', letterSpacing: '0.01em',
               }}
               onMouseEnter={e => e.currentTarget.style.background = 'var(--teal-dark)'}
               onMouseLeave={e => e.currentTarget.style.background = 'var(--teal)'}
             >
               Book a Consultation <ArrowRight size={15} />
-            </a>
-            <a
-              href="#solutions"
+            </button>
+            <button
+              onClick={() => openQuote({ service: 'Policy Review', source: 'home-hero', heading: 'Request a policy review' })}
               style={{
                 display: 'inline-flex', alignItems: 'center',
                 background: 'transparent', color: 'var(--navy)',
                 padding: '13px 24px', fontSize: '13.5px', fontWeight: 700,
-                textDecoration: 'none', fontFamily: 'var(--font-body)',
+                cursor: 'pointer', fontFamily: 'var(--font-body)',
                 border: '2px solid var(--navy)', transition: 'all 0.2s',
               }}
               onMouseEnter={e => { e.currentTarget.style.background = 'var(--navy)'; e.currentTarget.style.color = 'var(--white)' }}
               onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--navy)' }}
             >
               Request Policy Review
-            </a>
+            </button>
           </div>
 
           {/* Trust chips */}

@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
 import logoImg from '../../../assets/insure-first-logo.svg'
 import { socialLinks } from '../data/index.js'
+import { openQuote } from '../../../lib/quote'
 
 const NAV_LINKS = [
   { label: 'Home', href: '/' },
@@ -154,15 +155,15 @@ export default function ProtoNav() {
           </div>
 
           {/* CTA */}
-          <Link
-            to="/contact"
-            style={{ flexShrink: 0, background: 'var(--teal)', color: 'var(--white)', padding: '12px 24px', fontSize: '13.5px', fontWeight: 700, textDecoration: 'none', fontFamily: 'var(--font-body)', letterSpacing: '0.01em', transition: 'background 0.2s', whiteSpace: 'nowrap' }}
+          <button
+            onClick={() => openQuote({ service: 'Quote request', source: 'nav-quote', heading: 'Get a quote' })}
+            style={{ flexShrink: 0, background: 'var(--teal)', color: 'var(--white)', padding: '12px 24px', fontSize: '13.5px', fontWeight: 700, border: 'none', cursor: 'pointer', fontFamily: 'var(--font-body)', letterSpacing: '0.01em', transition: 'background 0.2s', whiteSpace: 'nowrap' }}
             onMouseEnter={e => e.currentTarget.style.background = 'var(--teal-dark)'}
             onMouseLeave={e => e.currentTarget.style.background = 'var(--teal)'}
             className="proto-quote-btn"
           >
             Get A Quote
-          </Link>
+          </button>
 
           {/* Mobile hamburger */}
           <button
@@ -302,9 +303,9 @@ export default function ProtoNav() {
                     </Link>
                   )
                 )}
-                <Link to="/contact" onClick={() => setMenuOpen(false)} style={{ display: 'block', marginTop: '1rem', background: 'var(--teal)', color: 'var(--white)', padding: '13px', fontSize: '14px', fontWeight: 700, textDecoration: 'none', textAlign: 'center', fontFamily: 'var(--font-body)' }}>
+                <button onClick={() => { setMenuOpen(false); openQuote({ service: 'Quote request', source: 'nav-quote', heading: 'Get a quote' }) }} style={{ display: 'block', width: '100%', marginTop: '1rem', background: 'var(--teal)', color: 'var(--white)', padding: '13px', fontSize: '14px', fontWeight: 700, border: 'none', cursor: 'pointer', textAlign: 'center', fontFamily: 'var(--font-body)' }}>
                   Get A Quote
-                </Link>
+                </button>
               </div>
             </motion.div>
           )}
