@@ -6,6 +6,7 @@ import ProtoNav from '../prototype/home/components/ProtoNav'
 import ProtoFooter from '../prototype/home/components/ProtoFooter'
 import { useIsMobile } from '../prototype/home/hooks/useIsMobile'
 import { submitLead } from '../lib/supabase'
+import WhatsAppConsent, { emptyWhatsApp, resolveWhatsApp } from '../components/WhatsAppConsent'
 import '../prototype/prototype.css'
 
 /* ─── Static data ─── */
@@ -115,6 +116,7 @@ function FormSuccess() {
 /* ─── Contact form ─── */
 function ContactForm({ isMobile }) {
   const [form, setForm] = useState({ name: '', email: '', countryCode: '+971', phone: '', enquiry: '', message: '' })
+  const [wa, setWa] = useState(emptyWhatsApp)
   const [submitted, setSubmitted] = useState(false)
   const [errors, setErrors] = useState({})
   const [touched, setTouched] = useState({})
@@ -165,13 +167,15 @@ function ContactForm({ isMobile }) {
     setSending(true)
     try {
       const service = new URLSearchParams(window.location.search).get('service') || null
+      const fullPhone = `${form.countryCode} ${form.phone}`.trim()
       await submitLead({
         name: form.name,
         email: form.email,
-        phone: `${form.countryCode} ${form.phone}`.trim(),
+        phone: fullPhone,
         message: form.message,
         service: service || form.enquiry || null,
         source: service ? 'quote' : 'contact',
+        ...resolveWhatsApp(wa, fullPhone),
       })
       setSubmitted(true)
     } catch (err) {
@@ -237,6 +241,9 @@ function ContactForm({ isMobile }) {
             aria-required="true" aria-describedby={errors.phone ? 'cf-phone-err' : undefined} />
         </div>
         {errors.phone && <p id="cf-phone-err" style={errorStyle}>{errors.phone}</p>}
+        <div style={{ marginTop: '12px' }}>
+          <WhatsAppConsent value={wa} onChange={setWa} phone={`${form.countryCode} ${form.phone}`} />
+        </div>
       </div>
 
       {/* Enquiry type — icon selection */}

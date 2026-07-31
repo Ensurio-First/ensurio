@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ArrowRight, Check } from 'lucide-react'
 import { submitLead } from '../lib/supabase'
+import WhatsAppConsent, { emptyWhatsApp, resolveWhatsApp } from './WhatsAppConsent'
 
 /*
  * Compact inline lead form — submits straight to Supabase (no page navigation).
@@ -19,6 +20,7 @@ export default function InlineLeadForm({
 }) {
   const [form, setForm] = useState({ name: '', email: '', phone: '' })
   const [when, setWhen] = useState('')
+  const [wa, setWa] = useState(emptyWhatsApp)
   const [status, setStatus] = useState('idle') // idle | invalid | sending | done | error
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))
 
@@ -40,6 +42,7 @@ export default function InlineLeadForm({
         service: service || null,
         source,
         preferredTime: when || null,
+        ...resolveWhatsApp(wa, form.phone),
       })
       setStatus('done')
     } catch (err) {
@@ -90,6 +93,8 @@ export default function InlineLeadForm({
           </div>
         </div>
       )}
+
+      <WhatsAppConsent value={wa} onChange={setWa} phone={form.phone} />
 
       {status === 'invalid' && <p role="alert" style={{ fontFamily: 'var(--font-body)', fontSize: '12.5px', color: '#EF4444', margin: '0 0 10px' }}>Please enter your name, a valid email, and a phone number.</p>}
       {status === 'error' && <p role="alert" style={{ fontFamily: 'var(--font-body)', fontSize: '12.5px', color: '#EF4444', margin: '0 0 10px' }}>Something went wrong. Please try again, or call us directly.</p>}

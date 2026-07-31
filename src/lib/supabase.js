@@ -27,6 +27,8 @@ export async function submitLead(lead) {
       source: lead.source || 'website',
       page: typeof window !== 'undefined' ? window.location.pathname : null,
       preferred_time: lead.preferredTime || null,
+      whatsapp_opt_in: lead.whatsappOptIn ?? null,
+      whatsapp_number: lead.whatsappNumber || null,
       details: lead.details || null,
     },
   ])

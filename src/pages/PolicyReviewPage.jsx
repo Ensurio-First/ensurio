@@ -10,6 +10,7 @@ import ProtoNav from '../prototype/home/components/ProtoNav'
 import ProtoFooter from '../prototype/home/components/ProtoFooter'
 import { useIsMobile } from '../prototype/home/hooks/useIsMobile'
 import { submitLead } from '../lib/supabase'
+import WhatsAppConsent, { emptyWhatsApp, resolveWhatsApp } from '../components/WhatsAppConsent'
 import '../prototype/prototype.css'
 
 const REVIEW_TYPES = [
@@ -45,6 +46,7 @@ export default function PolicyReviewPage() {
   const [renewal, setRenewal] = useState('')
   const [form, setForm] = useState({ name: '', email: '', phone: '' })
   const [when, setWhen] = useState('')
+  const [wa, setWa] = useState(emptyWhatsApp)
   const [status, setStatus] = useState('idle') // idle | invalid | sending | done | error
   const setF = (k, v) => setForm((f) => ({ ...f, [k]: v }))
 
@@ -77,6 +79,7 @@ export default function PolicyReviewPage() {
         source: 'policy-review-form',
         preferredTime: when || null,
         details: { reviewTypes: types, concern, renewal },
+        ...resolveWhatsApp(wa, form.phone),
       })
       setStatus('done')
     } catch (err) {
@@ -194,6 +197,9 @@ export default function PolicyReviewPage() {
                                 const on = when === t
                                 return <button key={t} type="button" onClick={() => setWhen(on ? '' : t)} style={{ padding: '10px 4px', fontFamily: 'var(--font-body)', fontSize: '13px', fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${on ? 'var(--teal)' : 'var(--border-dark)'}`, background: on ? 'var(--teal-pale)' : 'var(--light-bg)', color: on ? 'var(--teal-dark)' : 'var(--text-mid)' }}>{t}</button>
                               })}
+                            </div>
+                            <div style={{ marginTop: '16px' }}>
+                              <WhatsAppConsent value={wa} onChange={setWa} phone={form.phone} />
                             </div>
                             {status === 'invalid' && <p role="alert" style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#EF4444', margin: '12px 0 0' }}>Please enter your name, a valid email, and a phone number.</p>}
                             {status === 'error' && <p role="alert" style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#EF4444', margin: '12px 0 0' }}>Something went wrong — please try again or call us.</p>}
