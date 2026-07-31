@@ -2,10 +2,6 @@ import { useEffect } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import './styles/tokens.css'
 import './styles/responsive.css'
-import Navbar from './components/Navbar'
-import Footer from './components/Footer'
-import WhatsAppButton from './components/WhatsAppButton'
-import ScrollReminderPopup from './components/ScrollReminderPopup'
 import RiskManagementPage from './pages/RiskManagementPage'
 import ManagementConsultancyPage from './pages/ManagementConsultancyPage'
 import ServicesPage from './pages/ServicesPage'
@@ -20,8 +16,6 @@ import IndustryPage from './pages/IndustryPage'
 import AboutPage from './pages/AboutPage'
 import PrototypeHome from './prototype/home/index.jsx'
 
-const PROTO_PATHS = ['/', '/services', '/contact', '/blog', '/risk-management', '/management-consultancy', '/about']
-
 // Reset scroll to the top on route change, but leave in-page anchor
 // navigation (e.g. /services#solutions) to scroll to its target.
 function ScrollToTop() {
@@ -33,20 +27,9 @@ function ScrollToTop() {
 }
 
 export default function App() {
-  const location = useLocation()
-  const isPrototype =
-    PROTO_PATHS.includes(location.pathname) ||
-    location.pathname.startsWith('/prototype') ||
-    location.pathname.startsWith('/blog') ||
-    location.pathname.startsWith('/insurance') ||
-    location.pathname.startsWith('/solutions') ||
-    location.pathname.startsWith('/who-we-help') ||
-    location.pathname.startsWith('/industries')
-
   return (
     <>
       <ScrollToTop />
-      {!isPrototype && <Navbar />}
       <Routes>
         <Route path="/" element={<PrototypeHome />} />
         <Route path="/services" element={<ServicesPage />} />
@@ -62,9 +45,6 @@ export default function App() {
         <Route path="/risk-management" element={<RiskManagementPage />} />
         <Route path="/management-consultancy" element={<ManagementConsultancyPage />} />
       </Routes>
-      {!isPrototype && <Footer />}
-      {!isPrototype && <WhatsAppButton />}
-      {!isPrototype && <ScrollReminderPopup />}
     </>
   )
 }

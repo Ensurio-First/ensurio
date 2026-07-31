@@ -1,18 +1,6 @@
 import { useForm } from 'react-hook-form'
 import { motion } from 'framer-motion'
-import emailjs from '@emailjs/browser'
-
-// ── EmailJS config ──────────────────────────────────────────────────────────
-// 1. Sign up at https://www.emailjs.com (free tier = 200 emails/month)
-// 2. Create a service (Gmail / Outlook / etc.) → copy the Service ID below
-// 3. Create an email template → add template variables:
-//      {{from_name}}, {{from_email}}, {{company}}, {{tool}}, {{score}}
-//    Set "To Email" in the template to info@insurefirst.ae
-// 4. Go to Account → API Keys → copy your Public Key below
-const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID'   // e.g. 'service_abc123'
-const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID'  // e.g. 'template_xyz789'
-const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY'   // e.g. 'AbCdEfGhIjKlMnOp'
-// ────────────────────────────────────────────────────────────────────────────
+import { submitLead } from '../../lib/supabase'
 
 const styles = {
   gate: {
@@ -114,21 +102,23 @@ export default function LeadGateForm({ reportLabel, onSubmit, tool, score, horiz
   } = useForm()
 
   const submit = async (data) => {
-    await emailjs.send(
-      EMAILJS_SERVICE_ID,
-      EMAILJS_TEMPLATE_ID,
-      {
-        from_name:  data.name,
-        from_email: data.email,
-        company:    data.company,
-        tool:       tool ?? reportLabel,
-        score:      score ?? 'N/A',
-      },
-      EMAILJS_PUBLIC_KEY,
-    ).catch(() => {
-      setError('root', { message: 'Failed to send — please email us directly at info@insurefirst.ae' })
-      throw new Error('emailjs failed')
-    })
+    const label = tool ?? reportLabel ?? 'Diagnostic'
+    try {
+      await submitLead({
+        name: data.name,
+        email: data.email,
+        phone: data.phone || null,
+        message: `Diagnostic report request: ${label}${score != null ? ` — score ${score}` : ''}${data.company ? ` — Company: ${data.company}` : ''}`,
+        service: label,
+        source: 'diagnostic-tool',
+      })
+    } catch (err) {
+      // Fall through on a missing config (e.g. some previews); block on real errors.
+      if (err.message !== 'not-configured') {
+        setError('root', { message: 'Failed to send — please try again or email us at consult@insurefirst.ae' })
+        throw new Error('submit failed')
+      }
+    }
     onSubmit(data)
   }
 
