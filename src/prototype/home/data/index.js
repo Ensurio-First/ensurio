@@ -13,13 +13,14 @@ export const problems = [
   { icon: 'Scale', title: 'Facing a Dispute?', desc: 'Need expert support during complex claim negotiations or legal disputes.' },
 ]
 
+// `slug` maps each card to its page in solutions.js — /solutions/:slug.
 export const solutions = [
-  { icon: 'ClipboardCheck', title: 'Insurance Audit', desc: 'Full review of your existing policies to identify gaps, overlaps, and overpayments.', color: 'teal' },
-  { icon: 'Search', title: 'Risk Assessment', desc: 'Structured evaluation of your business risks to ensure the right coverage is in place.', color: 'navy' },
-  { icon: 'FileText', title: 'Policy Review', desc: 'Line-by-line analysis of policy wording, conditions, exclusions, and adequacy.', color: 'teal' },
-  { icon: 'Headphones', title: 'Claims Advisory', desc: 'Expert guidance through every stage of the claims process to maximise settlement.', color: 'navy' },
-  { icon: 'Gavel', title: 'Legal Claims Support', desc: 'Independent legal advisory for disputed or complex insurance claims.', color: 'teal' },
-  { icon: 'BarChart3', title: 'Coverage Gap Analysis', desc: 'Identify uninsured or under-insured exposures before they become liabilities.', color: 'navy' },
+  { icon: 'ClipboardCheck', slug: 'insurance-audit', title: 'Insurance Audit', desc: 'Full review of your existing policies to identify gaps, overlaps, and overpayments.', color: 'teal' },
+  { icon: 'Search', slug: 'risk-assessment', title: 'Risk Assessment', desc: 'Structured evaluation of your business risks to ensure the right coverage is in place.', color: 'navy' },
+  { icon: 'FileText', slug: 'policy-review', title: 'Policy Review', desc: 'Line-by-line analysis of policy wording, conditions, exclusions, and adequacy.', color: 'teal' },
+  { icon: 'Headphones', slug: 'claims-advisory', title: 'Claims Advisory', desc: 'Expert guidance through every stage of the claims process to maximise settlement.', color: 'navy' },
+  { icon: 'Gavel', slug: 'legal-claims-support', title: 'Legal Claims Support', desc: 'Independent legal advisory for disputed or complex insurance claims.', color: 'teal' },
+  { icon: 'BarChart3', slug: 'coverage-gap-analysis', title: 'Coverage Gap Analysis', desc: 'Identify uninsured or under-insured exposures before they become liabilities.', color: 'navy' },
 ]
 
 export const industries = [

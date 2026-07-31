@@ -5,7 +5,22 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
 import logoImg from '../../../assets/insure-first-logo.svg'
 import { socialLinks } from '../data/index.js'
+import { serviceCategories, getServicesByCategory } from '../data/services.js'
 import { openQuote } from '../../../lib/quote'
+
+/*
+ * Insurance Services is a two-level mega menu: each category column links to its
+ * hub page, and lists every insurance line underneath it. Built from services.js
+ * so adding a line there adds it to the nav automatically.
+ */
+const INSURANCE_MEGA = serviceCategories.map((cat) => ({
+  label: cat.title,
+  href: `/insurance-services/${cat.slug}`,
+  items: getServicesByCategory(cat.title).map((line) => ({
+    label: line.title,
+    href: `/insurance/${line.slug}`,
+  })),
+}))
 
 const NAV_LINKS = [
   { label: 'Home', href: '/' },
@@ -46,12 +61,7 @@ const NAV_LINKS = [
   {
     label: 'Insurance Services',
     href: '/services#insurance-services',
-    dropdown: [
-      { label: 'Business Insurance', href: '/insurance-services/business' },
-      { label: 'Specialist Insurance', href: '/insurance-services/specialist' },
-      { label: 'Professional Protection', href: '/insurance-services/professional' },
-      { label: 'Personal Insurance', href: '/insurance-services/personal' },
-    ],
+    mega: INSURANCE_MEGA,
   },
   { label: 'Claims Support', href: '/services#claims-support' },
   {
@@ -71,8 +81,10 @@ export default function ProtoNav() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [activeDropdown, setActiveDropdown] = useState(null)
   const [mobileExpanded, setMobileExpanded] = useState(null)
+  const [mobileSubExpanded, setMobileSubExpanded] = useState(null)
   const isMobile = useIsMobile()
   const navigate = useNavigate()
+  const megaLink = NAV_LINKS.find((l) => l.mega)
 
   return (
     <>
@@ -181,14 +193,19 @@ export default function ProtoNav() {
 
       {/* ── Main nav bar ── */}
       <nav style={{ background: 'var(--white)', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 1px 8px rgba(13,27,75,0.06)' }}>
-        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 4rem', display: 'flex', alignItems: 'center', height: '48px', gap: '0' }} className="proto-nav-desktop">
+        {/* The container owns the close-on-leave so the full-width mega panel — which
+            lives outside its trigger item — stays open while the pointer is inside it. */}
+        <div
+          style={{ position: 'relative', maxWidth: '1280px', margin: '0 auto', padding: '0 4rem', display: 'flex', alignItems: 'center', height: '48px', gap: '0' }}
+          className="proto-nav-desktop"
+          onMouseLeave={() => setActiveDropdown(null)}
+        >
           {NAV_LINKS.map((link) =>
-            link.dropdown ? (
+            link.dropdown || link.mega ? (
               <div
                 key={link.label}
                 style={{ position: 'relative', height: '100%', display: 'flex', alignItems: 'center' }}
                 onMouseEnter={() => setActiveDropdown(link.label)}
-                onMouseLeave={() => setActiveDropdown(null)}
               >
                 <button
                   onClick={() => navigate(link.href)}
@@ -209,7 +226,7 @@ export default function ProtoNav() {
                 </button>
 
                 <AnimatePresence>
-                  {activeDropdown === link.label && (
+                  {link.dropdown && activeDropdown === link.label && (
                     <motion.div
                       initial={{ opacity: 0, y: 6 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -250,13 +267,69 @@ export default function ProtoNav() {
                   fontFamily: 'var(--font-body)', letterSpacing: '0.01em',
                   borderBottom: '2px solid transparent', transition: 'color 0.15s',
                 }}
-                onMouseEnter={e => { e.currentTarget.style.color = 'var(--teal)'; e.currentTarget.style.borderBottomColor = 'var(--teal)' }}
+                onMouseEnter={e => { setActiveDropdown(null); e.currentTarget.style.color = 'var(--teal)'; e.currentTarget.style.borderBottomColor = 'var(--teal)' }}
                 onMouseLeave={e => { e.currentTarget.style.color = 'var(--navy)'; e.currentTarget.style.borderBottomColor = 'transparent' }}
               >
                 {link.label}
               </Link>
             )
           )}
+
+          {/* Full-width mega panel — one column per insurance category */}
+          <AnimatePresence>
+            {megaLink && activeDropdown === megaLink.label && (
+              <motion.div
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 6 }}
+                transition={{ duration: 0.15 }}
+                style={{
+                  position: 'absolute', top: '100%', left: 0, right: 0,
+                  background: 'var(--white)',
+                  borderTop: '3px solid var(--teal)',
+                  boxShadow: '0 8px 32px rgba(13,27,75,0.18)',
+                  zIndex: 200,
+                }}
+              >
+                <div style={{ display: 'grid', gridTemplateColumns: `repeat(${megaLink.mega.length}, 1fr)`, gap: '1px', background: 'var(--border)', padding: '1px 0 0' }}>
+                  {megaLink.mega.map((col) => (
+                    <div key={col.label} style={{ background: 'var(--white)', padding: '1.4rem 1.5rem 1.5rem' }}>
+                      <Link
+                        to={col.href}
+                        onClick={() => setActiveDropdown(null)}
+                        style={{ display: 'block', fontFamily: 'var(--font-heading)', fontSize: '14px', fontWeight: 800, color: 'var(--navy)', textDecoration: 'none', letterSpacing: '-0.01em', paddingBottom: '0.6rem', marginBottom: '0.7rem', borderBottom: '2px solid var(--teal)' }}
+                        onMouseEnter={e => { e.currentTarget.style.color = 'var(--teal)' }}
+                        onMouseLeave={e => { e.currentTarget.style.color = 'var(--navy)' }}
+                      >
+                        {col.label}
+                      </Link>
+                      {col.items.map((item) => (
+                        <Link
+                          key={item.href}
+                          to={item.href}
+                          onClick={() => setActiveDropdown(null)}
+                          style={{ display: 'block', padding: '6px 0 6px 10px', fontSize: '13px', fontWeight: 500, lineHeight: 1.4, color: 'var(--text-mid)', textDecoration: 'none', fontFamily: 'var(--font-body)', borderLeft: '2px solid transparent', transition: 'color 0.12s, border-color 0.12s' }}
+                          onMouseEnter={e => { e.currentTarget.style.color = 'var(--teal)'; e.currentTarget.style.borderLeftColor = 'var(--teal)' }}
+                          onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-mid)'; e.currentTarget.style.borderLeftColor = 'transparent' }}
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+                <div style={{ background: 'var(--light-bg)', borderTop: '1px solid var(--border)', padding: '0.7rem 1.5rem' }}>
+                  <Link
+                    to={megaLink.href}
+                    onClick={() => setActiveDropdown(null)}
+                    style={{ fontFamily: 'var(--font-body)', fontSize: '13px', fontWeight: 700, color: 'var(--teal-dark)', textDecoration: 'none' }}
+                  >
+                    View all insurance services →
+                  </Link>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Mobile drawer */}
@@ -272,7 +345,49 @@ export default function ProtoNav() {
             >
               <div style={{ padding: '0.75rem 4rem 1rem' }}>
                 {NAV_LINKS.map((link) =>
-                  link.dropdown ? (
+                  link.mega ? (
+                    /* Two-level accordion: category → its insurance lines */
+                    <div key={link.label}>
+                      <button
+                        onClick={() => setMobileExpanded(mobileExpanded === link.label ? null : link.label)}
+                        style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0', fontSize: '14px', fontWeight: 600, color: 'var(--navy)', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid var(--border)', fontFamily: 'var(--font-body)' }}
+                      >
+                        {link.label}
+                        <ChevronDown size={14} style={{ transform: mobileExpanded === link.label ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />
+                      </button>
+                      <AnimatePresence>
+                        {mobileExpanded === link.label && (
+                          <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} style={{ overflow: 'hidden' }}>
+                            {link.mega.map((col) => (
+                              <div key={col.label}>
+                                <button
+                                  onClick={() => setMobileSubExpanded(mobileSubExpanded === col.label ? null : col.label)}
+                                  style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '11px 16px', fontSize: '13.5px', fontWeight: 600, color: mobileSubExpanded === col.label ? 'var(--teal)' : 'var(--navy)', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid var(--border)', fontFamily: 'var(--font-body)', textAlign: 'left' }}
+                                >
+                                  {col.label}
+                                  <ChevronDown size={13} style={{ flexShrink: 0, transform: mobileSubExpanded === col.label ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />
+                                </button>
+                                <AnimatePresence>
+                                  {mobileSubExpanded === col.label && (
+                                    <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} style={{ overflow: 'hidden', background: 'var(--light-bg)' }}>
+                                      <Link to={col.href} onClick={() => setMenuOpen(false)} style={{ display: 'block', padding: '9px 28px', fontSize: '12.5px', fontWeight: 700, color: 'var(--teal-dark)', textDecoration: 'none', borderBottom: '1px solid var(--border)', fontFamily: 'var(--font-body)' }}>
+                                        All {col.label}
+                                      </Link>
+                                      {col.items.map((item) => (
+                                        <Link key={item.href} to={item.href} onClick={() => setMenuOpen(false)} style={{ display: 'block', padding: '9px 28px', fontSize: '12.5px', color: 'var(--text-muted)', textDecoration: 'none', borderBottom: '1px solid var(--border)', fontFamily: 'var(--font-body)' }}>
+                                          {item.label}
+                                        </Link>
+                                      ))}
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
+                              </div>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  ) : link.dropdown ? (
                     <div key={link.label}>
                       <button
                         onClick={() => setMobileExpanded(mobileExpanded === link.label ? null : link.label)}

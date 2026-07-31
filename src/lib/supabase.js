@@ -26,6 +26,8 @@ export async function submitLead(lead) {
       service: lead.service || null,
       source: lead.source || 'website',
       page: typeof window !== 'undefined' ? window.location.pathname : null,
+      preferred_time: lead.preferredTime || null,
+      details: lead.details || null,
     },
   ])
   if (error) throw error

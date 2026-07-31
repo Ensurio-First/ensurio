@@ -7,14 +7,18 @@ import { submitLead } from '../lib/supabase'
  * Drop it anywhere; pass `service` + `source` so the lead is tagged with context.
  * Designed to sit as a white card on a dark (navy) CTA band.
  */
+const CALLBACK_TIMES = ['Morning', 'Afternoon', 'Evening', 'Anytime']
+
 export default function InlineLeadForm({
   service = null,
   source = 'website',
   heading = 'Request a callback',
   note = 'Leave your details and an advisor will call you back — usually the same day.',
   cta = 'Request a Callback',
+  askCallbackTime = true,
 }) {
   const [form, setForm] = useState({ name: '', email: '', phone: '' })
+  const [when, setWhen] = useState('')
   const [status, setStatus] = useState('idle') // idle | invalid | sending | done | error
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))
 
@@ -32,9 +36,10 @@ export default function InlineLeadForm({
         name: form.name,
         email: form.email,
         phone: form.phone,
-        message: service ? `Callback request for ${service}.` : 'Callback request.',
+        message: `${service ? `Callback request for ${service}.` : 'Callback request.'}${when ? ` Preferred time: ${when}.` : ''}`,
         service: service || null,
         source,
+        preferredTime: when || null,
       })
       setStatus('done')
     } catch (err) {
@@ -70,7 +75,21 @@ export default function InlineLeadForm({
 
       <input aria-label="Full name" type="text" placeholder="Full name" value={form.name} onChange={(e) => set('name', e.target.value)} style={inputStyle} />
       <input aria-label="Email address" type="email" placeholder="Email address" value={form.email} onChange={(e) => set('email', e.target.value)} style={inputStyle} />
-      <input aria-label="Phone number" type="tel" placeholder="Phone number" value={form.phone} onChange={(e) => set('phone', e.target.value)} style={{ ...inputStyle, marginBottom: '12px' }} />
+      <input aria-label="Phone number" type="tel" placeholder="Phone number" value={form.phone} onChange={(e) => set('phone', e.target.value)} style={{ ...inputStyle, marginBottom: askCallbackTime ? '12px' : '12px' }} />
+
+      {askCallbackTime && (
+        <div style={{ marginBottom: '14px' }}>
+          <label style={{ display: 'block', fontFamily: 'var(--font-body)', fontSize: '11px', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--text-mid)', marginBottom: '8px' }}>Preferred callback time</label>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
+            {CALLBACK_TIMES.map((t) => {
+              const on = when === t
+              return (
+                <button key={t} type="button" onClick={() => setWhen(on ? '' : t)} style={{ padding: '8px 4px', fontFamily: 'var(--font-body)', fontSize: '12px', fontWeight: 700, cursor: 'pointer', border: `1px solid ${on ? 'var(--teal)' : 'var(--border-dark)'}`, background: on ? 'var(--teal-pale)' : 'var(--light-bg)', color: on ? 'var(--teal-dark)' : 'var(--text-mid)' }}>{t}</button>
+              )
+            })}
+          </div>
+        </div>
+      )}
 
       {status === 'invalid' && <p role="alert" style={{ fontFamily: 'var(--font-body)', fontSize: '12.5px', color: '#EF4444', margin: '0 0 10px' }}>Please enter your name, a valid email, and a phone number.</p>}
       {status === 'error' && <p role="alert" style={{ fontFamily: 'var(--font-body)', fontSize: '12.5px', color: '#EF4444', margin: '0 0 10px' }}>Something went wrong. Please try again, or call us directly.</p>}

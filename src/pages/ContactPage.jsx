@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { Mail, Phone, MapPin, MessageSquare, CheckCircle2, Clock, Shield, ChevronDown } from 'lucide-react'
+import { Mail, Phone, MapPin, MessageSquare, CheckCircle2, Clock, Shield, ChevronDown, ClipboardCheck, ShieldAlert, FileText, Headphones, Scale, BarChart3, Building2, Heart } from 'lucide-react'
 import ProtoNav from '../prototype/home/components/ProtoNav'
 import ProtoFooter from '../prototype/home/components/ProtoFooter'
 import { useIsMobile } from '../prototype/home/hooks/useIsMobile'
@@ -23,16 +23,16 @@ const COUNTRY_CODES = [
   { code: '+61',  flag: '🇦🇺', label: 'Australia' },
 ]
 
-const enquiryTypes = [
-  'Insurance Audit',
-  'Risk Assessment',
-  'Policy Review',
-  'Claims Advisory',
-  'Legal Claims Support',
-  'Coverage Gap Analysis',
-  'Business Insurance Quote',
-  'Personal Insurance Quote',
-  'Other',
+const enquiryOptions = [
+  { label: 'Insurance Audit', Icon: ClipboardCheck },
+  { label: 'Risk Assessment', Icon: ShieldAlert },
+  { label: 'Policy Review', Icon: FileText },
+  { label: 'Claims Advisory', Icon: Headphones },
+  { label: 'Legal Claims Support', Icon: Scale },
+  { label: 'Coverage Gap Analysis', Icon: BarChart3 },
+  { label: 'Business Insurance', Icon: Building2 },
+  { label: 'Personal Insurance', Icon: Heart },
+  { label: 'Other', Icon: MessageSquare },
 ]
 
 const contactDetails = [
@@ -239,14 +239,28 @@ function ContactForm({ isMobile }) {
         {errors.phone && <p id="cf-phone-err" style={errorStyle}>{errors.phone}</p>}
       </div>
 
-      {/* Enquiry type */}
-      <div style={fieldWrap}>
-        <label htmlFor="cf-enquiry" style={labelStyle}>What Can We Help With?</label>
-        <select id="cf-enquiry" value={form.enquiry} onChange={(e) => setForm({ ...form, enquiry: e.target.value })}
-          style={{ width: '100%', height: '48px', padding: '0 14px', fontFamily: 'var(--font-body)', fontSize: '14px', color: form.enquiry ? 'var(--text-dark)' : 'var(--text-muted)', background: 'var(--white)', border: '1.5px solid #94A3B8', outline: 'none', boxSizing: 'border-box', cursor: 'pointer' }}>
-          <option value="">Select an enquiry type…</option>
-          {enquiryTypes.map((t) => <option key={t} value={t}>{t}</option>)}
-        </select>
+      {/* Enquiry type — icon selection */}
+      <div style={{ marginBottom: '1.5rem' }}>
+        <label style={labelStyle}>What Can We Help With?</label>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(3, 1fr)', gap: '10px' }}>
+          {enquiryOptions.map(({ label, Icon }) => {
+            const on = form.enquiry === label
+            return (
+              <button
+                key={label}
+                type="button"
+                aria-pressed={on}
+                onClick={() => setForm({ ...form, enquiry: on ? '' : label })}
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '9px', padding: '13px 12px', cursor: 'pointer', textAlign: 'left', border: `1.5px solid ${on ? 'var(--teal)' : 'var(--border)'}`, background: on ? 'var(--teal-pale)' : 'var(--white)', transition: 'border-color 0.15s, background 0.15s' }}
+                onMouseEnter={(e) => { if (!on) e.currentTarget.style.borderColor = 'var(--border-dark)' }}
+                onMouseLeave={(e) => { if (!on) e.currentTarget.style.borderColor = 'var(--border)' }}
+              >
+                <Icon size={20} color={on ? 'var(--teal-dark)' : 'var(--teal)'} />
+                <span style={{ fontFamily: 'var(--font-body)', fontSize: '13px', fontWeight: 600, color: on ? 'var(--teal-dark)' : 'var(--navy)', lineHeight: 1.3 }}>{label}</span>
+              </button>
+            )
+          })}
+        </div>
       </div>
 
       {/* Message */}

@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import { ShieldQuestion, TrendingDown, XCircle, FileQuestion, Scale, ClipboardCheck, Search, FileText, Headphones, Gavel, BarChart3 } from 'lucide-react'
 import { problems, solutions } from '../data/index.js'
 import problemsImg from '../../../assets/advisor-documents-banner.jpg'
@@ -110,25 +111,31 @@ export default function ProtoProblems() {
                   whileHover={{ background: 'var(--teal-pale)' }}
                   style={{
                     background: 'var(--white)',
-                    padding: isMobile ? '1rem' : '1.5rem',
-                    cursor: 'default',
                     borderTop: '3px solid var(--teal)',
                     display: 'flex',
-                    flexDirection: 'column',
                   }}
                 >
-                  <div style={{ width: isMobile ? '28px' : '36px', height: isMobile ? '28px' : '36px', background: 'var(--teal-pale)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.875rem', flexShrink: 0 }}>
-                    {Icon && <Icon size={18} color="var(--teal)" />}
-                  </div>
-                  <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '0.9rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.4rem' }}>
-                    {solution.title}
-                  </h3>
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '12.5px', color: 'var(--text-muted)', lineHeight: 1.65, marginBottom: '0.875rem', flex: 1 }}>
-                    {solution.desc}
-                  </p>
-                  <a href="#contact" style={{ fontFamily: 'var(--font-body)', fontSize: '12px', fontWeight: 600, color: 'var(--teal)', textDecoration: 'none' }}>
-                    Learn More →
-                  </a>
+                  <Link
+                    to={`/solutions/${solution.slug}`}
+                    style={{
+                      display: 'flex', flexDirection: 'column', flex: 1,
+                      padding: isMobile ? '1rem' : '1.5rem',
+                      textDecoration: 'none',
+                    }}
+                  >
+                    <div style={{ width: isMobile ? '28px' : '36px', height: isMobile ? '28px' : '36px', background: 'var(--teal-pale)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.875rem', flexShrink: 0 }}>
+                      {Icon && <Icon size={18} color="var(--teal)" />}
+                    </div>
+                    <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '0.9rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '0.4rem' }}>
+                      {solution.title}
+                    </h3>
+                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '12.5px', color: 'var(--text-muted)', lineHeight: 1.65, marginBottom: '0.875rem', flex: 1 }}>
+                      {solution.desc}
+                    </p>
+                    <span style={{ fontFamily: 'var(--font-body)', fontSize: '12px', fontWeight: 600, color: 'var(--teal)' }}>
+                      Learn More →
+                    </span>
+                  </Link>
                 </motion.div>
               )
             })}

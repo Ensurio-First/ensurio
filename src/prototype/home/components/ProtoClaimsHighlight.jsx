@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import claimsImg from '../../../assets/claims-advisory.jpg'
 import { useIsMobile } from '../hooks/useIsMobile.js'
 
@@ -55,15 +56,23 @@ export default function ProtoClaimsHighlight() {
             ))}
           </div>
 
-          {/* CTA */}
-          <a
-            href="#contact"
-            style={{ display: isMobile ? 'block' : 'inline-block', width: isMobile ? '100%' : 'auto', padding: '13px 28px', background: 'var(--teal)', color: 'var(--white)', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700, textDecoration: 'none', letterSpacing: '0.02em', transition: 'background 0.2s', boxSizing: 'border-box' }}
-            onMouseEnter={e => e.currentTarget.style.background = 'var(--teal-dark)'}
-            onMouseLeave={e => e.currentTarget.style.background = 'var(--teal)'}
-          >
-            Get Claims Support Now
-          </a>
+          {/* CTAs — convert, or read the full claims advisory service page */}
+          <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap', flexDirection: isMobile ? 'column' : 'row' }}>
+            <a
+              href="#contact"
+              style={{ display: isMobile ? 'block' : 'inline-block', width: isMobile ? '100%' : 'auto', padding: '13px 28px', background: 'var(--teal)', color: 'var(--white)', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700, textDecoration: 'none', letterSpacing: '0.02em', transition: 'background 0.2s', boxSizing: 'border-box', textAlign: 'center' }}
+              onMouseEnter={e => e.currentTarget.style.background = 'var(--teal-dark)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'var(--teal)'}
+            >
+              Get Claims Support Now
+            </a>
+            <Link
+              to="/solutions/claims-advisory"
+              style={{ display: isMobile ? 'block' : 'inline-block', width: isMobile ? '100%' : 'auto', padding: '13px 28px', background: 'transparent', color: 'var(--white)', border: '1px solid rgba(255,255,255,0.35)', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700, textDecoration: 'none', letterSpacing: '0.02em', boxSizing: 'border-box', textAlign: 'center' }}
+            >
+              How Claims Advisory Works
+            </Link>
+          </div>
 
         </motion.div>
       </div>

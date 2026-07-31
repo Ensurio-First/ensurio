@@ -14,6 +14,7 @@ import SolutionPage from './pages/SolutionPage'
 import AudiencePage from './pages/AudiencePage'
 import IndustryPage from './pages/IndustryPage'
 import AboutPage from './pages/AboutPage'
+import PolicyReviewPage from './pages/PolicyReviewPage'
 import QuoteModal from './components/QuoteModal'
 import PrototypeHome from './prototype/home/index.jsx'
 
@@ -43,6 +44,7 @@ export default function App() {
         <Route path="/who-we-help/:slug" element={<AudiencePage />} />
         <Route path="/industries/:slug" element={<IndustryPage />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/policy-review" element={<PolicyReviewPage />} />
         <Route path="/risk-management" element={<RiskManagementPage />} />
         <Route path="/management-consultancy" element={<ManagementConsultancyPage />} />
       </Routes>

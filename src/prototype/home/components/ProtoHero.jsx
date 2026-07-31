@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { CheckCircle2, ArrowRight } from 'lucide-react'
 import heroImg from '../../../assets/hero-handshake.jpg'
 import { useIsMobile } from '../hooks/useIsMobile.js'
@@ -89,20 +90,20 @@ export default function ProtoHero() {
             >
               Book a Consultation <ArrowRight size={15} />
             </button>
-            <button
-              onClick={() => openQuote({ service: 'Policy Review', source: 'home-hero', heading: 'Request a policy review' })}
+            <Link
+              to="/policy-review"
               style={{
                 display: 'inline-flex', alignItems: 'center',
                 background: 'transparent', color: 'var(--navy)',
                 padding: '13px 24px', fontSize: '13.5px', fontWeight: 700,
-                cursor: 'pointer', fontFamily: 'var(--font-body)',
+                cursor: 'pointer', fontFamily: 'var(--font-body)', textDecoration: 'none',
                 border: '2px solid var(--navy)', transition: 'all 0.2s',
               }}
               onMouseEnter={e => { e.currentTarget.style.background = 'var(--navy)'; e.currentTarget.style.color = 'var(--white)' }}
               onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--navy)' }}
             >
               Request Policy Review
-            </button>
+            </Link>
           </div>
 
           {/* Trust chips */}
