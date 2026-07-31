@@ -8,6 +8,7 @@ import { Block } from '../prototype/home/components/contentBlocks'
 import { useIsMobile } from '../prototype/home/hooks/useIsMobile'
 import { getServiceBySlug } from '../prototype/home/data/services.js'
 import { getPostBySlug } from '../prototype/home/data/blog.js'
+import InlineLeadForm from '../components/InlineLeadForm'
 import '../prototype/prototype.css'
 
 export default function ServicePage() {
@@ -122,23 +123,21 @@ export default function ServicePage() {
           </section>
         )}
 
-        {/* Final CTA */}
-        <section style={{ background: 'var(--navy)', borderTop: '3px solid var(--teal)', padding: isMobile ? '2.75rem 0' : '3.75rem 0' }}>
-          <div style={{ maxWidth: '1280px', margin: '0 auto', padding: isMobile ? '0 0.75rem' : '0 4rem', textAlign: 'center' }}>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: isMobile ? '1.5rem' : '2rem', fontWeight: 800, color: 'var(--white)', letterSpacing: '-0.02em', marginBottom: '0.75rem' }}>
-              Ready to get {service.title.replace(' Insurance', '')} cover right?
-            </h2>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'rgba(255,255,255,0.66)', lineHeight: 1.7, maxWidth: '540px', margin: '0 auto 1.75rem' }}>
-              Book a no-obligation review with an independent advisor — we work for you, not the insurer.
-            </p>
-            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-              <Link to={`/contact?service=${encodeURIComponent(service.title)}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 28px', background: 'var(--teal)', color: '#fff', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700, textDecoration: 'none' }}>
-                Book a Free Review <ArrowRight size={15} />
-              </Link>
-              <a href="tel:+971509765976" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 28px', background: 'transparent', color: '#fff', border: '1px solid rgba(255,255,255,0.3)', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700, textDecoration: 'none' }}>
-                <Phone size={15} /> Call an Advisor
+        {/* Final CTA with inline form */}
+        <section style={{ background: 'var(--navy)', borderTop: '3px solid var(--teal)', padding: isMobile ? '2.75rem 0' : '4rem 0' }}>
+          <div style={{ maxWidth: '1280px', margin: '0 auto', padding: isMobile ? '0 0.75rem' : '0 4rem', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.05fr 0.95fr', gap: isMobile ? '1.75rem' : '3rem', alignItems: 'center' }}>
+            <div>
+              <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: isMobile ? '1.5rem' : '2rem', fontWeight: 800, color: 'var(--white)', letterSpacing: '-0.02em', marginBottom: '0.75rem' }}>
+                Ready to get {service.title.replace(' Insurance', '')} cover right?
+              </h2>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'rgba(255,255,255,0.66)', lineHeight: 1.7, maxWidth: '460px', marginBottom: '1.5rem' }}>
+                Leave your details for a no-obligation review with an independent advisor — we work for you, not the insurer. Prefer to talk?
+              </p>
+              <a href="tel:+971509765976" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'var(--teal)', fontFamily: 'var(--font-body)', fontSize: '15px', fontWeight: 700, textDecoration: 'none' }}>
+                <Phone size={16} /> Call 050 976 5976
               </a>
             </div>
+            <InlineLeadForm service={service.title} source="service-page" heading="Request a quote" cta="Request a Callback" />
           </div>
         </section>
       </main>

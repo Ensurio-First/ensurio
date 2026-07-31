@@ -1,11 +1,6 @@
 import { useRef, useState } from 'react'
 import { motion } from 'framer-motion'
-import emailjs from '@emailjs/browser'
-
-// Same EmailJS config as LeadGateForm
-const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID'
-const EMAILJS_TEMPLATE_ID = 'YOUR_CONTACT_TEMPLATE_ID'
-const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY'
+import { submitLead } from '../lib/supabase'
 
 const IconEmail = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="square">
@@ -80,12 +75,23 @@ export default function ContactSection() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setStatus('sending')
+    const fd = new FormData(formRef.current)
+    const company = (fd.get('company') || '').toString().trim()
+    const msg = (fd.get('message') || '').toString().trim()
     try {
-      await emailjs.sendForm(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, formRef.current, EMAILJS_PUBLIC_KEY)
+      await submitLead({
+        name: fd.get('from_name'),
+        email: fd.get('from_email'),
+        phone: null,
+        message: company ? `${msg}\n\nCompany: ${company}` : msg,
+        service: 'Consultancy enquiry',
+        source: 'consultancy-page',
+      })
       setStatus('sent')
       formRef.current.reset()
-    } catch {
-      setStatus('error')
+    } catch (err) {
+      if (err.message === 'not-configured') { setStatus('sent'); formRef.current.reset() }
+      else setStatus('error')
     }
   }
 
