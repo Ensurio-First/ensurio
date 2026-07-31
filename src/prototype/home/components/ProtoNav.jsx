@@ -62,7 +62,7 @@ const NAV_LINKS = [
     ],
   },
   { label: 'Insights', href: '/blog' },
-  { label: 'About', href: '/#founder' },
+  { label: 'About', href: '/about' },
   { label: 'Contact Us', href: '/contact' },
 ]
 

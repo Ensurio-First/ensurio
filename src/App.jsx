@@ -17,9 +17,10 @@ import CategoryHubPage from './pages/CategoryHubPage'
 import SolutionPage from './pages/SolutionPage'
 import AudiencePage from './pages/AudiencePage'
 import IndustryPage from './pages/IndustryPage'
+import AboutPage from './pages/AboutPage'
 import PrototypeHome from './prototype/home/index.jsx'
 
-const PROTO_PATHS = ['/', '/services', '/contact', '/blog', '/risk-management', '/management-consultancy']
+const PROTO_PATHS = ['/', '/services', '/contact', '/blog', '/risk-management', '/management-consultancy', '/about']
 
 // Reset scroll to the top on route change, but leave in-page anchor
 // navigation (e.g. /services#solutions) to scroll to its target.
@@ -57,6 +58,7 @@ export default function App() {
         <Route path="/solutions/:slug" element={<SolutionPage />} />
         <Route path="/who-we-help/:slug" element={<AudiencePage />} />
         <Route path="/industries/:slug" element={<IndustryPage />} />
+        <Route path="/about" element={<AboutPage />} />
         <Route path="/risk-management" element={<RiskManagementPage />} />
         <Route path="/management-consultancy" element={<ManagementConsultancyPage />} />
       </Routes>
