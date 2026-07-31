@@ -1,12 +1,21 @@
 # Project TODO
 
-## 🔴 Supabase — switch on lead capture (quote/contact forms)
+## ✅ Supabase — lead capture is LIVE
 
 All the site's forms ("Get a Quote", "Book a Review", the contact form, and every
-interactive tool's CTA) already funnel into a single `submitLead()` helper
-(`src/lib/supabase.js`) that inserts into a Supabase `leads` table. It is **built
-but dormant** — until the two env vars below are set, forms fall back to a success
-message without storing anything.
+interactive tool's CTA) funnel into a single `submitLead()` helper
+(`src/lib/supabase.js`) that inserts into the Supabase `leads` table.
+
+**Status: done & verified in production** — the `leads` table + anon INSERT policy
+are created, a live insert returns HTTP 201, and the env vars are set both locally
+(`.env.local`) and on Vercel (baked into the insurefirst.ae build). Submissions land
+in **Supabase → Table Editor → `leads`**. The public can insert leads but cannot read
+them (insert-only RLS policy, no SELECT policy).
+
+Optional hardening if bot spam appears later: add a honeypot field or CAPTCHA /
+rate-limiting to the contact form.
+
+<details><summary>Original setup steps (for reference)</summary>
 
 Do these three steps once and lead capture goes live across the **whole site**.
 
@@ -62,6 +71,8 @@ dashboard). Verify by submitting the contact form once.
 **Optional (later):** to capture an interactive tool's inputs alongside a lead
 (e.g. "estimated for 12 vehicles"), add a `details jsonb` column and pass a
 `details` object into `submitLead()` — one table, one function, flexible payload.
+
+</details>
 
 ---
 
