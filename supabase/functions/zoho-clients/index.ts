@@ -13,12 +13,20 @@
  * sync when we build the reports. Building the sync first would have meant
  * modelling a schema I cannot yet see.
  *
- * ── On not knowing where policies live ────────────────────────────────────
- * This org's CRM has not been introspected yet, so the policy module is DETECTED
- * at runtime and reported back in the response as `policyModule`. The UI shows
- * it. If the guess is wrong, set ZOHO_POLICY_MODULE to the right api_name and
- * nothing else has to change. Fields are returned as-is rather than mapped to
- * names I would be inventing.
+ * ── On where policies live ────────────────────────────────────────────────
+ * Cover is split across several modules in this CRM — Medical and Life
+ * Policies, Motor Policies, General Insurance, Policy Details, Renewal Policy
+ * Details — so all of them are read and the results grouped by module. Which
+ * module a policy sits in is information, not plumbing.
+ *
+ * The modules are detected rather than hardcoded, so one added in Zoho appears
+ * here without a deploy. ZOHO_POLICY_MODULES overrides the detection with a
+ * comma-separated list of api_names if it ever picks wrongly.
+ *
+ * Fields are rendered from whatever the record carries rather than mapped to
+ * names chosen in advance: the policy layout spans motor, property and medical
+ * fields, so any one record is mostly blank, and a fixed field list would show
+ * a wall of empties.
  */
 
 import { zohoFetch, ZohoError } from '../_shared/zoho.ts'
@@ -39,28 +47,38 @@ interface ZohoModule {
  * Cached for the life of the instance. Module layout changes about never, and
  * re-detecting on every request would spend a credit to learn the same answer.
  */
-let policyModuleCache: string | null = null
+let policyModulesCache: Array<{ api_name: string; label: string }> | null = null
 
-async function detectPolicyModule(): Promise<string | null> {
-  const override = Deno.env.get('ZOHO_POLICY_MODULE')
-  if (override) return override
-  if (policyModuleCache) return policyModuleCache
+/*
+ * ALL the policy modules, not one.
+ *
+ * This CRM splits cover across Medical and Life Policies, Motor Policies,
+ * General Insurance, Policy Details and Renewal Policy Details. An earlier
+ * version picked a single best match, which would have shown a client's motor
+ * cover and silently omitted their medical — plausible-looking and incomplete,
+ * which is worse than an obvious failure.
+ *
+ * Claims are excluded: a claims register is a different thing from cover, and
+ * mixing them under one heading would misrepresent both.
+ */
+async function detectPolicyModules(): Promise<Array<{ api_name: string; label: string }>> {
+  const override = Deno.env.get('ZOHO_POLICY_MODULES')
+  if (override) {
+    return override.split(',').map((s) => ({ api_name: s.trim(), label: s.trim() }))
+  }
+  if (policyModulesCache) return policyModulesCache
 
   const res = await zohoFetch<{ modules: ZohoModule[] }>('/crm/v7/settings/modules')
-  const modules = (res.modules ?? []).filter((m) => m.api_supported)
 
-  // Strongest signal first: something actually called policies. Then a custom
-  // module mentioning cover/insurance. Deals last — it is the CRM default for
-  // "the thing being sold", so it is a fallback, not a match.
-  const byName = modules.find((m) => /polic/i.test(`${m.api_name} ${m.plural_label}`))
-  const byCustom = modules.find(
-    (m) => m.generated_type === 'custom' && /cover|insur|risk/i.test(`${m.api_name} ${m.plural_label}`),
-  )
-  const anyCustom = modules.find((m) => m.generated_type === 'custom')
-  const found = byName ?? byCustom ?? anyCustom ?? null
+  policyModulesCache = (res.modules ?? [])
+    .filter((m) => m.api_supported)
+    .filter((m) => {
+      const hay = `${m.api_name} ${m.plural_label}`
+      return /polic|insur|cover/i.test(hay) && !/claim/i.test(hay)
+    })
+    .map((m) => ({ api_name: m.api_name, label: m.plural_label || m.api_name }))
 
-  policyModuleCache = found?.api_name ?? null
-  return policyModuleCache
+  return policyModulesCache
 }
 
 /* Zoho returns a lot of plumbing on every record. None of it belongs on screen. */
@@ -72,6 +90,22 @@ const NOISE = new Set([
   'Created_By', 'Modified_By', 'Created_Time', 'Modified_Time', 'Last_Activity_Time', 'Owner',
   'Unsubscribed_Mode', 'Unsubscribed_Time', 'Change_Log_Time__s', 'Enrich_Status__s',
 ])
+
+/*
+ * What an advisor looks for first on a policy, in that order. Everything else
+ * follows alphabetically. Matched loosely because the same idea is named
+ * differently across five modules — "Select Policy Type" here, "Policy Type"
+ * there.
+ */
+const FIELD_PRIORITY = [
+  /policy number/i, /policy type/i, /insurance company/i, /insured name/i,
+  /issue date/i, /expiry|renewal date/i, /status/i, /sum assured/i, /premium/i,
+]
+
+function priorityOf(key: string): number {
+  const i = FIELD_PRIORITY.findIndex((re) => re.test(key))
+  return i === -1 ? FIELD_PRIORITY.length : i
+}
 
 /** Flatten a Zoho record into label/value pairs a table can render. */
 function presentable(record: Record<string, unknown>): Array<{ key: string; value: string }> {
@@ -90,6 +124,10 @@ function presentable(record: Record<string, unknown>): Array<{ key: string; valu
       return { key: k.replace(/_/g, ' '), value }
     })
     .filter((f) => f.value !== '')
+    // Empty fields are already dropped above, which matters here: this CRM's
+    // policy layout carries motor, property and medical fields on every record,
+    // so most of any given policy is blank and would otherwise be a wall of "—".
+    .sort((a, b) => priorityOf(a.key) - priorityOf(b.key) || a.key.localeCompare(b.key))
 }
 
 async function listClients(query: string, page: number) {
@@ -123,30 +161,44 @@ async function clientDetail(id: string) {
   const client = record.data?.[0]
   if (!client) return { found: false as const }
 
-  const policyModule = await detectPolicyModule()
-  let policies: Array<{ id: string; fields: Array<{ key: string; value: string }> }> = []
-  let policyNote: string | null = null
+  const modules = await detectPolicyModules()
 
-  if (!policyModule) {
-    policyNote = 'No policy-like module found in this CRM.'
-  } else {
-    try {
-      // The related-list endpoint is the correct way to get "this account's X",
-      // and it works regardless of what the lookup field happens to be called.
-      const rel = await zohoFetch<{ data?: Array<Record<string, unknown>> }>(
-        `/crm/v7/${CLIENT_MODULE}/${encodeURIComponent(id)}/${encodeURIComponent(policyModule)}`,
-      )
-      policies = (rel.data ?? []).map((p) => ({ id: String(p.id), fields: presentable(p) }))
-      if (!policies.length) policyNote = 'No records in this module for this client.'
-    } catch (e) {
-      // A 400 here usually means the module is not a related list of the client
-      // module — worth saying plainly rather than showing an empty table that
-      // implies the client genuinely has no policies.
-      policyNote = `Could not read ${policyModule} as a related list (${
-        e instanceof Error ? e.message : 'failed'
-      }). It may not be linked to ${CLIENT_MODULE}.`
-    }
-  }
+  /*
+   * One call per module, concurrently. Five sequential round trips to Zoho for
+   * a single panel is a visible wait; in parallel it is one round trip's worth.
+   * A module that fails is reported on its own rather than failing the panel —
+   * a client's motor policies are still worth seeing when the medical module
+   * is not linked to Accounts.
+   */
+  const groups = await Promise.all(
+    modules.map(async (m) => {
+      try {
+        // The related-list endpoint is the correct way to get "this account's X",
+        // and it works regardless of what the lookup field happens to be called.
+        const rel = await zohoFetch<{ data?: Array<Record<string, unknown>> }>(
+          `/crm/v7/${CLIENT_MODULE}/${encodeURIComponent(id)}/${encodeURIComponent(m.api_name)}`,
+        )
+        const policies = (rel.data ?? []).map((p) => ({ id: String(p.id), fields: presentable(p) }))
+        return { module: m.api_name, label: m.label, policies, note: null as string | null }
+      } catch (e) {
+        // Usually means this module is not a related list of the client module.
+        // Saying so beats an empty table implying the client has no cover.
+        return {
+          module: m.api_name,
+          label: m.label,
+          policies: [],
+          note: `Not readable as a related list of ${CLIENT_MODULE} (${
+            e instanceof Error ? e.message : 'failed'
+          }).`,
+        }
+      }
+    }),
+  )
+
+  // Modules with nothing in them are dropped from the response: five empty
+  // headings per client is noise. Failures are kept, because those are not the
+  // same as "no policies" and the difference matters.
+  const shown = groups.filter((g) => g.policies.length > 0 || g.note)
 
   return {
     found: true as const,
@@ -155,9 +207,9 @@ async function clientDetail(id: string) {
       name: String(client.Account_Name ?? client.Full_Name ?? client.Last_Name ?? 'Unnamed'),
       fields: presentable(client),
     },
-    policyModule,
-    policyNote,
-    policies,
+    policyModules: modules.map((m) => m.api_name),
+    policyGroups: shown,
+    totalPolicies: groups.reduce((n, g) => n + g.policies.length, 0),
   }
 }
 

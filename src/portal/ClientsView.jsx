@@ -171,25 +171,44 @@ function ClientPanel({ row, detail, loading, error, onClose }) {
           <FieldTable fields={detail.client.fields} />
 
           <div style={{ marginTop: '18px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
               <FileText size={13} color="var(--text-muted)" />
               <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>
                 Policies
               </span>
-              {detail.policyModule && (
-                <span style={{ fontSize: '11px', color: 'var(--text-light)' }}>· {detail.policyModule}</span>
-              )}
+              <span style={{ fontSize: '11px', color: 'var(--text-light)' }}>· {detail.totalPolicies ?? 0}</span>
             </div>
 
-            {detail.policyNote && (
+            {detail.policyGroups?.length === 0 && (
               <p style={{ display: 'flex', gap: '7px', padding: '10px 12px', background: 'var(--light-bg)', borderRadius: 'var(--radius-sm)', fontSize: '12px', lineHeight: 1.55, color: 'var(--text-mid)' }}>
-                <Info size={14} style={{ flexShrink: 0, marginTop: '1px' }} /> {detail.policyNote}
+                <Info size={14} style={{ flexShrink: 0, marginTop: '1px' }} />
+                No policies on this client in any of: {detail.policyModules?.join(', ') || 'no policy modules found'}.
               </p>
             )}
 
-            {detail.policies?.map((p, i) => (
-              <div key={p.id} style={{ marginTop: i ? '10px' : 0, border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '10px 12px' }}>
-                <FieldTable fields={p.fields} dense />
+            {/* Grouped by module — cover is split across Medical and Life,
+                Motor, General Insurance and so on, and which one a policy sits
+                in is information in itself. */}
+            {detail.policyGroups?.map((g) => (
+              <div key={g.module} style={{ marginBottom: '16px' }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginBottom: '6px' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--navy)' }}>{g.label}</span>
+                  {g.policies.length > 0 && (
+                    <span style={{ fontSize: '11px', color: 'var(--text-light)' }}>{g.policies.length}</span>
+                  )}
+                </div>
+
+                {g.note && (
+                  <p style={{ display: 'flex', gap: '7px', padding: '8px 10px', background: 'var(--gold-soft)', borderRadius: 'var(--radius-sm)', fontSize: '11.5px', lineHeight: 1.5, color: 'var(--text-mid)' }}>
+                    <AlertTriangle size={13} style={{ flexShrink: 0, marginTop: '1px' }} /> {g.note}
+                  </p>
+                )}
+
+                {g.policies.map((p) => (
+                  <div key={p.id} style={{ marginBottom: '8px', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '10px 12px' }}>
+                    <FieldTable fields={p.fields} dense />
+                  </div>
+                ))}
               </div>
             ))}
           </div>
