@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowRight, ArrowLeft, Check, Lock, Phone } from 'lucide-react'
+import { ArrowRight, ArrowLeft, Check, Phone } from 'lucide-react'
 import toolStyles from './toolStyles'
 import { CHECK_ANCHOR_ID } from './scrollToCheck'
 import ToolCapture from './ToolCapture'
+import FindingList from './FindingList'
 import { useLeadJourney } from '../../context/LeadJourneyContext'
 
 /*
@@ -124,20 +125,6 @@ export default function RiskRegister({ block, isMobile }) {
   }
 
   const done = phase === 'done'
-  const visible = done ? result.findings : result.findings.slice(0, 1)
-  const locked = done ? 0 : Math.max(0, result.findings.length - 1)
-
-  const Finding = ({ f, blurred }) => (
-    <div style={{
-      border: '1px solid var(--border)',
-      borderLeft: `3px solid ${f.severity === 'high' ? '#EF4444' : f.severity === 'low' ? 'var(--teal)' : '#F59E0B'}`,
-      padding: '12px 15px', marginBottom: '8px',
-      filter: blurred ? 'blur(4px)' : 'none', userSelect: blurred ? 'none' : 'auto',
-    }} aria-hidden={blurred || undefined}>
-      <div style={{ fontFamily: 'var(--font-heading)', fontSize: '14.5px', fontWeight: 700, color: 'var(--navy)', lineHeight: 1.4 }}>{f.title}</div>
-      {f.detail && <div style={{ ...s.muted, fontSize: '13px', marginTop: '4px' }}>{f.detail}</div>}
-    </div>
-  )
 
   /* ── Step 1: pick the risks that apply ────────────────────────────── */
   if (phase === 'select') {
@@ -242,18 +229,7 @@ export default function RiskRegister({ block, isMobile }) {
         </div>
 
         <div style={{ ...s.eyebrow, marginBottom: '10px' }}>{done ? 'Your full register' : 'Your priority'}</div>
-        {visible.map((f, i) => <Finding key={i} f={f} />)}
-
-        {locked > 0 && (
-          <div style={{ position: 'relative', marginBottom: '4px' }}>
-            {result.findings.slice(1, 3).map((f, i) => <Finding key={i} f={f} blurred />)}
-            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', background: 'var(--navy)', color: '#fff', padding: '8px 16px', fontFamily: 'var(--font-body)', fontSize: '12.5px', fontWeight: 700 }}>
-                <Lock size={13} /> {locked} more quadrant{locked === 1 ? '' : 's'}
-              </span>
-            </div>
-          </div>
-        )}
+        <FindingList findings={result.findings} revealAll={done} noun="quadrant" />
 
         <div style={s.divider}>
           {done ? (

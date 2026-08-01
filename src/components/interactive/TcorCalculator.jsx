@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
-import { Check, Lock, Phone } from 'lucide-react'
+import { Check, Phone } from 'lucide-react'
 import toolStyles, { fmtAED } from './toolStyles'
 import { CHECK_ANCHOR_ID } from './scrollToCheck'
 import ToolCapture from './ToolCapture'
+import FindingList from './FindingList'
 import { useLeadJourney } from '../../context/LeadJourneyContext'
 
 /*
@@ -144,20 +145,6 @@ export default function TcorCalculator({ block, isMobile }) {
     benchmark: `Management time costed at AED ${ADMIN_RATE_PER_HOUR}/hour. Figures are indicative and based only on what you entered.`,
   }
 
-  const visible = phase === 'done' ? result.findings : result.findings.slice(0, 1)
-  const locked = phase === 'done' ? 0 : Math.max(0, result.findings.length - 1)
-
-  const Finding = ({ f, blurred }) => (
-    <div style={{
-      border: '1px solid var(--border)',
-      borderLeft: `3px solid ${f.severity === 'high' ? '#EF4444' : '#F59E0B'}`,
-      padding: '12px 15px', marginBottom: '8px',
-      filter: blurred ? 'blur(4px)' : 'none', userSelect: blurred ? 'none' : 'auto',
-    }} aria-hidden={blurred || undefined}>
-      <div style={{ fontFamily: 'var(--font-heading)', fontSize: '14.5px', fontWeight: 700, color: 'var(--navy)', lineHeight: 1.4 }}>{f.title}</div>
-      {f.detail && <div style={{ ...s.muted, fontSize: '13px', marginTop: '4px' }}>{f.detail}</div>}
-    </div>
-  )
 
   return (
     <div id={CHECK_ANCHOR_ID} style={s.shell}>
@@ -241,18 +228,7 @@ export default function TcorCalculator({ block, isMobile }) {
         <div style={{ ...s.eyebrow, marginBottom: '10px' }}>
           {phase === 'done' ? 'Your full breakdown' : 'What this tells you'}
         </div>
-        {visible.map((f, i) => <Finding key={i} f={f} />)}
-
-        {locked > 0 && (
-          <div style={{ position: 'relative', marginBottom: '4px' }}>
-            {result.findings.slice(1, 3).map((f, i) => <Finding key={i} f={f} blurred />)}
-            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', background: 'var(--navy)', color: '#fff', padding: '8px 16px', fontFamily: 'var(--font-body)', fontSize: '12.5px', fontWeight: 700 }}>
-                <Lock size={13} /> {locked} more finding{locked === 1 ? '' : 's'}
-              </span>
-            </div>
-          </div>
-        )}
+        <FindingList findings={result.findings} revealAll={phase === 'done'} />
 
         <div style={s.divider}>
           {phase === 'done' ? (

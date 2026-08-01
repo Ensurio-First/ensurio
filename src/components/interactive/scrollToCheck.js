@@ -10,7 +10,7 @@ export const CHECK_ANCHOR_ID = 'page-check'
  * things depend on the answer: whether the hero CTA points at the tool, whether
  * the closing band shows a form, and what the CTA should say.
  */
-export const TOOL_BLOCK_TYPES = ['gapcheck', 'tcor', 'triage', 'protectiongap', 'riskregister']
+export const TOOL_BLOCK_TYPES = ['gapcheck', 'tcor', 'triage', 'protectiongap', 'riskregister', 'claimstage']
 
 const CTA_LABEL = {
   gapcheck: 'Check my cover — 2 min',
@@ -18,6 +18,7 @@ const CTA_LABEL = {
   triage: 'Check where my claim stands',
   protectiongap: 'Calculate my protection gap',
   riskregister: 'Build my risk register',
+  claimstage: 'Get help with my claim',
 }
 
 const toolBlock = (body) => body?.find((b) => TOOL_BLOCK_TYPES.includes(b.type))

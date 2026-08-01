@@ -9,6 +9,7 @@ import TcorCalculator from '../../../components/interactive/TcorCalculator'
 import DisputeTriage from '../../../components/interactive/DisputeTriage'
 import ProtectionGap from '../../../components/interactive/ProtectionGap'
 import RiskRegister from '../../../components/interactive/RiskRegister'
+import ClaimStageRouter from '../../../components/interactive/ClaimStageRouter'
 import scrollToCheck, { CHECK_ANCHOR_ID } from '../../../components/interactive/scrollToCheck'
 
 /*
@@ -314,6 +315,7 @@ export function Block({ block, isMobile }) {
     case 'triage': return <DisputeTriage block={block} isMobile={isMobile} />
     case 'protectiongap': return <ProtectionGap block={block} isMobile={isMobile} />
     case 'riskregister': return <RiskRegister block={block} isMobile={isMobile} />
+    case 'claimstage': return <ClaimStageRouter block={block} isMobile={isMobile} />
     case 'faq': return <FaqAccordion items={block.items} isMobile={isMobile} />
     case 'h2': return (
       <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: isMobile ? '1.25rem' : '1.5rem', fontWeight: 800, color: 'var(--navy)', letterSpacing: '-0.02em', margin: isMobile ? '1.75rem 0 0.75rem' : '2.5rem 0 1rem' }}>{block.text}</h2>

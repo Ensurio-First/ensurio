@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowRight, ArrowLeft, Check, X, HelpCircle, Lock, Phone, ShieldAlert } from 'lucide-react'
+import { ArrowRight, ArrowLeft, Check, X, HelpCircle, Phone, ShieldAlert } from 'lucide-react'
 import useToolEngine, { ANSWERS } from './useToolEngine'
 import { CHECK_ANCHOR_ID } from './scrollToCheck'
 import ToolCapture from './ToolCapture'
+import FindingList from './FindingList'
 import { useLeadJourney } from '../../context/LeadJourneyContext'
 
 /*
@@ -113,26 +114,16 @@ export default function CoverageCheck({ block, isMobile }) {
     fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700,
   }
 
-  const FindingCard = ({ finding, locked }) => (
-    <div style={{
-      border: '1px solid var(--border)',
-      borderLeft: `3px solid ${finding.severity === 'high' ? '#EF4444' : finding.severity === 'low' ? 'var(--teal)' : '#F59E0B'}`,
-      padding: '12px 15px', marginBottom: '8px', background: 'var(--white)',
-      filter: locked ? 'blur(4px)' : 'none', userSelect: locked ? 'none' : 'auto',
-    }} aria-hidden={locked || undefined}>
-      <div style={{ fontFamily: 'var(--font-heading)', fontSize: '14.5px', fontWeight: 700, color: 'var(--navy)', lineHeight: 1.4 }}>
-        {finding.gapTitle}
-      </div>
-      {finding.consequence && (
-        <div style={{ ...muted, fontSize: '13px', marginTop: '4px' }}>{finding.consequence}</div>
-      )}
-      {finding.answer === ANSWERS.UNSURE && !locked && (
-        <div style={{ fontFamily: 'var(--font-body)', fontSize: '11.5px', fontWeight: 700, color: '#B45309', marginTop: '6px', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
-          Unconfirmed — worth checking
-        </div>
-      )}
-    </div>
-  )
+  // The engine speaks in {gapTitle, consequence}; FindingList speaks in
+  // {title, detail}. Map once here rather than teaching the shared component
+  // about this tool's vocabulary.
+  const asFindings = (list) =>
+    list.map((f) => ({
+      title: f.gapTitle,
+      detail: f.consequence,
+      severity: f.severity,
+      note: f.answer === ANSWERS.UNSURE ? 'Unconfirmed — worth checking' : undefined,
+    }))
 
   /* ── Intro ────────────────────────────────────────────────────────── */
 
@@ -234,8 +225,6 @@ export default function CoverageCheck({ block, isMobile }) {
 
   const { score, findings, band } = result
   const done = phase === 'done'
-  const visible = done ? findings : findings.slice(0, 1)
-  const hidden = done ? 0 : Math.max(0, findings.length - 1)
 
   // Make the withheld value legible without giving it away: they can see the
   // shape of their result — how many, how serious — before deciding to unlock it.
@@ -288,18 +277,7 @@ export default function CoverageCheck({ block, isMobile }) {
             <div style={{ ...muted, fontSize: '11px', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '10px' }}>
               {done ? 'Your findings' : 'What we would check first'}
             </div>
-            {visible.map((f, i) => <FindingCard key={i} finding={f} />)}
-
-            {hidden > 0 && (
-              <div style={{ position: 'relative', marginBottom: '4px' }}>
-                {findings.slice(1, 3).map((f, i) => <FindingCard key={i} finding={f} locked />)}
-                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', background: 'var(--navy)', color: '#fff', padding: '8px 16px', fontFamily: 'var(--font-body)', fontSize: '12.5px', fontWeight: 700 }}>
-                    <Lock size={13} /> {hidden} more finding{hidden === 1 ? '' : 's'}
-                  </span>
-                </div>
-              </div>
-            )}
+            <FindingList findings={asFindings(findings)} revealAll={done} />
           </>
         )}
 

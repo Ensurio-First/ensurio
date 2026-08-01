@@ -138,13 +138,7 @@ export const solutionPages = [
     body: [
       { type: 'lead', text: 'Claims advisory means expert guidance through every stage of the claims process — from first notification to final settlement — with an independent advocate working only for you.' },
       { type: 'p', text: 'When a loss happens, the insurer has a team; you should too. We handle strategy, documentation, and negotiation, deal with the loss adjuster, and push for the fullest settlement you are entitled to.' },
-      { type: 'gapcheck', title: 'Are you ready if a claim happens?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
-        { statement: 'I know the notification deadline in each of my policies', gapTitle: 'Notification deadlines unknown', consequence: 'Late notification is one of the most common reasons a valid claim gets declined. The clock usually starts at the incident, not at your convenience.', severity: 'high' },
-        { statement: 'My documentation is organised and ready to support a claim', gapTitle: 'Documentation not ready', consequence: 'Claims are settled on evidence. Reconstructing records after a loss is slower, weaker and often incomplete.', severity: 'high' },
-        { statement: 'I have someone independent representing my side of a claim', gapTitle: 'No independent advocate', consequence: 'The loss adjuster is appointed and paid by the insurer. Without your own advocate, only one side of the claim is being argued.', severity: 'high' },
-        { statement: 'I understand what the claims process will actually involve', gapTitle: 'Process not understood', consequence: 'Adjusters work to a set procedure. Not knowing it means missed steps, slower settlement and less leverage.', severity: 'medium' },
-        { statement: 'My past claims have been settled fairly and in full', gapTitle: 'Past claims may have been under-settled', consequence: 'A pattern of reduced settlements usually points at a wording problem that will repeat at the next loss.', severity: 'medium' },
-      ], cta: { label: 'Get claims support', href: '/contact?service=Claims%20Advisory' } },
+      { type: 'claimstage', title: 'Where are you with your claim right now?', subtitle: 'One question, so we give you something useful rather than something generic. If a loss has just happened, the next screen is free and needs no details.' },
       { type: 'h2', text: "What's involved" },
       { type: 'steps', items: [
         { title: 'Strategy & documentation', text: 'We build the strongest possible claim.' },

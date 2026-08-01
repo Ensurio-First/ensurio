@@ -1,9 +1,11 @@
 import { useState, useMemo } from 'react'
+import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, ArrowRight, Check, Lock, Phone, AlertTriangle } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Check, Phone, AlertTriangle } from 'lucide-react'
 import toolStyles from './toolStyles'
 import { CHECK_ANCHOR_ID } from './scrollToCheck'
 import ToolCapture from './ToolCapture'
+import FindingList from './FindingList'
 import { useLeadJourney } from '../../context/LeadJourneyContext'
 
 /*
@@ -191,18 +193,6 @@ export default function DisputeTriage({ block, isMobile }) {
     benchmark: 'Indicative triage based only on your answers — not legal advice, and no substitute for review of your policy wording and correspondence.',
   }
 
-  const Finding = ({ f, blurred }) => (
-    <div style={{
-      border: '1px solid var(--border)',
-      borderLeft: `3px solid ${f.severity === 'high' ? '#EF4444' : f.severity === 'low' ? 'var(--teal)' : '#F59E0B'}`,
-      padding: '12px 15px', marginBottom: '8px',
-      filter: blurred ? 'blur(4px)' : 'none', userSelect: blurred ? 'none' : 'auto',
-    }} aria-hidden={blurred || undefined}>
-      <div style={{ fontFamily: 'var(--font-heading)', fontSize: '14.5px', fontWeight: 700, color: 'var(--navy)', lineHeight: 1.4 }}>{f.title}</div>
-      {f.detail && <div style={{ ...s.muted, fontSize: '13px', marginTop: '4px' }}>{f.detail}</div>}
-    </div>
-  )
-
   /* ── Intro ────────────────────────────────────────────────────────── */
   if (phase === 'intro') {
     return (
@@ -223,6 +213,14 @@ export default function DisputeTriage({ block, isMobile }) {
           </div>
           <p style={{ ...s.muted, fontSize: '12.5px', margin: '0.85rem 0 0' }}>
             If a deadline is close, call — do not wait for a form.
+          </p>
+          {/* The other half of the handoff: this page is for claims that have
+              already been refused. A live claim belongs on claims advisory. */}
+          <p style={{ ...s.muted, fontSize: '13px', margin: '0.75rem 0 0' }}>
+            Claim not declined — just started, or stalled?{' '}
+            <Link to="/solutions/claims-advisory" style={{ color: 'var(--teal-dark)', fontWeight: 700 }}>
+              Claims advisory is the right page →
+            </Link>
           </p>
         </div>
       </div>
@@ -273,8 +271,6 @@ export default function DisputeTriage({ block, isMobile }) {
   /* ── Verdict ──────────────────────────────────────────────────────── */
   const { verdict, findings } = result
   const done = phase === 'done'
-  const visible = done ? findings : findings.slice(0, 1)
-  const locked = done ? 0 : Math.max(0, findings.length - 1)
 
   return (
     <div id={CHECK_ANCHOR_ID} style={s.shell}>
@@ -292,18 +288,7 @@ export default function DisputeTriage({ block, isMobile }) {
 
       <div style={s.pad}>
         <div style={{ ...s.eyebrow, marginBottom: '10px' }}>{done ? 'Your full triage' : 'The first thing to deal with'}</div>
-        {visible.map((f, i) => <Finding key={i} f={f} />)}
-
-        {locked > 0 && (
-          <div style={{ position: 'relative', marginBottom: '4px' }}>
-            {findings.slice(1, 3).map((f, i) => <Finding key={i} f={f} blurred />)}
-            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', background: 'var(--navy)', color: '#fff', padding: '8px 16px', fontFamily: 'var(--font-body)', fontSize: '12.5px', fontWeight: 700 }}>
-                <Lock size={13} /> {locked} more point{locked === 1 ? '' : 's'}
-              </span>
-            </div>
-          </div>
-        )}
+        <FindingList findings={findings} revealAll={done} noun="point" />
 
         <div style={s.divider}>
           {done ? (
