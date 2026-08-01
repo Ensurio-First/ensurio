@@ -61,9 +61,45 @@ layouts through the same markup. `hasToolBlock()` / `toolCtaLabel()` in
 `scrollToCheck.js` drive the hero CTA and the closing band, so adding a tool type
 means adding it to `TOOL_BLOCK_TYPES` and nothing else.
 
+### Claims pages
+
+The two claims pages now route by where the visitor actually is, and cross-link
+so neither dead-ends:
+
+| Page | Primary tool | Secondary tool |
+|---|---|---|
+| `/solutions/claims-advisory` | `claimstage` — routes fresh loss / in progress / declined / preparing | `evidencepack`, `statuslookup` |
+| `/solutions/legal-claims-support` | `triage` — urgency verdict for declined claims | `offercheck` — for the underpaid rather than the refused |
+
+A page may carry more than one tool. Mark the later ones `secondary: true` in
+the data so the primary keeps the `#page-check` anchor and the hero CTA.
+
+**The evidence pack saves to `localStorage`, not to us.** A claim runs over
+weeks and the whole point is that they add to it as things happen, so losing
+their work on tab close would make it useless. Nothing reaches the database
+until they explicitly ask for a review.
+
+### 🟡 Team action: keep `leads.lead_status` current
+
+Reference lookup reads this column, so it is only as useful as the team keeps
+it. Edit it in Supabase → Table Editor → `leads`. Allowed values:
+
+`received` (default) → `contacted` → `in-review` → `advising` → `closed`
+
+The wording each stage shows the customer lives in the `lead-status` edge
+function, not the database, so it can be reworded without a migration.
+
+Lookup requires **reference + email together**. A wrong reference and a wrong
+email return byte-identical responses, so nobody can use it to discover which
+references exist. It goes through the edge function with the service-role key —
+the public read path on `leads` stays closed.
+
 ### Still open
 
 - **Home page triage, blog teasers, PDF reports** (Phase 4).
+- **Outcome figures and fee model** for the claims pages — deferred to
+  consultation. Until then the claims pages make no settlement claims and the
+  FAQ does not state a fee model, which is the honest position.
 
 ---
 

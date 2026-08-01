@@ -146,6 +146,15 @@ export const solutionPages = [
         { title: 'Loss adjuster engagement', text: 'We meet the adjuster on your behalf and hold them to the scope they were instructed on.' },
         { title: 'Settlement negotiation', text: 'We check any offer against your sums insured and the policy basis of settlement before you respond.' },
       ] },
+
+      // Secondary tool: only matters once a claim is already running, so it must
+      // not take the anchor or the hero CTA off the stage router above.
+      { type: 'h2', text: 'Build your evidence pack' },
+      { type: 'evidencepack', secondary: true },
+
+      { type: 'h2', text: 'Already sent us something?' },
+      { type: 'statuslookup', secondary: true },
+
       { type: 'h2', text: 'Frequently Asked Questions' },
       { type: 'faq', items: [
         { q: 'When should I involve a claims advisor?', a: 'As early as possible — ideally at first notification, when the strategy and documentation matter most.' },
@@ -180,6 +189,11 @@ export const solutionPages = [
         { text: 'Formal, professional correspondence.' },
         { text: 'Escalation and litigation support if needed.' },
       ] },
+      // Secondary tool: for the underpaid rather than the refused. Marked
+      // secondary so the triage above keeps the anchor and the hero CTA.
+      { type: 'h2', text: 'Been offered less than you claimed?' },
+      { type: 'offercheck', secondary: true },
+
       { type: 'cta', heading: 'Claim rejected? You have options.', text: 'Independent legal and technical support to challenge a disputed or rejected claim.', primary: { label: 'Get Legal Support', href: '/contact?service=Legal%20Claims%20Support' }, secondary: { label: 'Call 050 976 5976', href: 'tel:+971509765976' } },
       { type: 'h2', text: 'Frequently Asked Questions' },
       { type: 'faq', items: [
@@ -189,6 +203,7 @@ export const solutionPages = [
       ] },
     ],
   },
+
   {
     slug: 'coverage-gap-analysis',
     title: 'Coverage Gap Analysis',

@@ -11,7 +11,8 @@ const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 export const supabase = url && anonKey ? createClient(url, anonKey) : null
 export const isSupabaseConfigured = Boolean(supabase)
 
-const FUNCTION_URL = url ? `${url.replace(/\/$/, '')}/functions/v1/submit-lead` : null
+const fnUrl = (name) => (url ? `${url.replace(/\/$/, '')}/functions/v1/${name}` : null)
+const FUNCTION_URL = fnUrl('submit-lead')
 
 const currentPage = () => (typeof window !== 'undefined' ? window.location.pathname : null)
 
@@ -112,4 +113,35 @@ async function directInsert(lead) {
 
   if (error) throw error
   return { ok: true, id: data?.id, emailed: false }
+}
+
+/**
+ * Look up an enquiry by the reference we issued plus the email it was submitted
+ * with. Both are required — the reference is short enough to read down a phone,
+ * so it is not a credential on its own.
+ *
+ * Goes through the `lead-status` edge function rather than reading the table:
+ * the public read path on `leads` is closed and should stay that way. There is
+ * no fallback here, because the fallback would be exactly the thing we closed.
+ *
+ * @returns {Promise<{found: boolean, reference?: string, firstName?: string,
+ *   submittedAt?: string, service?: string, status?: string,
+ *   statusLabel?: string, statusDetail?: string}>}
+ */
+export async function lookupLeadStatus({ reference, email }) {
+  if (!supabase) throw new Error('not-configured')
+
+  const res = await fetch(fnUrl('lead-status'), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      apikey: anonKey,
+      Authorization: `Bearer ${anonKey}`,
+    },
+    body: JSON.stringify({ reference, email }),
+  })
+
+  if (res.status === 400) throw new Error('invalid-input')
+  if (!res.ok) throw new Error('lookup-failed')
+  return res.json()
 }
