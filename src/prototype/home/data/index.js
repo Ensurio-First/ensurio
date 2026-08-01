@@ -18,8 +18,8 @@ export const solutions = [
   { icon: 'ClipboardCheck', slug: 'insurance-audit', title: 'Insurance Audit', desc: 'Full review of your existing policies to identify gaps, overlaps, and overpayments.', color: 'teal' },
   { icon: 'Search', slug: 'risk-assessment', title: 'Risk Assessment', desc: 'Structured evaluation of your business risks to ensure the right coverage is in place.', color: 'navy' },
   { icon: 'FileText', slug: 'policy-review', title: 'Policy Review', desc: 'Line-by-line analysis of policy wording, conditions, exclusions, and adequacy.', color: 'teal' },
-  { icon: 'Headphones', slug: 'claims-advisory', title: 'Claims Advisory', desc: 'Expert guidance through every stage of the claims process to maximise settlement.', color: 'navy' },
-  { icon: 'Gavel', slug: 'legal-claims-support', title: 'Legal Claims Support', desc: 'Independent legal advisory for disputed or complex insurance claims.', color: 'teal' },
+  { icon: 'Headphones', slug: 'claims-advisory', title: 'Making a Claim', desc: 'Something has happened and you need to claim. We handle the insurer, the adjuster and the paperwork.', color: 'navy' },
+  { icon: 'Gavel', slug: 'legal-claims-support', title: 'Claim Refused or Underpaid', desc: 'Declined, cut back or stalled? A refusal is an opening position, not a verdict.', color: 'teal' },
   { icon: 'BarChart3', slug: 'coverage-gap-analysis', title: 'Coverage Gap Analysis', desc: 'Identify uninsured or under-insured exposures before they become liabilities.', color: 'navy' },
 ]
 
@@ -122,7 +122,7 @@ export const insights = [
     readTime: '4 min read',
   },
   {
-    tag: 'Claims Advisory',
+    tag: 'Claims',
     title: '5 Reasons Insurance Claims Get Rejected in the UAE',
     excerpt: 'Claim rejections are more common than you think. Here are the most frequent causes — and how to avoid them.',
     date: 'April 2025',

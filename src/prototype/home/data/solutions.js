@@ -129,9 +129,16 @@ export const solutionPages = [
   },
   {
     slug: 'claims-advisory',
-    title: 'Claims Advisory',
+    // Named for the visitor's situation, not for what we call the service.
+    // Someone whose warehouse flooded last night is not searching "advisory".
+    // `serviceName` keeps the internal vocabulary on the lead record so the
+    // team's reporting and proposals do not have to change.
+    title: 'Making a Claim',
+    serviceName: 'Claims Advisory',
+    ctaHeading: 'Facing a claim? Get an advocate on your side.',
+    ctaFormHeading: 'Get claims support',
     tagline: 'Expert guidance through every stage of a claim — as your independent advocate, not the insurer’s.',
-    metaTitle: 'Claims Advisory UAE | Ensurio First',
+    metaTitle: 'Help With an Insurance Claim UAE | Ensurio First',
     metaDescription: 'Independent insurance claims advisory in the UAE — we guide you from first notification to final settlement and negotiate directly with insurers to maximise your outcome.',
     image: heroHandshake,
     badges: ['CBUAE Licensed', 'Independent Advocate', 'Settlement Support'],
@@ -165,9 +172,12 @@ export const solutionPages = [
   },
   {
     slug: 'legal-claims-support',
-    title: 'Legal Claims Support',
+    title: 'Claim Refused or Underpaid',
+    serviceName: 'Legal Claims Support',
+    ctaHeading: 'A refusal is not the end of the road.',
+    ctaFormHeading: 'Get legal support',
     tagline: 'Independent legal advisory for disputed, complex, or rejected insurance claims.',
-    metaTitle: 'Legal Claims Support UAE | Ensurio First',
+    metaTitle: 'Rejected Insurance Claim Help UAE | Ensurio First',
     metaDescription: 'Independent legal claims support in the UAE — expert advisory for disputed, complex, or rejected insurance claims, from policy interpretation to escalation.',
     image: blogBusiness,
     badges: ['CBUAE Licensed', 'Legal & Technical', 'Dispute Resolution'],

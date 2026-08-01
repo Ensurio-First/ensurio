@@ -30,7 +30,7 @@ export default function ProtoClaimsHighlight() {
         <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
 
           <div style={{ fontSize: '11px', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--teal)', fontWeight: 700, fontFamily: 'var(--font-body)', marginBottom: '1rem' }}>
-            Claims Advisory
+            Claims Support
           </div>
 
           <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: isMobile ? '1.4rem' : 'clamp(1.6rem, 2.8vw, 2.2rem)', fontWeight: 800, color: 'var(--white)', letterSpacing: '-0.02em', marginBottom: '1.25rem' }}>
@@ -56,21 +56,23 @@ export default function ProtoClaimsHighlight() {
             ))}
           </div>
 
-          {/* CTAs — convert, or read the full claims advisory service page */}
+          {/* Two buttons, two situations. Sorting people here saves them
+              guessing which claims page is theirs — the old pair sent both
+              groups to a generic contact form or to the same page twice. */}
           <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap', flexDirection: isMobile ? 'column' : 'row' }}>
-            <a
-              href="#contact"
+            <Link
+              to="/solutions/claims-advisory"
               style={{ display: isMobile ? 'block' : 'inline-block', width: isMobile ? '100%' : 'auto', padding: '13px 28px', background: 'var(--teal)', color: 'var(--white)', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700, textDecoration: 'none', letterSpacing: '0.02em', transition: 'background 0.2s', boxSizing: 'border-box', textAlign: 'center' }}
               onMouseEnter={e => e.currentTarget.style.background = 'var(--teal-dark)'}
               onMouseLeave={e => e.currentTarget.style.background = 'var(--teal)'}
             >
-              Get Claims Support Now
-            </a>
+              I need to make a claim
+            </Link>
             <Link
-              to="/solutions/claims-advisory"
+              to="/solutions/legal-claims-support"
               style={{ display: isMobile ? 'block' : 'inline-block', width: isMobile ? '100%' : 'auto', padding: '13px 28px', background: 'transparent', color: 'var(--white)', border: '1px solid rgba(255,255,255,0.35)', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700, textDecoration: 'none', letterSpacing: '0.02em', boxSizing: 'border-box', textAlign: 'center' }}
             >
-              How Claims Advisory Works
+              My claim was refused
             </Link>
           </div>
 

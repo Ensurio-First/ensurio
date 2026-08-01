@@ -101,14 +101,19 @@ export default function SolutionPage() {
           </div>
         </article>
 
+        {/* Pages named for the visitor's situation rather than the service
+            cannot have their heading built by string-joining the title —
+            "Ready to get started with claim refused or underpaid?" — so those
+            supply their own. `serviceName` keeps lead tagging on the internal
+            name whatever the public label says. */}
         <PageCtaBand
           isMobile={isMobile}
           hasCheck={hasCheck}
-          title={`Ready to get started with ${solution.title.toLowerCase()}?`}
+          title={solution.ctaHeading || `Ready to get started with ${solution.title.toLowerCase()}?`}
           blurb="Leave your details for a no-obligation consultation with an independent advisor — we work for you, not the insurer. Prefer to talk?"
-          service={solution.title}
+          service={solution.serviceName || solution.title}
           source="solution-page"
-          heading={`Book ${solution.title}`}
+          heading={solution.ctaFormHeading || `Book ${solution.title}`}
         />
       </main>
       <ProtoFooter />

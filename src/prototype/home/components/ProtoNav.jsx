@@ -53,8 +53,10 @@ const NAV_LINKS = [
       { label: 'Insurance Audit', href: '/solutions/insurance-audit' },
       { label: 'Risk Assessment', href: '/solutions/risk-assessment' },
       { label: 'Policy Review', href: '/solutions/policy-review' },
-      { label: 'Claims Advisory', href: '/solutions/claims-advisory' },
-      { label: 'Legal Claims Support', href: '/solutions/legal-claims-support' },
+      // Ordered the way the situation unfolds: you make a claim first, and the
+      // second only matters once the first has gone wrong.
+      { label: 'Making a Claim', href: '/solutions/claims-advisory' },
+      { label: 'Claim Refused or Underpaid', href: '/solutions/legal-claims-support' },
       { label: 'Coverage Gap Analysis', href: '/solutions/coverage-gap-analysis' },
     ],
   },
@@ -63,7 +65,10 @@ const NAV_LINKS = [
     href: '/services#insurance-services',
     mega: INSURANCE_MEGA,
   },
-  { label: 'Claims Support', href: '/services#claims-support' },
+  // The most-clicked claims entry now lands on the stage router, which opens by
+  // asking where the visitor is and routes them — including handing declined
+  // claims to the disputes page. It used to drop them on a services anchor.
+  { label: 'Claims Support', href: '/solutions/claims-advisory' },
   {
     label: 'Consultancy',
     href: '/risk-management',

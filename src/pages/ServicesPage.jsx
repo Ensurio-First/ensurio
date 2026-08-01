@@ -92,7 +92,7 @@ const solutions = [
   },
   {
     icon: Headphones,
-    title: 'Claims Advisory',
+    title: 'Making a Claim',
     tag: 'High Demand',
     img: imgClaims,
     desc: 'Expert guidance through every stage of the claims process — from first notification through to final settlement — to maximise your outcome as an independent advocate.',
@@ -100,7 +100,7 @@ const solutions = [
   },
   {
     icon: Gavel,
-    title: 'Legal Claims Support',
+    title: 'Claim Refused or Underpaid',
     tag: '',
     img: imgLegal,
     desc: 'Independent legal advisory for disputed, complex, or rejected insurance claims. We represent your interests when the insurer pushes back.',

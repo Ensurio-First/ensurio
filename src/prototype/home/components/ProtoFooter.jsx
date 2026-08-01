@@ -7,8 +7,8 @@ const footerLinks = {
     'Insurance Audit',
     'Risk Assessment',
     'Policy Review',
-    'Claims Advisory',
-    'Legal Claims Support',
+    'Making a Claim',
+    'Claim Refused or Underpaid',
     'Coverage Gap Analysis',
   ],
   'Insurance Services': [

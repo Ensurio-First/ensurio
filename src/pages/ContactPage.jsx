@@ -28,8 +28,10 @@ const enquiryOptions = [
   { label: 'Insurance Audit', Icon: ClipboardCheck },
   { label: 'Risk Assessment', Icon: ShieldAlert },
   { label: 'Policy Review', Icon: FileText },
-  { label: 'Claims Advisory', Icon: Headphones },
-  { label: 'Legal Claims Support', Icon: Scale },
+  // `value` keeps the internal service name on the lead record while the chip
+  // shows the visitor a situation they recognise.
+  { label: 'Making a claim', value: 'Claims Advisory', Icon: Headphones },
+  { label: 'Claim refused or underpaid', value: 'Legal Claims Support', Icon: Scale },
   { label: 'Coverage Gap Analysis', Icon: BarChart3 },
   { label: 'Business Insurance', Icon: Building2 },
   { label: 'Personal Insurance', Icon: Heart },
@@ -250,14 +252,15 @@ function ContactForm({ isMobile }) {
       <div style={{ marginBottom: '1.5rem' }}>
         <label style={labelStyle}>What Can We Help With?</label>
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(3, 1fr)', gap: '10px' }}>
-          {enquiryOptions.map(({ label, Icon }) => {
-            const on = form.enquiry === label
+          {enquiryOptions.map(({ label, value, Icon }) => {
+            const stored = value || label
+            const on = form.enquiry === stored
             return (
               <button
                 key={label}
                 type="button"
                 aria-pressed={on}
-                onClick={() => setForm({ ...form, enquiry: on ? '' : label })}
+                onClick={() => setForm({ ...form, enquiry: on ? '' : stored })}
                 style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '9px', padding: '13px 12px', cursor: 'pointer', textAlign: 'left', border: `1.5px solid ${on ? 'var(--teal)' : 'var(--border)'}`, background: on ? 'var(--teal-pale)' : 'var(--white)', transition: 'border-color 0.15s, background 0.15s' }}
                 onMouseEnter={(e) => { if (!on) e.currentTarget.style.borderColor = 'var(--border-dark)' }}
                 onMouseLeave={(e) => { if (!on) e.currentTarget.style.borderColor = 'var(--border)' }}
