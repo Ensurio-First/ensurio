@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ShieldCheck, LogOut, Search, RefreshCw, X, Mail, Phone, FileText, AlertTriangle } from 'lucide-react'
-import { supabase, fetchLeads } from './lib/supabase'
+import { supabase, fetchLeads, updateLeadStatus } from './lib/supabase'
 
 /*
  * The leads dashboard.
@@ -53,6 +53,31 @@ export default function LeadsView({ session }) {
   }
 
   useEffect(() => { load() }, [])
+
+  const [savingStatus, setSavingStatus] = useState(false)
+  const [statusError, setStatusError] = useState('')
+
+  /*
+   * Move a lead's stage. The row that comes back carries the trigger-stamped
+   * who/when, so both the table and the open panel are patched from the
+   * database's answer rather than from what we hoped it would be — a rejected
+   * update leaves the old status on screen, which is the honest outcome.
+   */
+  const applyStatus = async (lead, next) => {
+    if (!lead || next === lead.lead_status) return
+    setSavingStatus(true)
+    setStatusError('')
+    try {
+      const row = await updateLeadStatus(lead.id, next)
+      const patch = (l) => (l.id === row.id ? { ...l, ...row } : l)
+      setLeads((all) => all.map(patch))
+      setSelected((s) => (s && s.id === row.id ? { ...s, ...row } : s))
+    } catch (e) {
+      setStatusError(e.message || 'Could not update status.')
+    } finally {
+      setSavingStatus(false)
+    }
+  }
 
   const tools = useMemo(
     () => [...new Set(leads.map((l) => l.tool_id).filter(Boolean))].sort(),
@@ -168,7 +193,15 @@ export default function LeadsView({ session }) {
             )}
           </div>
 
-          {selected && <DetailPanel lead={selected} onClose={() => setSelected(null)} />}
+          {selected && (
+            <DetailPanel
+              lead={selected}
+              onClose={() => { setSelected(null); setStatusError('') }}
+              onStatus={applyStatus}
+              saving={savingStatus}
+              statusError={statusError}
+            />
+          )}
         </div>
       </main>
     </div>
@@ -247,7 +280,60 @@ function StatusBadge({ value }) {
   )
 }
 
-function DetailPanel({ lead, onClose }) {
+/*
+ * Stage control. Buttons rather than a dropdown: five options that get clicked
+ * dozens of times a day are worth one tap, and it matches how the public tools
+ * take a choice.
+ *
+ * lead_status is the only column the portal can write — see the RLS migration.
+ * The who/when line underneath is stamped by a database trigger, so it reports
+ * what actually happened rather than what this component believes.
+ */
+function StatusPicker({ lead, onStatus, saving, error }) {
+  const by = lead.lead_status_updated_by
+  const at = lead.lead_status_updated_at
+
+  return (
+    <div style={{ padding: '10px 0', borderTop: '1px solid var(--border)' }}>
+      <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '8px' }}>
+        Status
+      </div>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+        {STATUSES.map((s) => {
+          const on = lead.lead_status === s
+          const style = STATUS_STYLE[s]
+          return (
+            <button key={s} type="button" disabled={saving || on}
+              onClick={() => onStatus(lead, s)}
+              aria-pressed={on}
+              style={{
+                padding: '5px 10px', borderRadius: '99px', fontSize: '11.5px', fontWeight: 700,
+                cursor: on ? 'default' : saving ? 'wait' : 'pointer',
+                background: on ? style.bg : 'var(--white)',
+                color: on ? style.fg : 'var(--text-muted)',
+                border: `1px solid ${on ? style.fg : 'var(--border-dark)'}`,
+                opacity: saving && !on ? 0.55 : 1,
+              }}>
+              {s}
+            </button>
+          )
+        })}
+      </div>
+
+      {error && (
+        <p role="alert" style={{ marginTop: '8px', fontSize: '12px', color: 'var(--danger)' }}>{error}</p>
+      )}
+
+      {by && at && (
+        <p style={{ marginTop: '8px', fontSize: '11.5px', color: 'var(--text-light)' }}>
+          Last changed by {by} on {dateFmt.format(new Date(at))} at {timeFmt.format(new Date(at))}
+        </p>
+      )}
+    </div>
+  )
+}
+
+function DetailPanel({ lead, onClose, onStatus, saving, statusError }) {
   const findings = lead.report?.findings
   return (
     <aside className="portal-detail"
@@ -268,7 +354,8 @@ function DetailPanel({ lead, onClose }) {
         {lead.phone && <LinkRow icon={<Phone size={14} />} href={`tel:${lead.phone}`} text={lead.phone} />}
       </div>
 
-      <Field label="Status"><StatusBadge value={lead.lead_status} /></Field>
+      <StatusPicker lead={lead} onStatus={onStatus} saving={saving} error={statusError} />
+
       <Field label="Service">{lead.service || '—'}</Field>
       <Field label="Source">{lead.source || '—'}</Field>
       <Field label="Page">{lead.page || '—'}</Field>
