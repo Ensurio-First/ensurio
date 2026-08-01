@@ -4,6 +4,89 @@ All notable changes to the Insure First / Ensurio website are documented here.
 Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 The site is a Vite + React SPA deployed on Vercel at **insurefirst.ae**.
 
+## 2026-08-01 — Interactive tools, lead email pipeline, analytics
+
+The largest change to date: every page that previously ended in "Book a Free
+Review" now carries a tool that gives the visitor something before asking for
+anything.
+
+### Added
+
+- **On-page tool system** (`src/components/interactive/`). `useToolEngine` holds
+  the scoring rules, `ToolCapture` the shared capture form, `FindingList` the
+  reveal-and-gate, `toolStyles` the chrome. Twelve tools across 39 content pages:
+  - `gapcheck` — coverage check, one question at a time, Yes / No / **Not sure**
+  - `tcor` — Total Cost of Risk calculator (finance managers)
+  - `protectiongap` — family shortfall in AED (individuals & families)
+  - `triage` — claim dispute urgency verdict (refused claims)
+  - `riskregister` — likelihood × severity matrix (risk assessment)
+  - `claimstage` — routes fresh loss / in progress / declined / preparing
+  - `evidencepack` — incident record, saved to `localStorage`, sent only on request
+  - `offercheck` — settlement offer vs claim, excess and average explained
+  - `statuslookup` — enquiry status by reference + email
+- **Lead email pipeline.** `submit-lead` edge function saves the lead with the
+  service-role key, then emails the visitor their result and the team a
+  pre-briefed alert with `reply_to` set to the lead. Outcome recorded in
+  `leads.email_status`; a lead is never lost to an email failure.
+- **`lead-status` edge function** — enquiry lookup requiring reference **and**
+  email together. A wrong reference and a mismatched email return identical
+  responses, so it cannot be used to discover which references exist.
+- **175 items of check content** across all 35 `gapcheck` blocks, each with a
+  `gapTitle`, a `consequence` and a severity. Consequences explain the mechanism
+  (average clause, claims-made retroactive dates, warranties) rather than quoting
+  market statistics we cannot evidence.
+- **GA4** (`G-VDYR2B06QG`) with SPA page-view tracking and three funnel events —
+  `tool_start`, `tool_complete`, `lead_submit`. Setup steps in
+  `docs/google-analytics-setup.md`.
+- **Print stylesheet.** Browser Save-as-PDF produces a clean document; chosen over
+  server-side PDF generation, which would need an HTML-to-PDF vendor since Deno
+  edge functions cannot run headless Chrome.
+- **`leads` columns**: `tool_id`, `score`, `report`, `reference`, `email_status`,
+  `lead_status`. Every submission issues a human-readable reference (`IF-7K2M9X`).
+
+### Changed
+
+- **CTAs name what the visitor gets, not the meeting we want.** Hero buttons on
+  service, solution, industry and audience pages start that page's tool and take
+  its wording — "Calculate my cost of risk", "Check where my claim stands".
+- **The closing band stops repeating the ask.** `PageCtaBand` reads
+  `LeadJourneyContext` and shows a form only while the check is untouched, nudges
+  back to it once started, and becomes reassurance after submission. The
+  mid-article `cta` block (35 of them) now suppresses itself after submission too.
+- **Claims pages named for the visitor's situation.** "Claims Advisory" →
+  **Making a Claim**; "Legal Claims Support" → **Claim Refused or Underpaid**.
+  Internal vocabulary is preserved on the lead record via `serviceName`, so
+  reporting is unchanged. Slugs untouched — no redirects, no lost indexing.
+- **Homepage "Common Pain Points" route into tools.** Five situations already
+  written in the visitor's own words, previously static text.
+- **Blog hand-offs offer the check**, not "Explore this service", wherever the
+  linked service has one. Mapping derived from the services' `relatedBlog` field.
+- The 19 `estimator` blocks hand off to the check on the same page.
+
+### Fixed
+
+- **Every footer link was `href="#"`** — all sixteen. Now pointed at real pages.
+- **Cross-page anchors never scrolled.** `ScrollToTop` skipped scrolling when a
+  hash was present, on the reasoning that the browser handles it — true on a full
+  page load, false on a client-side route change. `/services#solutions`, already
+  used by the main nav, was landing at whatever scroll position the previous page
+  had. It now finds the element and scrolls to it.
+- **Top-level "Claims Support" pointed at a services-page anchor**, so the most
+  prominent claims link in the nav reached neither claims page. It now opens the
+  stage router.
+- **`LeadGateForm` promised a "Personalised PDF report"** that was never sent.
+  Copy corrected, and an email is now actually sent.
+
+### Security
+
+- `public.leads` has **RLS enabled with zero policies** — the anon key can no
+  longer insert. Leads arrive only via the edge function. Consequence: the
+  `direct-insert` fallback can no longer write, so edge function downtime costs
+  leads rather than degrading quietly.
+- Honeypot field on every form; bots receive a success response and nothing saves.
+
+---
+
 ## 2026-07-31 — Navigation & internal linking
 
 ### Added
