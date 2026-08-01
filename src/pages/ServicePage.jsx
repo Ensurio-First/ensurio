@@ -8,13 +8,16 @@ import { Block } from '../prototype/home/components/contentBlocks'
 import { useIsMobile } from '../prototype/home/hooks/useIsMobile'
 import { getServiceBySlug } from '../prototype/home/data/services.js'
 import { getPostBySlug } from '../prototype/home/data/blog.js'
-import InlineLeadForm from '../components/InlineLeadForm'
+import PageCtaBand from '../components/PageCtaBand'
+import scrollToCheck from '../components/interactive/scrollToCheck'
 import '../prototype/prototype.css'
 
 export default function ServicePage() {
   const { slug } = useParams()
   const isMobile = useIsMobile()
   const service = getServiceBySlug(slug)
+  // Pages carrying an on-page check lead with it instead of asking for a meeting.
+  const hasCheck = Boolean(service?.body?.some((b) => b.type === 'gapcheck'))
 
   useEffect(() => {
     if (!service) return
@@ -70,7 +73,14 @@ export default function ServicePage() {
 
               {/* Primary CTAs */}
               <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: service.badges ? '1.75rem' : 0 }}>
-                <Link to={`/contact?service=${encodeURIComponent(service.title)}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '13px 26px', background: 'var(--teal)', color: '#fff', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700, textDecoration: 'none' }}>
+                {/* When the page carries a check, it leads — a quote is still one
+                    click away for anyone who already knows what they want. */}
+                {hasCheck && (
+                  <button type="button" onClick={scrollToCheck} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '13px 26px', background: 'var(--teal)', color: '#fff', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700 }}>
+                    Check my cover — 2 min <ArrowRight size={15} />
+                  </button>
+                )}
+                <Link to={`/contact?service=${encodeURIComponent(service.title)}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '13px 26px', background: hasCheck ? 'transparent' : 'var(--teal)', color: '#fff', border: hasCheck ? '1px solid rgba(255,255,255,0.32)' : 'none', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700, textDecoration: 'none' }}>
                   Get a Quote <ArrowRight size={15} />
                 </Link>
                 <a href="tel:+971509765976" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '13px 26px', background: 'transparent', color: '#fff', border: '1px solid rgba(255,255,255,0.32)', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700, textDecoration: 'none' }}>
@@ -123,23 +133,15 @@ export default function ServicePage() {
           </section>
         )}
 
-        {/* Final CTA with inline form */}
-        <section style={{ background: 'var(--navy)', borderTop: '3px solid var(--teal)', padding: isMobile ? '2.75rem 0' : '4rem 0' }}>
-          <div style={{ maxWidth: '1280px', margin: '0 auto', padding: isMobile ? '0 0.75rem' : '0 4rem', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.05fr 0.95fr', gap: isMobile ? '1.75rem' : '3rem', alignItems: 'center' }}>
-            <div>
-              <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: isMobile ? '1.5rem' : '2rem', fontWeight: 800, color: 'var(--white)', letterSpacing: '-0.02em', marginBottom: '0.75rem' }}>
-                Ready to get {service.title.replace(' Insurance', '')} cover right?
-              </h2>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'rgba(255,255,255,0.66)', lineHeight: 1.7, maxWidth: '460px', marginBottom: '1.5rem' }}>
-                Leave your details for a no-obligation review with an independent advisor — we work for you, not the insurer. Prefer to talk?
-              </p>
-              <a href="tel:+971509765976" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'var(--teal)', fontFamily: 'var(--font-body)', fontSize: '15px', fontWeight: 700, textDecoration: 'none' }}>
-                <Phone size={16} /> Call 050 976 5976
-              </a>
-            </div>
-            <InlineLeadForm service={service.title} source="service-page" heading="Request a quote" cta="Request a Callback" />
-          </div>
-        </section>
+        <PageCtaBand
+          isMobile={isMobile}
+          hasCheck={hasCheck}
+          title={`Ready to get ${service.title.replace(' Insurance', '')} cover right?`}
+          blurb="Leave your details for a no-obligation review with an independent advisor — we work for you, not the insurer. Prefer to talk?"
+          service={service.title}
+          source="service-page"
+          heading="Request a quote"
+        />
       </main>
       <ProtoFooter />
     </div>

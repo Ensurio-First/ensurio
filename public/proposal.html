@@ -1,0 +1,403 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Jewelers Article — Section Design Proposal</title></head><body><style>
+  * { box-sizing: border-box; }
+  :root {
+    --navy: #0D1B4B;
+    --navy-mid: #162258;
+    --teal: #00B899;
+    --teal-dark: #008F78;
+    --teal-pale: #E6FAF7;
+    --gold: #C4A24A;
+    --gold-soft: #F3ECDA;
+
+    --ground: #EDF1F8;
+    --surface: #FFFFFF;
+    --surface-2: #F7F9FC;
+    --ink: #0D1B4B;
+    --body: #43526F;
+    --muted: #74829F;
+    --border: #E2E8F0;
+    --border-strong: #CBD5E1;
+    --shadow: 0 14px 34px rgba(13, 27, 75, 0.10);
+
+    --display: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+    --body-font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --maxw: 940px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #070E26;
+      --surface: #101B40;
+      --surface-2: #0B1436;
+      --ink: #FFFFFF;
+      --body: rgba(255, 255, 255, 0.75);
+      --muted: rgba(255, 255, 255, 0.52);
+      --border: rgba(255, 255, 255, 0.12);
+      --border-strong: rgba(255, 255, 255, 0.22);
+      --teal-pale: rgba(0, 184, 153, 0.12);
+      --gold-soft: rgba(196, 162, 74, 0.15);
+      --surface-2b: rgba(255,255,255,0.03);
+      --shadow: 0 14px 34px rgba(0, 0, 0, 0.45);
+    }
+  }
+  :root[data-theme="light"] {
+    --ground: #EDF1F8; --surface: #FFFFFF; --surface-2: #F7F9FC; --ink: #0D1B4B;
+    --body: #43526F; --muted: #74829F; --border: #E2E8F0; --border-strong: #CBD5E1;
+    --teal-pale: #E6FAF7; --gold-soft: #F3ECDA; --shadow: 0 14px 34px rgba(13,27,75,0.10);
+  }
+  :root[data-theme="dark"] {
+    --ground: #070E26; --surface: #101B40; --surface-2: #0B1436; --ink: #FFFFFF;
+    --body: rgba(255,255,255,0.75); --muted: rgba(255,255,255,0.52); --border: rgba(255,255,255,0.12);
+    --border-strong: rgba(255,255,255,0.22); --teal-pale: rgba(0,184,153,0.12); --gold-soft: rgba(196,162,74,0.15);
+    --shadow: 0 14px 34px rgba(0,0,0,0.45);
+  }
+
+  body { margin: 0; background: var(--ground); color: var(--body); font-family: var(--body-font); line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 20px; }
+  h1, h2, h3, h4 { font-family: var(--display); color: var(--ink); letter-spacing: -0.02em; text-wrap: balance; margin: 0; }
+  p { margin: 0; }
+  .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--teal-dark); }
+
+  /* ── Masthead ── */
+  .masthead { background: var(--navy); color: #fff; padding: 54px 0 48px; position: relative; overflow: hidden; }
+  .masthead::after { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 46px 46px; pointer-events: none; }
+  .masthead .eyebrow { color: var(--teal); }
+  .masthead h1 { color: #fff; font-size: clamp(1.9rem, 4.4vw, 3rem); line-height: 1.08; margin: 12px 0 16px; }
+  .masthead p { color: rgba(255,255,255,0.72); max-width: 62ch; font-size: 1.02rem; }
+  .kicker-row { display: flex; align-items: center; gap: 10px; }
+  .diamond { width: 26px; height: 26px; flex: none; }
+
+  /* ── Intro / problem ── */
+  .section { padding: 42px 0; }
+  .lead-card { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--gold); box-shadow: var(--shadow); padding: 26px 28px; }
+  .lead-card h2 { font-size: 1.35rem; margin-bottom: 10px; }
+  .lead-card p + p { margin-top: 12px; }
+  .lead-card b { color: var(--ink); }
+
+  /* ── AIDA legend ── */
+  .aida { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 26px; }
+  .aida-step { background: var(--surface); border: 1px solid var(--border); padding: 16px 16px 18px; position: relative; }
+  .aida-step .dot { width: 12px; height: 12px; border-radius: 50%; margin-bottom: 12px; }
+  .aida-step h4 { font-size: 0.98rem; margin-bottom: 4px; }
+  .aida-step span { font-size: 12.5px; color: var(--muted); display: block; line-height: 1.5; }
+  .aida-step .letter { position: absolute; top: 12px; right: 14px; font-family: var(--display); font-weight: 800; font-size: 1.4rem; color: var(--border-strong); }
+  .c-att { color: var(--teal); } .bg-att { background: var(--teal); }
+  .c-int { color: var(--navy); } .bg-int { background: var(--navy); }
+  .c-des { color: var(--gold); } .bg-des { background: var(--gold); }
+  .c-act { color: var(--teal-dark); } .bg-act { background: var(--teal-dark); }
+  @media (prefers-color-scheme: dark) { .c-int { color: #6f86d6; } .bg-int { background: #6f86d6; } }
+  :root[data-theme="dark"] .c-int { color: #6f86d6; } :root[data-theme="dark"] .bg-int { background: #6f86d6; }
+
+  /* ── Treatment blocks ── */
+  .treatment { border-top: 1px solid var(--border); padding: 40px 0; }
+  .t-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; margin-bottom: 6px; }
+  .stage { font-size: 10.5px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 9px; color: #fff; }
+  .stage.att { background: var(--teal); } .stage.int { background: var(--navy); } .stage.des { background: var(--gold); color:#3a2f10; } .stage.act { background: var(--teal-dark); }
+  :root[data-theme="dark"] .stage.int { background:#3a4a86; }
+  @media (prefers-color-scheme: dark){ .stage.int { background:#3a4a86; } }
+  .t-head h3 { font-size: 1.28rem; }
+  .t-head .num { font-family: var(--display); font-weight: 800; color: var(--border-strong); font-size: 1.1rem; margin-right: 2px; }
+  .rationale { color: var(--muted); font-size: 14px; max-width: 70ch; margin-bottom: 20px; }
+  .rationale b { color: var(--body); font-weight: 600; }
+  .mocklabel { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal-dark); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .mocklabel::before { content: ""; width: 16px; height: 2px; background: var(--teal); }
+
+  /* mock frame */
+  .mock { background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; }
+
+  /* HOOK mock */
+  .hook { background: var(--navy); color: #fff; padding: 34px 30px; position: relative; overflow: hidden; }
+  .hook::after { content:""; position:absolute; inset:0; background-image: linear-gradient(rgba(255,255,255,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.035) 1px,transparent 1px); background-size:40px 40px; }
+  .hook .big { font-family: var(--display); font-weight: 800; font-size: clamp(2rem, 6vw, 3.4rem); color: var(--gold); line-height: 1; letter-spacing: -0.03em; }
+  .hook h4 { color: #fff; font-size: 1.5rem; margin: 6px 0 10px; max-width: 22ch; }
+  .hook p { color: rgba(255,255,255,0.66); max-width: 48ch; position: relative; }
+  .hook .statrow { display: flex; gap: 30px; margin-top: 20px; flex-wrap: wrap; position: relative; }
+  .hook .statrow .s .n { font-family: var(--display); font-weight: 800; font-size: 1.5rem; color: var(--teal); }
+  .hook .statrow .s .l { font-size: 12px; color: rgba(255,255,255,0.55); }
+
+  /* chip strip */
+  .pad { padding: 24px 26px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { border: 1px solid var(--border-strong); color: var(--body); font-size: 13px; font-weight: 600; padding: 7px 14px; background: var(--surface-2); }
+  .chip.on { background: var(--teal-pale); border-color: var(--teal); color: var(--teal-dark); }
+
+  /* risk grid */
+  .grid { display: grid; gap: 1px; background: var(--border); }
+  .grid.c3 { grid-template-columns: repeat(3, 1fr); }
+  .grid.c2 { grid-template-columns: repeat(2, 1fr); }
+  .cell { background: var(--surface); padding: 18px 18px 20px; }
+  .icobox { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; background: var(--teal-pale); color: var(--teal); margin-bottom: 12px; }
+  .icobox svg { width: 20px; height: 20px; }
+  .cell h5 { font-family: var(--display); font-weight: 700; color: var(--ink); font-size: 0.98rem; margin: 0 0 4px; }
+  .cell p { font-size: 12.5px; color: var(--muted); line-height: 1.55; }
+
+  /* covers grid — gold desire accent */
+  .cover .cell { border-top: 2px solid var(--gold); }
+  .cover .icobox { background: var(--gold-soft); color: var(--gold); }
+  .checkrow { display: flex; align-items: flex-start; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--border); }
+  .checkrow:last-child { border-bottom: 0; }
+  .tick { width: 20px; height: 20px; flex: none; background: var(--teal); color: #fff; display: flex; align-items: center; justify-content: center; }
+  .tick svg { width: 12px; height: 12px; }
+  .checkrow span { font-size: 14px; color: var(--body); }
+  .checkrow span b { color: var(--ink); }
+
+  /* exclusions — quiet, muted */
+  .exclu { padding: 22px 26px; background: var(--surface-2); }
+  .exclu .x-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 26px; }
+  .xrow { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13.5px; }
+  .xdash { width: 18px; height: 18px; flex: none; border: 1px solid var(--border-strong); color: var(--muted); display: flex; align-items: center; justify-content: center; }
+  .xdash svg { width: 10px; height: 10px; }
+  .xrow s { text-decoration-color: var(--border-strong); }
+
+  /* cost comparison */
+  .cost { padding: 24px 26px; }
+  .bar-row { display: grid; grid-template-columns: 120px 1fr auto; align-items: center; gap: 14px; margin-bottom: 14px; }
+  .bar-row .who { font-size: 13px; font-weight: 600; color: var(--ink); }
+  .track { height: 30px; background: var(--surface-2); border: 1px solid var(--border); position: relative; overflow: hidden; }
+  .fill { position: absolute; inset: 0 auto 0 0; background: linear-gradient(90deg, var(--teal), var(--teal-dark)); }
+  .fill.lo { width: 26%; } .fill.hi { width: 88%; background: linear-gradient(90deg, var(--gold), #a9863a); }
+  .amt { font-family: var(--display); font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; font-size: 0.95rem; }
+  .factorchips { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 7px; }
+  .factorchips .chip { font-size: 12px; padding: 5px 11px; }
+
+  /* steps timeline */
+  .steps { padding: 8px 26px 12px; }
+  .step { display: grid; grid-template-columns: 46px 1fr; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--border); }
+  .step:last-child { border-bottom: 0; }
+  .step .sn { width: 42px; height: 42px; background: var(--navy); color: var(--teal); font-family: var(--display); font-weight: 800; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; }
+  .step h5 { font-family: var(--display); color: var(--ink); font-size: 1rem; margin: 2px 0 3px; }
+  .step p { font-size: 13px; color: var(--muted); }
+
+  /* mini accordion */
+  .acc { padding: 20px 22px; display: flex; flex-direction: column; gap: 9px; }
+  .acc-item { border: 1px solid var(--border); border-left: 3px solid transparent; background: var(--surface); }
+  .acc-item.open { background: var(--navy); border-color: var(--navy); border-left-color: var(--teal); box-shadow: var(--shadow); }
+  .acc-q { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; }
+  .acc-q span { font-family: var(--display); font-weight: 700; font-size: 1rem; color: var(--ink); }
+  .acc-item.open .acc-q span { color: #fff; }
+  .acc-q .pm { color: var(--teal); font-family: var(--display); font-weight: 800; font-size: 1.3rem; line-height: 1; }
+  .acc-a { padding: 0 18px 15px; color: rgba(255,255,255,0.72); font-size: 13.5px; }
+
+  /* CTA band */
+  .ctaband { background: linear-gradient(120deg, var(--navy), var(--navy-mid)); color: #fff; padding: 30px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px; border-left: 3px solid var(--teal); }
+  .ctaband h4 { color: #fff; font-size: 1.35rem; margin-bottom: 5px; }
+  .ctaband p { color: rgba(255,255,255,0.66); font-size: 14px; max-width: 44ch; }
+  .btns { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn { padding: 12px 22px; font-weight: 700; font-size: 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+  .btn.solid { background: var(--teal); color: #fff; }
+  .btn.ghost { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.32); }
+
+  /* closing */
+  .outro { border-top: 1px solid var(--border); padding: 36px 0 60px; }
+  .outro ul { margin: 14px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+  .outro li { display: flex; gap: 10px; align-items: flex-start; font-size: 14.5px; color: var(--body); }
+  .outro li .b { width: 7px; height: 7px; background: var(--teal); margin-top: 8px; flex: none; }
+
+  @media (max-width: 720px) {
+    .aida { grid-template-columns: 1fr 1fr; }
+    .grid.c3 { grid-template-columns: 1fr 1fr; }
+    .grid.c2, .exclu .x-list { grid-template-columns: 1fr; }
+    .bar-row { grid-template-columns: 86px 1fr; }
+    .bar-row .amt { grid-column: 2; text-align: right; }
+    .cover.grid.c2 { grid-template-columns: 1fr; }
+  }
+</style>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="kicker-row">
+      <svg class="diamond" viewBox="0 0 24 24" fill="none" stroke="#C4A24A" stroke-width="1.4"><path d="M6 3h12l3 5-9 13L3 8z"/><path d="M3 8h18M9 3 6 8l6 13 6-13-3-5M9 8h6"/></svg>
+      <span class="eyebrow">Content Design Proposal · Ensurio First</span>
+    </div>
+    <h1>Turning a long guide into a journey the reader wants to finish</h1>
+    <p>The Jewelers Block Insurance article is thorough but dense — 16 sections of prose and bullet lists. Here is how each section could be re-shaped visually, sequenced along the <b>AIDA</b> path, so a jeweler moves from “I should read this” to “I should call Ensurio.”</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="section">
+    <div class="lead-card">
+      <span class="eyebrow">The problem &amp; the approach</span>
+      <h2>Right now every section looks the same</h2>
+      <p>Heading, paragraph, bullet list — repeated 16 times. The reader can’t tell the <b>hook</b> from the <b>fine print</b>, so attention leaks and most never reach the call-to-action at the bottom.</p>
+      <p><b>AIDA</b> gives the page a spine: grab <b>Attention</b>, build <b>Interest</b>, create <b>Desire</b> for the cover, then drive <b>Action</b>. Each stage gets its own visual language, so the design itself tells the reader where they are and pulls them forward.</p>
+    </div>
+
+    <div class="aida">
+      <div class="aida-step"><span class="letter">A</span><div class="dot bg-att"></div><h4 class="c-att">Attention</h4><span>Bold, high-contrast openers. Big numbers, the stakes.</span></div>
+      <div class="aida-step"><span class="letter">I</span><div class="dot bg-int"></div><h4 class="c-int">Interest</h4><span>Scannable explainers — what it is, who it’s for, what’s excluded.</span></div>
+      <div class="aida-step"><span class="letter">D</span><div class="dot bg-des"></div><h4 class="c-des">Desire</h4><span>Gold-accented value: coverage, savings, tailored fit.</span></div>
+      <div class="aida-step"><span class="letter">A</span><div class="dot bg-act"></div><h4 class="c-act">Action</h4><span>One clear next step — talk to Ensurio.</span></div>
+    </div>
+  </section>
+
+  <!-- 1 HOOK -->
+  <section class="treatment">
+    <div class="t-head"><span class="stage att">Attention</span><h3><span class="num">01</span> Opening hook — the stakes</h3></div>
+    <p class="rationale">Replace the three intro paragraphs with a <b>stat hero</b>. Lead with the number a jeweler feels in their gut — the value moving through their business every day — so the risk is visceral before a single feature is mentioned.</p>
+    <div class="mocklabel">Mockup</div>
+    <div class="mock hook">
+      <div class="big">AED&nbsp;10M+</div>
+      <h4>can sit in a single showroom safe overnight.</h4>
+      <p>One theft, robbery, or transit loss can erase years of work. Jewelers Block Insurance is built for exactly that exposure.</p>
+      <div class="statrow">
+        <div class="s"><div class="n">1 policy</div><div class="l">Stock, transit, storage &amp; exhibitions</div></div>
+        <div class="s"><div class="n">Deira → DMCC</div><div class="l">Covered wherever your gold moves</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 WHAT IS IT -->
+  <section class="treatment">
+    <div class="t-head"><span class="stage int">Interest</span><h3><span class="num">02</span> What it is — definition + covered items</h3></div>
+    <p class="rationale">A single bold lead sentence answers “what is this,” then the long bullet list of items becomes a <b>chip strip</b> — glanceable in a second instead of a 9-line list.</p>
+    <div class="mocklabel">Mockup</div>
+    <div class="mock pad">
+      <p style="font-size:1.05rem;color:var(--ink);font-weight:600;margin-bottom:16px;max-width:60ch;">A specialist policy that protects everything a jeweler holds — in the showroom, in the safe, and in transit — against risks ordinary business insurance ignores.</p>
+      <div class="chips">
+        <span class="chip on">Gold</span><span class="chip on">Diamonds</span><span class="chip on">Gemstones</span><span class="chip">Luxury watches</span><span class="chip">Fine jewelry</span><span class="chip">Silver</span><span class="chip">Pearls</span><span class="chip">Platinum</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 RISKS -->
+  <section class="treatment">
+    <div class="t-head"><span class="stage int">Interest</span><h3><span class="num">03</span> Why the risk is higher — problem grid</h3></div>
+    <p class="rationale">The six risks become an <b>icon grid</b>. Each danger gets a face and one line — the reader scans their own nightmares (robbery, a dishonest employee, a lost parcel) instead of reading a wall of sub-headings.</p>
+    <div class="mocklabel">Mockup</div>
+    <div class="mock grid c3">
+      <div class="cell"><div class="icobox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6z"/></svg></div><h5>Theft &amp; Burglary</h5><p>After-hours break-ins despite alarms and CCTV.</p></div>
+      <div class="cell"><div class="icobox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2v6m0 8v6M2 12h6m8 0h6"/><circle cx="12" cy="12" r="3"/></svg></div><h5>Armed Robbery</h5><p>High value in small items makes stores a target.</p></div>
+      <div class="cell"><div class="icobox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M1 5h13v11H1zM14 8h5l3 3v5h-8"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg></div><h5>Transit Loss</h5><p>Souk to airport, workshop to buyer — goods on the move.</p></div>
+      <div class="cell"><div class="icobox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></div><h5>Employee Dishonesty</h5><p>Internal fraud from those with daily access.</p></div>
+      <div class="cell"><div class="icobox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2s5 5 5 10a5 5 0 0 1-10 0c0-2 1-4 2-5 0 2 3 3 3-5z"/></svg></div><h5>Fire &amp; Perils</h5><p>Electrical faults or a neighbour’s blaze.</p></div>
+      <div class="cell"><div class="icobox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2 2 7l10 5 10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><h5>Accidental Damage</h5><p>Breakage during repair, setting, or cleaning.</p></div>
+    </div>
+  </section>
+
+  <!-- 4 WHO -->
+  <section class="treatment">
+    <div class="t-head"><span class="stage int">Interest</span><h3><span class="num">04</span> Who needs it — “find yourself” tags</h3></div>
+    <p class="rationale">A tag field where the reader spots their own business type instantly. Self-identification (“that’s me”) is a quiet but powerful engagement trigger.</p>
+    <div class="mocklabel">Mockup</div>
+    <div class="mock pad">
+      <div class="chips">
+        <span class="chip">Jewelry retailers</span><span class="chip">Gold traders</span><span class="chip">Diamond merchants</span><span class="chip">Watch retailers</span><span class="chip">Manufacturers</span><span class="chip">Wholesalers</span><span class="chip">Gold exporters</span><span class="chip">Online jewelers</span><span class="chip">Luxury boutiques</span><span class="chip">Pawn shops</span><span class="chip">Exhibition traders</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 COVERS -->
+  <section class="treatment">
+    <div class="t-head"><span class="stage des">Desire</span><h3><span class="num">05</span> What it covers — the value grid (gold)</h3></div>
+    <p class="rationale">This is the payoff, so it shifts to the <b>gold accent</b> reserved for Desire. Each cover is a card with an icon and a one-line benefit — the reader sees breadth at a glance and starts wanting it.</p>
+    <div class="mocklabel">Mockup</div>
+    <div class="mock grid c2 cover">
+      <div class="cell"><div class="icobox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6z"/></svg></div><h5>Theft, robbery &amp; hold-up</h5><p>Full protection against the biggest loss events.</p></div>
+      <div class="cell"><div class="icobox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M1 5h13v11H1zM14 8h5l3 3v5h-8"/></svg></div><h5>Transit — local &amp; global</h5><p>Covered by courier, armored van, or air cargo.</p></div>
+      <div class="cell"><div class="icobox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="10" width="16" height="11"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div><h5>Safe &amp; strong-room storage</h5><p>Cover inside safes, vaults, and bank lockers.</p></div>
+      <div class="cell"><div class="icobox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 21V7l9-4 9 4v14M3 21h18M9 21v-6h6v6"/></svg></div><h5>Exhibitions &amp; trade fairs</h5><p>Temporary cover while your stock travels to shows.</p></div>
+    </div>
+  </section>
+
+  <!-- 6 EXCLUSIONS -->
+  <section class="treatment">
+    <div class="t-head"><span class="stage int">Interest</span><h3><span class="num">06</span> What isn’t covered — the honest panel</h3></div>
+    <p class="rationale">Deliberately <b>quieter and greyed-out</b> — the visual opposite of the gold value grid. Showing the limits plainly builds trust (and sets up “an advisor helps you read the fine print”).</p>
+    <div class="mocklabel">Mockup</div>
+    <div class="mock exclu">
+      <div class="x-list">
+        <div class="xrow"><span class="xdash"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/></svg></span><s>Wear &amp; tear</s></div>
+        <div class="xrow"><span class="xdash"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/></svg></span><s>Intentional damage</s></div>
+        <div class="xrow"><span class="xdash"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/></svg></span><s>Unexplained disappearance</s></div>
+        <div class="xrow"><span class="xdash"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/></svg></span><s>War &amp; terrorism (unless added)</s></div>
+        <div class="xrow"><span class="xdash"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/></svg></span><s>Cyber fraud</s></div>
+        <div class="xrow"><span class="xdash"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/></svg></span><s>Loss from inadequate security</s></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 COST -->
+  <section class="treatment">
+    <div class="t-head"><span class="stage des">Desire</span><h3><span class="num">07</span> What it costs — visualised, not listed</h3></div>
+    <p class="rationale">“There is no fixed premium” is abstract. A <b>comparison bar</b> makes the driver obvious (stock value), and the 13 rating factors become chips — informative without a wall of text.</p>
+    <div class="mocklabel">Mockup</div>
+    <div class="mock cost">
+      <div class="bar-row"><span class="who">AED 500K stock</span><span class="track"><span class="fill lo"></span></span><span class="amt">Lower premium</span></div>
+      <div class="bar-row"><span class="who">AED 10M stock</span><span class="track"><span class="fill hi"></span></span><span class="amt">Higher premium</span></div>
+      <div class="factorchips">
+        <span class="chip">Inventory value</span><span class="chip">Location</span><span class="chip">Security &amp; CCTV</span><span class="chip">Safe spec</span><span class="chip">Claims history</span><span class="chip">Transit frequency</span><span class="chip">Turnover</span><span class="chip">+6 more</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 REDUCE -->
+  <section class="treatment">
+    <div class="t-head"><span class="stage des">Desire</span><h3><span class="num">08</span> How to lower your premium — a checklist</h3></div>
+    <p class="rationale">Actionable and reassuring: a <b>ticked checklist</b> shows the reader they have control over the price. Momentum toward “let’s do this.”</p>
+    <div class="mocklabel">Mockup</div>
+    <div class="mock pad">
+      <div class="checkrow"><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5 9-11"/></svg></span><span><b>Certified alarms</b> &amp; 24/7 CCTV surveillance</span></div>
+      <div class="checkrow"><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5 9-11"/></svg></span><span><b>High-security safes</b> and licensed guards</span></div>
+      <div class="checkrow"><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5 9-11"/></svg></span><span><b>Detailed inventory records</b> &amp; regular stock audits</span></div>
+      <div class="checkrow"><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5 9-11"/></svg></span><span><b>Approved secure transport</b> for every movement</span></div>
+    </div>
+  </section>
+
+  <!-- 9 CHOOSE STEPS -->
+  <section class="treatment">
+    <div class="t-head"><span class="stage des">Desire</span><h3><span class="num">09</span> How to choose — a real 6-step sequence</h3></div>
+    <p class="rationale">This section <b>is</b> an ordered process, so numbering earns its place here (unlike decorative counters elsewhere). A vertical timeline turns advice into a plan the reader can follow.</p>
+    <div class="mocklabel">Mockup</div>
+    <div class="mock steps">
+      <div class="step"><div class="sn">01</div><div><h5>Value your inventory</h5><p>Make sure the insured sum reflects real stock at risk.</p></div></div>
+      <div class="step"><div class="sn">02</div><div><h5>Check transit limits</h5><p>Confirm local and international movement is covered.</p></div></div>
+      <div class="step"><div class="sn">03</div><div><h5>Verify exhibition cover</h5><p>Include trade-show and expo risk if you attend.</p></div></div>
+      <div class="step"><div class="sn">04</div><div><h5>Review security terms</h5><p>Know the minimum standards the insurer requires.</p></div></div>
+    </div>
+  </section>
+
+  <!-- 10 FAQ -->
+  <section class="treatment">
+    <div class="t-head"><span class="stage int">Interest</span><h3><span class="num">10</span> FAQ — the accordion (already live)</h3></div>
+    <p class="rationale">Objection-handling, collapsed by default so it never bloats the page. This is the navy active-card style now on the site.</p>
+    <div class="mocklabel">Mockup</div>
+    <div class="mock acc">
+      <div class="acc-item open">
+        <div class="acc-q"><span>Is transit covered?</span><span class="pm">−</span></div>
+        <div class="acc-a">Yes — many policies include local and international transit, provided the shipment meets the insurer’s security requirements.</div>
+      </div>
+      <div class="acc-item"><div class="acc-q"><span>Does it cover diamonds?</span><span class="pm">+</span></div></div>
+      <div class="acc-item"><div class="acc-q"><span>How is the premium calculated?</span><span class="pm">+</span></div></div>
+    </div>
+  </section>
+
+  <!-- 11 CTA -->
+  <section class="treatment">
+    <div class="t-head"><span class="stage act">Action</span><h3><span class="num">11</span> The close — one clear next step</h3></div>
+    <p class="rationale">Everything funnels here. A single high-contrast <b>action band</b> with one primary button (talk to an advisor) and a phone fallback — no competing links.</p>
+    <div class="mocklabel">Mockup</div>
+    <div class="mock ctaband">
+      <div>
+        <h4>Not sure your jewelry business is fully covered?</h4>
+        <p>Get an independent review from Ensurio First — we’ll find the gaps before a loss does.</p>
+      </div>
+      <div class="btns">
+        <a class="btn solid" href="#">Book a Review →</a>
+        <a class="btn ghost" href="#">Call 050 976 5976</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="outro">
+    <span class="eyebrow">How we’d roll this out</span>
+    <h2 style="font-size:1.4rem;margin:8px 0 4px;">Pick the treatments you like</h2>
+    <ul>
+      <li><span class="b"></span><span>This is a <b>proposal</b> — a menu, not the final page. Tell me which section treatments you want (all of them, or a favourite few) and I’ll build them into the live article as reusable block types.</span></li>
+      <li><span class="b"></span><span>Everything reuses your existing <b>navy + teal</b> system; <b>gold</b> is introduced only as the “Desire” accent — a nod to the jewelry subject — used sparingly so it stays special.</span></li>
+      <li><span class="b"></span><span>Each becomes a data-driven block, so <b>future articles</b> can drop in a stat-hero, risk-grid, or checklist with no new code.</span></li>
+    </ul>
+  </section>
+
+</main>
+</body></html>

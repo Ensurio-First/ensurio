@@ -7,13 +7,16 @@ import ProtoFooter from '../prototype/home/components/ProtoFooter'
 import { Block } from '../prototype/home/components/contentBlocks'
 import { useIsMobile } from '../prototype/home/hooks/useIsMobile'
 import { getSolutionBySlug } from '../prototype/home/data/solutions.js'
-import InlineLeadForm from '../components/InlineLeadForm'
+import PageCtaBand from '../components/PageCtaBand'
+import scrollToCheck from '../components/interactive/scrollToCheck'
 import '../prototype/prototype.css'
 
 export default function SolutionPage() {
   const { slug } = useParams()
   const isMobile = useIsMobile()
   const solution = getSolutionBySlug(slug)
+  // Pages carrying an on-page check lead with it instead of asking for a meeting.
+  const hasCheck = Boolean(solution?.body?.some((b) => b.type === 'gapcheck'))
 
   useEffect(() => {
     if (!solution) return
@@ -62,9 +65,15 @@ export default function SolutionPage() {
                 {solution.tagline}
               </p>
               <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: solution.badges ? '1.75rem' : 0 }}>
-                <Link to="/contact" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '13px 26px', background: 'var(--teal)', color: '#fff', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700, textDecoration: 'none' }}>
-                  Book a Free Review <ArrowRight size={15} />
-                </Link>
+                {hasCheck ? (
+                  <button type="button" onClick={scrollToCheck} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '13px 26px', background: 'var(--teal)', color: '#fff', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700 }}>
+                    Start the 2-minute check <ArrowRight size={15} />
+                  </button>
+                ) : (
+                  <Link to="/contact" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '13px 26px', background: 'var(--teal)', color: '#fff', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700, textDecoration: 'none' }}>
+                    Book a Free Review <ArrowRight size={15} />
+                  </Link>
+                )}
                 <a href="tel:+971509765976" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '13px 26px', background: 'transparent', color: '#fff', border: '1px solid rgba(255,255,255,0.32)', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700, textDecoration: 'none' }}>
                   <Phone size={15} /> Call Us
                 </a>
@@ -91,23 +100,15 @@ export default function SolutionPage() {
           </div>
         </article>
 
-        {/* Final CTA with inline form */}
-        <section style={{ background: 'var(--navy)', borderTop: '3px solid var(--teal)', padding: isMobile ? '2.75rem 0' : '4rem 0' }}>
-          <div style={{ maxWidth: '1280px', margin: '0 auto', padding: isMobile ? '0 0.75rem' : '0 4rem', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.05fr 0.95fr', gap: isMobile ? '1.75rem' : '3rem', alignItems: 'center' }}>
-            <div>
-              <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: isMobile ? '1.5rem' : '2rem', fontWeight: 800, color: 'var(--white)', letterSpacing: '-0.02em', marginBottom: '0.75rem' }}>
-                Ready to get started with {solution.title.toLowerCase()}?
-              </h2>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'rgba(255,255,255,0.66)', lineHeight: 1.7, maxWidth: '460px', marginBottom: '1.5rem' }}>
-                Leave your details for a no-obligation consultation with an independent advisor — we work for you, not the insurer. Prefer to talk?
-              </p>
-              <a href="tel:+971509765976" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'var(--teal)', fontFamily: 'var(--font-body)', fontSize: '15px', fontWeight: 700, textDecoration: 'none' }}>
-                <Phone size={16} /> Call 050 976 5976
-              </a>
-            </div>
-            <InlineLeadForm service={solution.title} source="solution-page" heading={`Book ${solution.title}`} cta="Request a Callback" />
-          </div>
-        </section>
+        <PageCtaBand
+          isMobile={isMobile}
+          hasCheck={hasCheck}
+          title={`Ready to get started with ${solution.title.toLowerCase()}?`}
+          blurb="Leave your details for a no-obligation consultation with an independent advisor — we work for you, not the insurer. Prefer to talk?"
+          service={solution.title}
+          source="solution-page"
+          heading={`Book ${solution.title}`}
+        />
       </main>
       <ProtoFooter />
     </div>

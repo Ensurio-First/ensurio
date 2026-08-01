@@ -16,6 +16,7 @@ import IndustryPage from './pages/IndustryPage'
 import AboutPage from './pages/AboutPage'
 import PolicyReviewPage from './pages/PolicyReviewPage'
 import QuoteModal from './components/QuoteModal'
+import { LeadJourneyProvider } from './context/LeadJourneyContext'
 import PrototypeHome from './prototype/home/index.jsx'
 
 // Reset scroll to the top on route change, but leave in-page anchor
@@ -30,7 +31,7 @@ function ScrollToTop() {
 
 export default function App() {
   return (
-    <>
+    <LeadJourneyProvider>
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<PrototypeHome />} />
@@ -49,6 +50,6 @@ export default function App() {
         <Route path="/management-consultancy" element={<ManagementConsultancyPage />} />
       </Routes>
       <QuoteModal />
-    </>
+    </LeadJourneyProvider>
   )
 }

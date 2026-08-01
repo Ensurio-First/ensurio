@@ -93,7 +93,16 @@ const styles = {
   },
 }
 
-export default function LeadGateForm({ reportLabel, onSubmit, tool, score, horizontal = false }) {
+export default function LeadGateForm({
+  reportLabel,
+  onSubmit,
+  tool,
+  score,
+  horizontal = false,
+  toolId = null,
+  details = null,
+  report = null,
+}) {
   const {
     register,
     handleSubmit,
@@ -103,14 +112,21 @@ export default function LeadGateForm({ reportLabel, onSubmit, tool, score, horiz
 
   const submit = async (data) => {
     const label = tool ?? reportLabel ?? 'Diagnostic'
+    let result = { ok: true, emailed: false }
     try {
-      await submitLead({
+      result = await submitLead({
         name: data.name,
         email: data.email,
         phone: data.phone || null,
         message: `Diagnostic report request: ${label}${score != null ? ` — score ${score}` : ''}${data.company ? ` — Company: ${data.company}` : ''}`,
         service: label,
         source: 'diagnostic-tool',
+        toolId,
+        reportTitle: reportLabel ? `Your ${reportLabel}` : undefined,
+        // The visitor's answers travel with the lead so the advisor arrives briefed.
+        details: { ...(details || {}), company: data.company || null },
+        report: report ?? (score != null ? { score } : null),
+        honeypot: data.company_website,
       })
     } catch (err) {
       // Fall through on a missing config (e.g. some previews); block on real errors.
@@ -119,7 +135,9 @@ export default function LeadGateForm({ reportLabel, onSubmit, tool, score, horiz
         throw new Error('submit failed')
       }
     }
-    onSubmit(data)
+    // Hand the outcome back so the caller's confirmation screen can be honest
+    // about whether a copy actually reached the visitor's inbox.
+    onSubmit(data, result)
   }
 
   return (
@@ -137,7 +155,7 @@ export default function LeadGateForm({ reportLabel, onSubmit, tool, score, horiz
             <div style={{ ...styles.title, marginBottom: 0 }}>Get Your Free {reportLabel}</div>
           </div>
           <div style={{ ...styles.desc, marginBottom: 0, fontSize: '12px' }}>
-            Personalised PDF report with your full analysis, benchmarking, and recommended next steps.
+            We'll email you a copy of your full analysis, benchmarking, and recommended next steps.
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '11px', color: 'var(--text-muted)', whiteSpace: 'nowrap', flexShrink: 0, paddingTop: '2px' }}>
@@ -146,6 +164,16 @@ export default function LeadGateForm({ reportLabel, onSubmit, tool, score, horiz
       </div>
 
       <form onSubmit={handleSubmit(submit)} noValidate>
+        {/* Honeypot — invisible to people, tempting to bots. A non-empty value
+            makes the server accept the request and save nothing. */}
+        <input
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+          style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', opacity: 0 }}
+          {...register('company_website')}
+        />
         {horizontal ? (
           /* Horizontal layout */
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '8px', alignItems: 'start' }}>

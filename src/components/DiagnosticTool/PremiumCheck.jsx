@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import StepIndicator from './StepIndicator'
 import ScoreResult, { ScoreRingOnly, ScoreLabelOnly } from './ScoreResult'
 import LeadGateForm from './LeadGateForm'
+import toFinding from './toFinding'
 import { useWindowWidth } from '../../hooks/useWindowWidth'
 
 const STEPS = ['Company', 'Coverage', 'Claims']
@@ -207,6 +208,7 @@ export default function PremiumCheck() {
   const [done, setDone] = useState(false)
   const [result, setResult] = useState(null)
   const [submitted, setSubmitted] = useState(false)
+  const [emailed, setEmailed] = useState(false)
   const [form, setForm] = useState(initForm)
   const [error, setError] = useState('')
 
@@ -268,7 +270,9 @@ export default function PremiumCheck() {
           Report on its Way!
         </h3>
         <p style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: 1.6 }}>
-          Your Premium Efficiency Report will be sent within one business day. Our team may reach out to schedule a complimentary consultation.
+          {emailed
+            ? 'A copy of your Premium Efficiency Report is on its way to your inbox. An advisor will follow up to schedule a complimentary consultation.'
+            : 'Your Premium Efficiency Report will be sent within one business day. Our team may reach out to schedule a complimentary consultation.'}
         </p>
         <button
           style={{ ...btnBase, background: 'var(--navy)', color: 'var(--white)', marginTop: '1.5rem' }}
@@ -280,6 +284,31 @@ export default function PremiumCheck() {
         </button>
       </motion.div>
     )
+  }
+
+  // Shared by the desktop and mobile layouts below — the answers and the
+  // computed result travel with the lead so the emailed copy and the advisor's
+  // alert both carry the full picture.
+  const leadFormProps = result && {
+    reportLabel: 'Premium Efficiency Report',
+    tool: 'Insurance Premium Check',
+    toolId: 'insurance-premium-check',
+    score: result.score,
+    details: { ...form, estimatedSavings: result.savings },
+    report: {
+      score: result.score,
+      headline: `Your premium efficiency score is ${result.score} out of 100.`,
+      summary: result.desc,
+      findings: result.insights.map(toFinding),
+      benchmark: result.savings
+        ? `Based on your figures, an IOP audit typically recovers around $${result.savings.toLocaleString()} a year.`
+        : undefined,
+    },
+    onSubmit: (_data, res) => {
+      setEmailed(Boolean(res?.emailed))
+      setSubmitted(true)
+      window.dispatchEvent(new CustomEvent('ensurio:submitted'))
+    },
   }
 
   return (
@@ -527,13 +556,7 @@ export default function PremiumCheck() {
                 </div>
 
                 {/* Zone 3 — Lead form full width */}
-                <LeadGateForm
-                  reportLabel="Premium Efficiency Report"
-                  tool="Insurance Premium Check"
-                  score={result.score}
-                  onSubmit={() => { setSubmitted(true); window.dispatchEvent(new CustomEvent('ensurio:submitted')) }}
-                  horizontal
-                />
+                <LeadGateForm {...leadFormProps} horizontal />
               </div>
             ) : (
               /* Mobile: original stacked layout */
@@ -584,12 +607,7 @@ export default function PremiumCheck() {
                     )
                   })}
                 </div>
-                <LeadGateForm
-                  reportLabel="Premium Efficiency Report"
-                  tool="Insurance Premium Check"
-                  score={result.score}
-                  onSubmit={() => { setSubmitted(true); window.dispatchEvent(new CustomEvent('ensurio:submitted')) }}
-                />
+                <LeadGateForm {...leadFormProps} />
               </>
             )}
           </motion.div>

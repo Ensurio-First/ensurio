@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import {
   Shield, Target, Truck, Users, Flame, Gem, Lock, Building2, Store, Package, Check, ArrowRight, Phone,
 } from 'lucide-react'
+import CoverageCheck from '../../../components/interactive/CoverageCheck'
+import scrollToCheck, { CHECK_ANCHOR_ID } from '../../../components/interactive/scrollToCheck'
 
 /*
  * Shared content-block system. Drives both the blog (BlogPostPage) and the
@@ -235,6 +237,12 @@ function PremiumEstimator({ block, isMobile }) {
   const set = (i, v) => setVals((prev) => prev.map((x, idx) => (idx === i ? v : x)))
   const est = cfg.estimate(vals)
 
+  // A price is only meaningful if the cover behind it is right, so hand the
+  // visitor on to the page's check. Detected after mount rather than threaded
+  // through as a prop — the check renders in the same pass, further down.
+  const [hasCheck, setHasCheck] = useState(false)
+  useEffect(() => { setHasCheck(Boolean(document.getElementById(CHECK_ANCHOR_ID))) }, [])
+
   return (
     <div style={{ border: '1px solid var(--teal)', borderTop: '4px solid var(--teal)', background: 'var(--white)', boxShadow: 'var(--shadow-md)', margin: '1.25rem 0 2rem' }}>
       <div style={{ padding: isMobile ? '1.25rem' : '1.75rem 2rem' }}>
@@ -271,47 +279,11 @@ function PremiumEstimator({ block, isMobile }) {
           <Link to={(cfg.cta && cfg.cta.href) || '/contact'} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 22px', background: 'var(--teal)', color: '#fff', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700, textDecoration: 'none', whiteSpace: 'nowrap' }}>{(cfg.cta && cfg.cta.label) || 'Get an exact quote'} <ArrowRight size={15} /></Link>
         </div>
         <p style={{ fontFamily: 'var(--font-body)', fontSize: '11.5px', color: 'var(--text-light)', margin: '0.75rem 0 0', fontStyle: 'italic' }}>Indicative only, based on typical market rates. Request a formal quote for exact pricing.</p>
-      </div>
-    </div>
-  )
-}
-
-/* ── Engagement tool: coverage-gap self-check ── */
-function CoverageGapCheck({ block, isMobile }) {
-  const items = block.items
-  const [checked, setChecked] = useState(() => items.map(() => false))
-  const [touched, setTouched] = useState(false)
-  const toggle = (i) => { setTouched(true); setChecked((prev) => prev.map((c, idx) => (idx === i ? !c : c))) }
-  const gaps = checked.filter((c) => !c).length
-
-  return (
-    <div style={{ border: '1px solid var(--teal)', borderTop: '4px solid var(--teal)', background: 'var(--white)', boxShadow: 'var(--shadow-md)', margin: '1.25rem 0 2rem' }}>
-      <div style={{ padding: isMobile ? '1.25rem' : '1.75rem 2rem' }}>
-        <span style={{ fontSize: '10px', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--teal-dark)', background: 'var(--teal-pale)', padding: '3px 9px' }}>Quick check</span>
-        <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, color: 'var(--navy)', fontSize: isMobile ? '1.2rem' : '1.4rem', letterSpacing: '-0.02em', margin: '0.75rem 0 0.35rem' }}>{block.title}</h3>
-        {block.subtitle && <p style={{ fontFamily: 'var(--font-body)', fontSize: '13.5px', color: 'var(--text-muted)', margin: '0 0 1.25rem', lineHeight: 1.6 }}>{block.subtitle}</p>}
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-          {items.map((it, i) => (
-            <label key={it} style={{ display: 'flex', alignItems: 'flex-start', gap: '11px', padding: '11px 0', borderBottom: '1px solid var(--border)', cursor: 'pointer' }}>
-              <input type="checkbox" checked={checked[i]} onChange={() => toggle(i)} style={{ width: '18px', height: '18px', marginTop: '1px', accentColor: 'var(--teal)', flexShrink: 0, cursor: 'pointer' }} />
-              <span style={{ fontFamily: 'var(--font-body)', fontSize: isMobile ? '14px' : '15px', color: 'var(--text-dark)', lineHeight: 1.55 }}>{it}</span>
-            </label>
-          ))}
-        </div>
-
-        {touched && (
-          <div style={{ marginTop: '1.25rem', background: gaps === 0 ? 'var(--teal-pale)' : 'var(--navy)', border: gaps === 0 ? '1px solid var(--teal)' : 'none', color: gaps === 0 ? 'var(--teal-dark)' : '#fff', padding: isMobile ? '1.1rem 1.25rem' : '1.25rem 1.5rem', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
-            <div>
-              <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: isMobile ? '1.05rem' : '1.2rem' }}>
-                {gaps === 0 ? 'You look well covered.' : `${gaps} potential gap${gaps > 1 ? 's' : ''} identified`}
-              </div>
-              <div style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: gaps === 0 ? 'var(--teal-dark)' : 'rgba(255,255,255,0.7)', marginTop: '2px' }}>
-                {gaps === 0 ? 'Still worth an independent second opinion.' : 'An independent review can close these before a loss does.'}
-              </div>
-            </div>
-            <Link to={(block.cta && block.cta.href) || '/contact'} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '11px 20px', background: 'var(--teal)', color: '#fff', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700, textDecoration: 'none', whiteSpace: 'nowrap' }}>{(block.cta && block.cta.label) || 'Book a review'} <ArrowRight size={15} /></Link>
-          </div>
+        {hasCheck && (
+          <button type="button" onClick={scrollToCheck}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', marginTop: '0.9rem', padding: 0, background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: '13.5px', fontWeight: 700, color: 'var(--teal-dark)', textAlign: 'left' }}>
+            A price only means something if the cover behind it is right — check yours <ArrowRight size={14} />
+          </button>
         )}
       </div>
     </div>
@@ -331,7 +303,7 @@ export function Block({ block, isMobile }) {
     case 'steps': return <Steps block={block} isMobile={isMobile} />
     case 'cta': return <CtaBand block={block} isMobile={isMobile} />
     case 'estimator': return <PremiumEstimator block={block} isMobile={isMobile} />
-    case 'gapcheck': return <CoverageGapCheck block={block} isMobile={isMobile} />
+    case 'gapcheck': return <CoverageCheck block={block} isMobile={isMobile} />
     case 'faq': return <FaqAccordion items={block.items} isMobile={isMobile} />
     case 'h2': return (
       <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: isMobile ? '1.25rem' : '1.5rem', fontWeight: 800, color: 'var(--navy)', letterSpacing: '-0.02em', margin: isMobile ? '1.75rem 0 0.75rem' : '2.5rem 0 1rem' }}>{block.text}</h2>

@@ -71,12 +71,12 @@ export const servicePages = [
       { type: 'h2', text: "What's not covered" },
       { type: 'exclusions', items: ['Inherent vice of the goods', 'Insufficient or unsuitable packing', 'Ordinary leakage, wear & tear', 'Delay & loss of market', 'Insolvency of the carrier', 'Deliberate damage', 'Wilful misconduct of the insured'] },
 
-      { type: 'gapcheck', title: 'Is your cargo cover watertight?', subtitle: 'Tick the ones you already have in place — anything unchecked is a potential gap.', items: [
-        'My goods are insured at CIF value plus 10%',
-        'I know whether my policy is Clauses A, B, or C',
-        'Cover runs warehouse-to-warehouse, not just port-to-port',
-        'War & strikes cover is included for my routes',
-        'My policy covers every transit mode I use (sea, air, land)',
+      { type: 'gapcheck', title: 'Is your cargo cover watertight?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My goods are insured at CIF value plus 10%', gapTitle: 'Sum insured may not cover the true loss', consequence: 'CIF plus 10% is the market standard because it covers freight, duty and lost margin. Insuring at invoice value alone leaves you short on every total loss.', severity: 'high' },
+        { statement: 'I know whether my policy is written on Clauses A, B or C', gapTitle: 'You may be on restricted cover', consequence: 'Clauses C covers a short named list of perils. Most shippers assume they hold all-risks (Clauses A) and only discover otherwise when a claim is declined.', severity: 'high' },
+        { statement: 'Cover runs warehouse-to-warehouse, not just port-to-port', gapTitle: 'Inland legs uninsured', consequence: 'Port-to-port cover excludes the road legs at both ends — where much of the handling damage and theft actually happens.', severity: 'high' },
+        { statement: 'War and strikes cover is included for the routes I actually use', gapTitle: 'No war and strikes cover', consequence: 'War, strikes and piracy are excluded as standard and bought back separately — a material exposure on Red Sea and Gulf routings.', severity: 'high' },
+        { statement: 'My policy covers every transit mode I use — sea, air and land', gapTitle: 'Not every transit mode is covered', consequence: 'Policies are written per mode. Switching a shipment to air freight at short notice can put it outside the cover entirely.', severity: 'medium' },
       ], cta: { label: 'Book a cargo review', href: '/contact?service=Marine%20Cargo%20Insurance' } },
 
       { type: 'h2', text: 'How we help' },
@@ -139,7 +139,13 @@ export const servicePages = [
       { type: 'chips', items: ['Airlines', 'Charter operators', 'Private jet owners', 'Flight schools', 'MRO & maintenance', 'Ground handlers', 'Airports', 'Drone operators'] },
       { type: 'h2', text: "What's not covered" },
       { type: 'exclusions', items: ['War & hijack (needs hull war)', 'Wear, tear & mechanical failure', 'Unlicensed or unqualified pilots', 'Use outside the approved purpose', 'Non-airworthy aircraft', 'Operating outside geographic limits', 'Sanctioned operations'] },
-      { type: 'gapcheck', title: 'Is your aviation cover complete?', subtitle: 'Tick what you already have — anything unchecked is worth a review.', items: ['My hull is insured at a current agreed value', 'My liability limits meet regulatory and contract requirements', 'Hull war cover is included', 'Approved use and crew match the policy', 'Geographic limits cover all my routes'], cta: { label: 'Book an aviation review', href: '/contact?service=Aviation%20Insurance' } },
+      { type: 'gapcheck', title: 'Is your aviation cover complete?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My hull is insured at an agreed value that was reviewed this year', gapTitle: 'Agreed value may be out of date', consequence: 'An agreed value fixed years ago pays that figure after a total loss, not today’s replacement cost.', severity: 'high' },
+        { statement: 'My liability limits meet every regulatory, lease and contract requirement', gapTitle: 'Liability limits may fall short', consequence: 'Regulators, lessors and airport authorities each set minimums. Falling below one can ground the aircraft as well as leave the exposure open.', severity: 'high' },
+        { statement: 'Hull war and allied perils cover is included', gapTitle: 'No hull war cover', consequence: 'War, terrorism and confiscation are excluded from standard hull cover and must be bought back separately.', severity: 'high' },
+        { statement: 'My declared use and crew requirements match how the aircraft is actually flown', gapTitle: 'Declared use or crew may not match reality', consequence: 'Policies cover a declared purpose and named or minimum-hours crew. Flying outside either can void the cover for that flight.', severity: 'high' },
+        { statement: 'My geographic limits cover every route I fly', gapTitle: 'Routes outside the geographic limits', consequence: 'Cover applies within a stated territory. A single trip beyond it is uninsured unless extended in advance.', severity: 'medium' },
+      ], cta: { label: 'Book an aviation review', href: '/contact?service=Aviation%20Insurance' } },
       { type: 'h2', text: 'How we help' },
       { type: 'steps', items: [
         { title: 'Value the hull', text: 'Set the agreed value of the aircraft.' },
@@ -198,7 +204,13 @@ export const servicePages = [
       { type: 'chips', items: ['Main contractors', 'Subcontractors', 'Developers', 'Project owners', 'Civil engineering', 'MEP contractors', 'Fit-out companies', 'Infrastructure projects'] },
       { type: 'h2', text: "What's not covered" },
       { type: 'exclusions', items: ['Defective design (unless extended)', 'Wear, tear & gradual deterioration', 'Consequential / delay loss', 'Contractual penalties (LADs)', 'War & terrorism', 'Faulty workmanship (base cover)', 'Loss of contract documents'] },
-      { type: 'gapcheck', title: 'Is your project cover watertight?', subtitle: 'Tick what you already have in place.', items: ['My sum insured reflects the full contract value', 'The period covers the build plus the maintenance phase', 'Design cover is extended where needed', 'Surrounding property and public liability are included', 'Every contractor on site is named or covered'], cta: { label: 'Book a project review', href: '/contact?service=Engineering%20%26%20Construction%20Insurance' } },
+      { type: 'gapcheck', title: 'Is your project cover watertight?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My sum insured reflects the full contract value, including variations', gapTitle: 'Contract works may be under-insured', consequence: 'Below the true contract value, insurers apply average — a 25% shortfall cuts every claim payment by 25%, not just the excess.', severity: 'high' },
+        { statement: 'My cover period runs from site handover through to the end of the maintenance phase', gapTitle: 'No maintenance-period cover', consequence: 'Most policies end at practical completion, leaving defects that appear during the maintenance period entirely at your cost.', severity: 'high' },
+        { statement: 'Design cover is extended where I carry design responsibility', gapTitle: 'Design liability not extended', consequence: 'CAR policies exclude defective design unless a DE clause is added. On design-and-build contracts that is the single biggest exposure.', severity: 'high' },
+        { statement: 'Surrounding property and public liability are included', gapTitle: 'Surrounding property not covered', consequence: 'Damage to adjoining buildings from piling, excavation or vibration is excluded unless specifically written in.', severity: 'medium' },
+        { statement: 'Every contractor on site is named on the policy or covered under it', gapTitle: 'Not all parties named on the policy', consequence: 'An unnamed contractor cannot claim under your policy and may pursue you directly instead.', severity: 'medium' },
+      ], cta: { label: 'Book a project review', href: '/contact?service=Engineering%20%26%20Construction%20Insurance' } },
       { type: 'h2', text: 'How we help' },
       { type: 'steps', items: [
         { title: 'Read the contract', text: 'Check who must insure, for how much, and for how long.' },
@@ -257,7 +269,13 @@ export const servicePages = [
       { type: 'chips', items: ['Oil & gas operators', 'EPC contractors', 'Drilling companies', 'Pipeline operators', 'Storage terminals', 'Service companies', 'Petrochemical plants'] },
       { type: 'h2', text: "What's not covered" },
       { type: 'exclusions', items: ['War & nuclear risks', 'Gradual pollution', 'Wear, tear & corrosion', 'Faulty design (unless extended)', 'Known reservoir issues', 'Consequential loss beyond BI', 'Sanctioned activities'] },
-      { type: 'gapcheck', title: 'Is your energy programme complete?', subtitle: 'Tick what you already have in place.', items: ['Asset values are current and accurate', 'Liability limits reflect the operation', 'Control of well cover is included where relevant', 'Sudden pollution cover is in place', 'Cover aligns with contractual indemnities'], cta: { label: 'Book an energy review', href: '/contact?service=Energy%20%26%20Oil%20Insurance' } },
+      { type: 'gapcheck', title: 'Is your energy programme complete?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My declared asset values were reviewed against replacement cost this year', gapTitle: 'Asset values may be out of date', consequence: 'Energy assets get revalued slowly while replacement costs move fast. Under-declared values trigger average at claim time.', severity: 'high' },
+        { statement: 'My liability limits reflect a realistic worst-case incident, not just the routine one', gapTitle: 'Liability limits may not match the operation', consequence: 'A single incident can involve multiple third parties plus environmental cost, well beyond a standard limit.', severity: 'high' },
+        { statement: 'Control of well cover is included where it applies to my operations', gapTitle: 'No control of well cover', consequence: 'Well control, redrilling and seepage costs sit in a separate section entirely. Without it, a blowout is uninsured.', severity: 'high' },
+        { statement: 'Sudden and accidental pollution cover is in place', gapTitle: 'No pollution cover', consequence: 'General liability excludes pollution. Only sudden and accidental pollution is insurable, and it has to be bought explicitly.', severity: 'high' },
+        { statement: 'My policy is endorsed to follow the indemnities in my service contracts', gapTitle: 'Cover may not match your contracts', consequence: 'Knock-for-knock indemnities only work if your policy is endorsed to follow them — otherwise you have accepted a liability you cannot recover.', severity: 'medium' },
+      ], cta: { label: 'Book an energy review', href: '/contact?service=Energy%20%26%20Oil%20Insurance' } },
       { type: 'h2', text: 'How we help' },
       { type: 'steps', items: [
         { title: 'Map assets & operations', text: 'Value the physical assets and activities at risk.' },
@@ -316,7 +334,13 @@ export const servicePages = [
       { type: 'chips', items: ['Jewelry retailers', 'Gold traders', 'Diamond merchants', 'Watch retailers', 'Manufacturers', 'Wholesalers', 'Online jewelers', 'Exhibition traders'] },
       { type: 'h2', text: "What's not covered" },
       { type: 'exclusions', items: ['Wear and tear', 'Unexplained disappearance', 'War & terrorism (unless added)', 'Cyber fraud', 'Inventory shortages without evidence', 'Loss from inadequate security'] },
-      { type: 'gapcheck', title: 'Is your stock properly protected?', subtitle: 'Tick what you already have in place.', items: ['My stock is insured at its true value', 'Transit cover is included for how my goods move', 'My safe and alarms meet the insurer’s standards', 'Exhibition cover is in place if I attend shows', 'Employee fidelity cover is included'], cta: { label: 'Book a stock review', href: '/contact?service=Jewelers%20Block%20Insurance' } },
+      { type: 'gapcheck', title: 'Is your stock properly protected?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My stock is insured at today’s value, not last year’s', gapTitle: 'Stock may be insured below value', consequence: 'Gold and stone prices move constantly. A sum insured set at last year’s prices is under-insurance today, and average applies to the whole claim.', severity: 'high' },
+        { statement: 'Transit cover matches how my goods actually move — by hand, by courier, by armoured carrier', gapTitle: 'Transit exposure not covered', consequence: 'Jewellers block cover is location-specific. Stock carried out of the premises needs the transit section written to match the method used.', severity: 'high' },
+        { statement: 'My safe rating and alarm system meet the standards written into my policy', gapTitle: 'Security warranties may not be met', consequence: 'Safe ratings and alarm conditions are warranties, not suggestions. Breach one and the insurer can decline the entire claim.', severity: 'high' },
+        { statement: 'Exhibition cover is arranged in advance whenever I attend a show', gapTitle: 'No exhibition cover', consequence: 'Stock taken to a show sits outside the premises cover unless an exhibition extension is added before it leaves.', severity: 'medium' },
+        { statement: 'Employee fidelity cover is included', gapTitle: 'No employee fidelity cover', consequence: 'Theft by your own staff is excluded from standard cover and needs a fidelity section — and it is one of the more common losses in the trade.', severity: 'medium' },
+      ], cta: { label: 'Book a stock review', href: '/contact?service=Jewelers%20Block%20Insurance' } },
       { type: 'h2', text: 'How we help' },
       { type: 'steps', items: [
         { title: 'Value the stock', text: 'Insure at the true value at risk.' },
@@ -375,7 +399,13 @@ export const servicePages = [
       { type: 'chips', items: ['Manufacturers', 'Wholesalers', 'Traders', 'Exporters', 'Distributors', 'Commodity businesses', 'Service providers'] },
       { type: 'h2', text: "What's not covered" },
       { type: 'exclusions', items: ['Pre-existing overdue debts', 'Disputed invoices', 'Cash or pre-paid sales', 'Sales to related parties', 'Trading over the agreed limit', 'Trading against insurer advice'] },
-      { type: 'gapcheck', title: 'Are your receivables protected?', subtitle: 'Tick what you already have in place.', items: ['My sales ledger has been assessed for risk', 'Credit limits are agreed for each buyer', 'I have a process to report overdue accounts', 'Export and political risk are covered where needed', 'My financing uses insured receivables as security'], cta: { label: 'Book a credit review', href: '/contact?service=Trade%20Credit%20Insurance' } },
+      { type: 'gapcheck', title: 'Are your receivables protected?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My sales ledger has been assessed for buyer concentration and risk', gapTitle: 'Buyer concentration unmeasured', consequence: 'Most credit losses come from a handful of large buyers. Without a ledger assessment you cannot see the concentration until one of them defaults.', severity: 'high' },
+        { statement: 'A credit limit is agreed with my insurer for each significant buyer', gapTitle: 'No agreed limit per buyer', consequence: 'Cover applies up to an approved limit per buyer. Sales above that limit are uninsured even with a policy in force.', severity: 'high' },
+        { statement: 'I have a process that reports overdue accounts within the policy deadline', gapTitle: 'Notification deadlines at risk', consequence: 'Policies require overdue accounts to be reported within a set window. Miss it and the claim fails regardless of its merit.', severity: 'high' },
+        { statement: 'Export and political risk are covered for the markets I sell into', gapTitle: 'Export and political risk uncovered', consequence: 'Buyer insolvency and government action are different perils. Selling into restricted markets needs the political risk section.', severity: 'medium' },
+        { statement: 'My bank recognises the insured ledger as security for my financing', gapTitle: 'Receivables not working as security', consequence: 'An assigned, insured ledger typically unlocks better financing terms — an uninsured one does not.', severity: 'low' },
+      ], cta: { label: 'Book a credit review', href: '/contact?service=Trade%20Credit%20Insurance' } },
       { type: 'h2', text: 'How we help' },
       { type: 'steps', items: [
         { title: 'Assess your ledger', text: 'Review your buyers and terms.' },
@@ -434,7 +464,13 @@ export const servicePages = [
       { type: 'chips', items: ['Property owners', 'Retailers', 'Warehouses', 'Manufacturers', 'Offices', 'Hospitality', 'Landlords', 'Tenants'] },
       { type: 'h2', text: "What's not covered" },
       { type: 'exclusions', items: ['Wear, tear & gradual deterioration', 'Faulty workmanship or design', 'Unoccupied property (beyond a period)', 'Consequential / income loss', 'War & terrorism (add-on)', 'Subsidence (unless added)'] },
-      { type: 'gapcheck', title: 'Is your property properly insured?', subtitle: 'Tick what you already have in place.', items: ['My property is insured at full reinstatement cost', 'All assets — buildings, contents, stock, plant — are listed', 'Fire protection and alarms are in place', 'My values are reviewed as prices change', 'Business interruption cover is added alongside'], cta: { label: 'Book a property review', href: '/contact?service=Commercial%20Property%20Insurance' } },
+      { type: 'gapcheck', title: 'Is your property properly insured?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My property is insured at full reinstatement cost, including demolition and professional fees', gapTitle: 'Insured below reinstatement cost', consequence: 'Reinstatement means rebuilding new, with debris removal and architects’ fees on top. Market value or book value falls well short of it.', severity: 'high' },
+        { statement: 'Every asset — buildings, contents, stock and plant — appears on my schedule', gapTitle: 'Unlisted assets are uninsured', consequence: 'Policies pay against a schedule. Plant or stock acquired since renewal but never declared is not covered at all.', severity: 'high' },
+        { statement: 'My fire protection and alarm systems meet the conditions written into the policy', gapTitle: 'Protection warranties may be breached', consequence: 'Alarm and sprinkler conditions are warranties. A system impaired at the time of loss can void the claim entirely.', severity: 'high' },
+        { statement: 'My sums insured are reviewed each year as construction costs change', gapTitle: 'Values may have drifted', consequence: 'Build costs move every year. A sum insured left unchanged quietly becomes under-insurance, and average is applied at claim time.', severity: 'medium' },
+        { statement: 'Business interruption cover sits alongside my property policy', gapTitle: 'No business interruption cover', consequence: 'Property cover rebuilds the building. It pays nothing towards the income you lose during the months you cannot trade.', severity: 'high' },
+      ], cta: { label: 'Book a property review', href: '/contact?service=Commercial%20Property%20Insurance' } },
       { type: 'h2', text: 'How we help' },
       { type: 'steps', items: [
         { title: 'Value at reinstatement', text: 'Insure the cost to rebuild and replace new.' },
@@ -492,7 +528,13 @@ export const servicePages = [
       { type: 'chips', items: ['Manufacturers', 'Retailers', 'Hospitality', 'Warehouses', 'Offices', 'Healthcare', 'Logistics', 'Any business with premises'] },
       { type: 'h2', text: "What's not covered" },
       { type: 'exclusions', items: ['Damage not covered by the property policy', 'Uninsured perils', 'Gradual loss of trade', 'Government restrictions (unless added)', 'Loss beyond the indemnity period', 'Loss of goodwill'] },
-      { type: 'gapcheck', title: 'Would BI actually cover your recovery?', subtitle: 'Tick what you already have in place.', items: ['My sum insured equals annual gross profit', 'My indemnity period reflects realistic recovery time', 'Supplier and denial-of-access extensions are included', 'My BI is linked to my property policy', 'My accounts support the declared figures'], cta: { label: 'Book a BI review', href: '/contact?service=Business%20Interruption%20Insurance' } },
+      { type: 'gapcheck', title: 'Would BI actually cover your recovery?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My sum insured uses the insurance definition of gross profit, not the accounting one', gapTitle: 'Sum insured may be understated', consequence: 'Insurance gross profit includes your fixed costs — rent, salaries, finance. Using the accounting figure under-insures you from the start.', severity: 'high' },
+        { statement: 'My indemnity period reflects how long a full rebuild and recovery would really take', gapTitle: 'Indemnity period too short', consequence: 'Twelve months is the default. Permits, procurement and rebuilding routinely run longer, and cover simply stops mid-recovery.', severity: 'high' },
+        { statement: 'Supplier failure and denial-of-access extensions are included', gapTitle: 'No supplier or access extensions', consequence: 'A fire at your supplier, or a road closure at your door, stops your trade without touching your property — and is excluded unless extended.', severity: 'high' },
+        { statement: 'My BI section is linked to the same policy as my property cover', gapTitle: 'BI may not trigger', consequence: 'BI usually responds only once the property claim is accepted. A gap between two separate policies can leave the income loss unpaid.', severity: 'medium' },
+        { statement: 'My declared figures can be evidenced from audited accounts', gapTitle: 'Declared figures unsupported', consequence: 'Claims are settled from the accounts. Figures that cannot be evidenced get adjusted downwards during the loss assessment.', severity: 'medium' },
+      ], cta: { label: 'Book a BI review', href: '/contact?service=Business%20Interruption%20Insurance' } },
       { type: 'h2', text: 'How we help' },
       { type: 'steps', items: [
         { title: 'Calculate gross profit', text: 'Set the sum insured on the correct basis.' },
@@ -551,7 +593,13 @@ export const servicePages = [
       { type: 'chips', items: ['Retailers', 'Restaurants & cafés', 'Hospitality', 'Contractors', 'Events', 'Clinics', 'Offices with visitors', 'Trade shows'] },
       { type: 'h2', text: "What's not covered" },
       { type: 'exclusions', items: ['Injury to your own employees', 'Damage to your own property', 'Professional advice (needs PI)', 'Contractual liability assumed', 'Deliberate or reckless acts', 'Gradual pollution', 'Product recall costs'] },
-      { type: 'gapcheck', title: 'Does your liability cover meet your obligations?', subtitle: 'Tick what you already have in place.', items: ['My limit meets mall, landlord, and contract requirements', 'All my activities are declared', 'Product liability is included if I supply goods', 'Territorial limits cover where I operate', 'I keep good health-and-safety records'], cta: { label: 'Book a liability review', href: '/contact?service=Public%20%26%20Product%20Liability' } },
+      { type: 'gapcheck', title: 'Does your liability cover meet your obligations?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My limit meets every mall, landlord and main-contract requirement I have signed', gapTitle: 'Limit may breach your contracts', consequence: 'Malls, landlords and main contractors each set a minimum limit. Falling below one is a contractual breach as well as an uninsured exposure.', severity: 'high' },
+        { statement: 'Every activity my business now carries out is declared on the policy', gapTitle: 'Undeclared activities uninsured', consequence: 'Cover follows the declared business description. A new service line added mid-year sits outside it until the policy is endorsed.', severity: 'high' },
+        { statement: 'Product liability is included because I supply or manufacture goods', gapTitle: 'No product liability', consequence: 'Public liability covers your premises and operations, not harm caused by a product you supplied after it has left your hands.', severity: 'high' },
+        { statement: 'My territorial limits cover every emirate and country I operate in', gapTitle: 'Operating outside territorial limits', consequence: 'Work carried out in another emirate or across a border may fall outside the stated territory and be uninsured.', severity: 'medium' },
+        { statement: 'I keep health-and-safety records that would stand up to scrutiny', gapTitle: 'Weak records undermine the defence', consequence: 'Liability claims are won on documentation. Without records, an otherwise defensible claim usually ends up being paid.', severity: 'low' },
+      ], cta: { label: 'Book a liability review', href: '/contact?service=Public%20%26%20Product%20Liability' } },
       { type: 'h2', text: 'How we help' },
       { type: 'steps', items: [
         { title: 'Match the required limit', text: 'Meet what malls, landlords, or contracts demand.' },
@@ -610,7 +658,13 @@ export const servicePages = [
       { type: 'chips', items: ['Construction', 'Manufacturing', 'Logistics & warehousing', 'Oil & gas', 'Facilities & cleaning', 'Hospitality', 'Engineering', 'Any business with staff'] },
       { type: 'h2', text: "What's not covered" },
       { type: 'exclusions', items: ['Injury outside employment', 'Self-inflicted injury', 'Under the influence of alcohol / drugs', "Contractors' own employees (unless added)", 'Fines & penalties', 'Undeclared hazardous work', 'Wilful misconduct'] },
-      { type: 'gapcheck', title: 'Is your workforce properly covered?', subtitle: 'Tick what you already have in place.', items: ['My workforce is classified by role and risk', 'My cover is based on an accurate wage roll', 'I hold employer’s liability, not just workmen’s comp', '24-hour cover is added where valued', 'I keep strong health-and-safety records'], cta: { label: 'Book a workforce review', href: '/contact?service=Employer%27s%20Liability' } },
+      { type: 'gapcheck', title: 'Is your workforce properly covered?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My workforce is classified on the policy by role and risk level', gapTitle: 'Workforce may be misclassified', consequence: 'Premium and cover both follow occupation class. A worker doing higher-risk work than declared may not be covered for the accident that happens.', severity: 'high' },
+        { statement: 'My cover is priced on a wage roll that matches my current payroll', gapTitle: 'Wage roll out of date', consequence: 'Cover is rated on declared wages. If the actual roll is higher, settlement can be reduced in the same proportion.', severity: 'high' },
+        { statement: 'I hold employer’s liability cover, not only workmen’s compensation', gapTitle: 'Only workmen’s compensation in place', consequence: 'Workmen’s compensation pays the Labour Law scale. Employer’s liability responds to a negligence claim that goes well beyond it.', severity: 'high' },
+        { statement: '24-hour cover is in place for staff in company accommodation or transport', gapTitle: 'Cover limited to working hours', consequence: 'Standard cover applies on duty. Incidents in labour accommodation or company transport need the 24-hour extension.', severity: 'medium' },
+        { statement: 'I keep health-and-safety records that would stand up to scrutiny', gapTitle: 'Weak records undermine the defence', consequence: 'Safety documentation is what defends a negligence claim. Without it, the claim is usually indefensible.', severity: 'low' },
+      ], cta: { label: 'Book a workforce review', href: '/contact?service=Employer%27s%20Liability' } },
       { type: 'h2', text: 'How we help' },
       { type: 'steps', items: [
         { title: 'Classify your workforce', text: 'Separate office, skilled, and high-risk roles.' },
@@ -669,7 +723,13 @@ export const servicePages = [
       { type: 'chips', items: ['Logistics & delivery', 'Transport & trucking', 'Taxi & limousine', 'Construction', 'Buses & staff transport', 'Car rental', 'Field service teams', 'Distribution'] },
       { type: 'h2', text: "What's not covered" },
       { type: 'exclusions', items: ['Unlicensed or unauthorised drivers', 'Driving under the influence', 'Wear, tear & mechanical breakdown', 'Overloading beyond limits', 'Use outside the stated purpose', 'Racing or off-road (unless added)'] },
-      { type: 'gapcheck', title: 'Is your fleet cover working for you?', subtitle: 'Tick what you already have in place.', items: ['All my vehicles are on a single schedule', 'I have clear driver standards and licence checks', 'GCC cover is included if my vehicles cross borders', 'Newer vehicles have agency repair', 'I use tracking or telematics to lower premiums'], cta: { label: 'Book a fleet review', href: '/contact?service=Motor%20Fleet%20Insurance' } },
+      { type: 'gapcheck', title: 'Is your fleet cover working for you?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'Every vehicle I own is on a single, up-to-date schedule', gapTitle: 'Vehicles missing from the schedule', consequence: 'A vehicle bought mid-term but never declared is uninsured. Fleet schedules drift quickly as vehicles are added and sold.', severity: 'high' },
+        { statement: 'I run licence checks and have written driver standards', gapTitle: 'Driver conditions may be breached', consequence: 'Policies carry licence, age and experience conditions. An unlicensed or under-age driver at the wheel can void that claim.', severity: 'high' },
+        { statement: 'GCC territorial cover is included because my vehicles cross borders', gapTitle: 'No GCC territorial extension', consequence: 'UAE cover stops at the border. Vehicles crossing into Oman or Saudi Arabia are uninsured without the extension.', severity: 'high' },
+        { statement: 'My newer vehicles are on agency repair terms', gapTitle: 'No agency repair on newer vehicles', consequence: 'Without it, repairs go to non-agency workshops — which can affect the manufacturer warranty and the resale value.', severity: 'medium' },
+        { statement: 'I have tracking or telematics data to take to renewal', gapTitle: 'No telematics data at renewal', consequence: 'Tracking data evidences good driving behaviour and is one of the few levers that reliably brings fleet premiums down.', severity: 'low' },
+      ], cta: { label: 'Book a fleet review', href: '/contact?service=Motor%20Fleet%20Insurance' } },
       { type: 'h2', text: 'How we help' },
       { type: 'steps', items: [
         { title: 'List your vehicles', text: 'Build a schedule of makes, values, and usage.' },
@@ -728,7 +788,13 @@ export const servicePages = [
       { type: 'chips', items: ['Engineering consultancies', 'Architects', 'Clinics & doctors', 'Law firms', 'Accountants', 'IT & software', 'Management consultants', 'Marketing agencies'] },
       { type: 'h2', text: "What's not covered" },
       { type: 'exclusions', items: ['Known claims or circumstances', 'Bodily injury & property damage', 'Fraud or dishonesty of the insured', 'Contractual penalties & guarantees', 'Fines & regulatory penalties', 'Work before the retroactive date', 'Insolvency of the business'] },
-      { type: 'gapcheck', title: 'Is your PI cover watertight?', subtitle: 'Tick what you already have in place.', items: ['My limit of indemnity matches my worst-case exposure', 'My retroactive date covers past work, not just future', 'My cover meets client and regulator requirements', 'I have renewed continuously with no gaps', 'My wording and exclusions have been reviewed'], cta: { label: 'Book a PI review', href: '/contact?service=Professional%20Indemnity%20Insurance' } },
+      { type: 'gapcheck', title: 'Is your PI cover watertight?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My limit of indemnity reflects the largest project I advise on, not my fee income', gapTitle: 'Limit may not match your exposure', consequence: 'Defence costs alone can exhaust a modest limit before any settlement is reached. The exposure follows the project value, not the fee.', severity: 'high' },
+        { statement: 'My retroactive date reaches back far enough to cover work I did in earlier years', gapTitle: 'Retroactive date leaves past work exposed', consequence: 'PI responds to when the work was done, not when the claim arrives. A recent retroactive date leaves years of completed projects uninsured.', severity: 'high' },
+        { statement: 'I have renewed continuously, with no period left uninsured', gapTitle: 'A gap in cover is permanent', consequence: 'PI is claims-made. Any period without cover can never be insured retrospectively — that exposure stays open for good.', severity: 'high' },
+        { statement: 'My cover meets the limits and wording my clients and regulator require', gapTitle: 'Cover may not meet requirements', consequence: 'Many UAE client contracts and free-zone licences specify a minimum PI limit and particular wording.', severity: 'medium' },
+        { statement: 'Someone independent has read my wording and exclusions against the work I actually do', gapTitle: 'Exclusions unexamined', consequence: 'PI wordings vary widely between insurers. The exclusions, not the headline limit, decide whether your work is covered.', severity: 'medium' },
+      ], cta: { label: 'Book a PI review', href: '/contact?service=Professional%20Indemnity%20Insurance' } },
       { type: 'h2', text: 'How we help' },
       { type: 'steps', items: [
         { title: 'Assess your exposure', text: 'Consider the worst-case loss a client could claim.' },
@@ -787,7 +853,13 @@ export const servicePages = [
       { type: 'chips', items: ['Company boards', 'Startups with investors', 'Family businesses', 'Regulated firms', 'Companies raising funds', 'Free-zone entities', 'NGOs & associations'] },
       { type: 'h2', text: "What's not covered" },
       { type: 'exclusions', items: ['Proven fraud or dishonesty', 'Personal illegal profit or gain', 'Prior known claims & circumstances', 'Bodily injury & property damage', 'Fines & penalties (where uninsurable)', 'Claims already covered elsewhere', 'Conduct before the retroactive date'] },
-      { type: 'gapcheck', title: 'Are your directors genuinely protected?', subtitle: 'Tick what you already have in place.', items: ['My policy includes Side A, B, and C cover', 'The limit reflects worst-case defence and settlement', 'Every director and officer is defined as "insured"', 'Run-off cover is arranged for those who leave', 'The retroactive date covers past decisions'], cta: { label: 'Book a D&O review', href: '/contact?service=Directors%20%26%20Officers%20Insurance' } },
+      { type: 'gapcheck', title: 'Are your directors genuinely protected?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My policy includes Side A, Side B and Side C cover', gapTitle: 'Missing a side of the cover', consequence: 'Side A protects directors personally when the company cannot indemnify them — which is precisely the insolvency scenario where they are most exposed.', severity: 'high' },
+        { statement: 'The limit would absorb a long investigation as well as a settlement', gapTitle: 'Limit may not cover defence', consequence: 'D&O limits are eroded by defence costs. A drawn-out regulatory investigation can exhaust the limit before any settlement is even discussed.', severity: 'high' },
+        { statement: 'Every director and officer, including subsidiary and outside appointments, falls within the definition of "insured"', gapTitle: 'Not everyone is an insured', consequence: 'Shadow directors, subsidiary officers and outside board appointments need to fall inside the definition, or they have no cover at all.', severity: 'high' },
+        { statement: 'Run-off cover is arranged for directors who have left', gapTitle: 'No run-off for departed directors', consequence: 'Cover ends when the policy does. A director who left last year has no protection for decisions taken while they were in office.', severity: 'high' },
+        { statement: 'The retroactive date reaches back to cover decisions already taken', gapTitle: 'Past decisions not covered', consequence: 'D&O is claims-made. Claims arising from earlier board decisions only respond if the retroactive date reaches back far enough.', severity: 'medium' },
+      ], cta: { label: 'Book a D&O review', href: '/contact?service=Directors%20%26%20Officers%20Insurance' } },
       { type: 'h2', text: 'How we help' },
       { type: 'steps', items: [
         { title: 'Assess the exposure', text: 'Consider investors, regulators, and stakeholders.' },
@@ -846,7 +918,13 @@ export const servicePages = [
       { type: 'chips', items: ['E-commerce', 'Professional services', 'Healthcare clinics', 'Financial services', 'Retailers', 'SaaS & tech', 'Logistics', 'Any business holding data'] },
       { type: 'h2', text: "What's not covered" },
       { type: 'exclusions', items: ['Known or prior incidents', 'Poor security hygiene (unpatched systems)', 'Bodily injury & property damage', 'War & state-sponsored attacks', 'Hardware / upgrade costs', 'Insider fraud (unless added)', 'Loss of intellectual property value'] },
-      { type: 'gapcheck', title: 'How exposed is your business online?', subtitle: 'Tick what you already have in place.', items: ['We enforce multi-factor authentication (MFA)', 'We keep tested, offline backups', 'Our staff receive phishing and security training', 'Our cover includes 24/7 incident response', 'Our limit reflects a realistic worst-case loss'], cta: { label: 'Book a cyber review', href: '/contact?service=Cyber%20Insurance' } },
+      { type: 'gapcheck', title: 'How exposed is your business online?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'We enforce multi-factor authentication across email and remote access', gapTitle: 'MFA may be a condition of your cover', consequence: 'Many cyber policies now make MFA a condition, not a discount. Without it, a credential-based breach can be declined outright.', severity: 'high' },
+        { statement: 'We keep offline backups and have tested a restore from them', gapTitle: 'Untested backups', consequence: 'Ransomware recovery depends on backups that are offline and proven to restore. An untested backup usually fails at the moment it is needed.', severity: 'high' },
+        { statement: 'Our cover includes a 24/7 incident response panel', gapTitle: 'No incident response retainer', consequence: 'The first 48 hours decide the total cost. Cover without a response panel leaves you sourcing forensics and legal help mid-crisis.', severity: 'high' },
+        { statement: 'Our staff receive phishing and security awareness training', gapTitle: 'Staff are the entry point', consequence: 'Most incidents start with a person, not a firewall. Insurers increasingly underwrite and price on evidence of training.', severity: 'medium' },
+        { statement: 'Our limit reflects a realistic worst-case event, not just a single cost', gapTitle: 'Limit may not reflect worst case', consequence: 'Business interruption, extortion, notification and regulatory costs all stack up inside the same event and the same limit.', severity: 'medium' },
+      ], cta: { label: 'Book a cyber review', href: '/contact?service=Cyber%20Insurance' } },
       { type: 'h2', text: 'How we help' },
       { type: 'steps', items: [
         { title: 'Assess your exposure', text: 'Map the data you hold and what a breach would cost.' },
@@ -904,7 +982,13 @@ export const servicePages = [
       { type: 'chips', items: ['SMEs', 'Family businesses', 'Startups', 'Professional firms', 'NGOs', 'Any company with a board'] },
       { type: 'h2', text: "What's not covered" },
       { type: 'exclusions', items: ['Proven fraud or dishonesty', 'Prior known claims', 'Bodily injury & property damage', 'Contractual liability assumed', 'Fines & penalties (where uninsurable)', 'Professional services (needs PI)'] },
-      { type: 'gapcheck', title: 'Is your management team protected?', subtitle: 'Tick what you already have in place.', items: ['My policy includes a D&O element', 'Employment practices liability is covered', 'Crime and fidelity cover is included', 'The limits are adequate for the business', 'Cover is reviewed as the company grows'], cta: { label: 'Book a review', href: '/contact?service=Management%20Liability%20Insurance' } },
+      { type: 'gapcheck', title: 'Is your management team protected?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My policy includes a directors and officers section', gapTitle: 'No D&O section', consequence: 'Without it, directors carry personal liability for company decisions with no policy standing behind them.', severity: 'high' },
+        { statement: 'Employment practices liability is covered', gapTitle: 'No employment practices cover', consequence: 'Claims from staff — unfair dismissal, discrimination, end-of-service disputes — are excluded from general liability cover.', severity: 'high' },
+        { statement: 'Crime and fidelity cover is included', gapTitle: 'No crime cover', consequence: 'Internal theft and social-engineering fraud are excluded from standard policies and need a dedicated crime section.', severity: 'high' },
+        { statement: 'The limits still match the size the business has grown to', gapTitle: 'Limits may lag the business', consequence: 'Limits set when the company was smaller rarely get revisited as headcount, turnover and contract values grow.', severity: 'medium' },
+        { statement: 'New entities, jurisdictions and officers get added to the policy as we grow', gapTitle: 'Cover not reviewed as you grow', consequence: 'A new subsidiary or a new jurisdiction sits outside the policy until it is specifically added.', severity: 'low' },
+      ], cta: { label: 'Book a review', href: '/contact?service=Management%20Liability%20Insurance' } },
       { type: 'h2', text: 'How we help' },
       { type: 'steps', items: [
         { title: 'Map your exposures', text: 'Identify board, employment, and crime risks.' },
@@ -962,7 +1046,13 @@ export const servicePages = [
       { type: 'chips', items: ['Families', 'Expats', 'Homeowners with mortgages', 'Business owners', 'Sole earners', 'HNW individuals', 'Key persons'] },
       { type: 'h2', text: "What's not covered" },
       { type: 'exclusions', items: ['Undisclosed pre-existing conditions', 'Suicide (first year)', 'Self-inflicted injury', 'Hazardous activities (unless declared)', 'War & illegal acts', 'Death outside the policy terms'] },
-      { type: 'gapcheck', title: 'Would your family be financially secure?', subtitle: 'Tick what you already have in place.', items: ['My cover would replace my lost income', 'Critical illness cover is included', 'My mortgage and debts would be cleared', 'My beneficiaries are named and up to date', 'I have reviewed cover after major life changes'], cta: { label: 'Book a protection review', href: '/contact?service=Life%20%26%20Critical%20Illness%20Insurance' } },
+      { type: 'gapcheck', title: 'Would your family be financially secure?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My cover would replace my income for the years my family would need it', gapTitle: 'Cover may not replace your income', consequence: 'A common benchmark is ten times annual income. Policies bought years ago usually fall well short of today’s salary.', severity: 'high' },
+        { statement: 'My mortgage and outstanding debts would be cleared', gapTitle: 'Debts would pass to your family', consequence: 'In the UAE, a mortgage and outstanding loans do not disappear. Cover should clear them before it starts replacing income.', severity: 'high' },
+        { statement: 'Critical illness cover is included alongside my life cover', gapTitle: 'No critical illness cover', consequence: 'Life cover pays on death. A serious illness you survive brings the same loss of income, often for longer, with none of the payout.', severity: 'high' },
+        { statement: 'My beneficiaries are named and still current', gapTitle: 'Beneficiary details out of date', consequence: 'Payouts follow the named beneficiary. An out-of-date nomination can send funds to the wrong person or into a long legal process.', severity: 'medium' },
+        { statement: 'I have reviewed my cover since my last major life change', gapTitle: 'Not reviewed after life changes', consequence: 'Marriage, a child, a new mortgage or a business loan each change the amount your family would actually need.', severity: 'medium' },
+      ], cta: { label: 'Book a protection review', href: '/contact?service=Life%20%26%20Critical%20Illness%20Insurance' } },
       { type: 'h2', text: 'How we help' },
       { type: 'steps', items: [
         { title: 'Assess your needs', text: 'Income, mortgage, debts, and dependants.' },
@@ -1021,7 +1111,13 @@ export const servicePages = [
       { type: 'chips', items: ['Families', 'Individuals', 'Expats', 'Employers & teams', 'Self-employed', 'Retirees', 'Students'] },
       { type: 'h2', text: "What's not covered" },
       { type: 'exclusions', items: ['Cosmetic treatment', 'Elective procedures abroad', 'Undeclared pre-existing conditions', 'Self-inflicted injury', 'Experimental treatment', 'Non-prescribed supplements'] },
-      { type: 'gapcheck', title: 'Is your health cover right for you?', subtitle: 'Tick what you already have in place.', items: ["My plan meets my emirate's requirements", 'The network includes the hospitals I use', 'Maternity cover is included if relevant', 'My dependants or employees are covered', 'Chronic conditions are declared and covered'], cta: { label: 'Book a health review', href: '/contact?service=Health%20%26%20Medical%20Insurance' } },
+      { type: 'gapcheck', title: 'Is your health cover right for you?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: "My plan meets my emirate's mandatory minimum benefits", gapTitle: 'Plan may not meet mandatory cover', consequence: 'Dubai (DHA) and Abu Dhabi (DoH) set different minimum benefits. A plan that satisfies one does not automatically satisfy the other.', severity: 'high' },
+        { statement: 'The network includes the hospitals and clinics I would actually use', gapTitle: 'Your hospital may be out of network', consequence: 'The network tier decides where you can be treated. Out-of-network care is reimbursed partially, or not at all.', severity: 'high' },
+        { statement: 'Every dependant or employee I am responsible for is covered', gapTitle: 'Dependants or staff not covered', consequence: 'Sponsors are legally responsible for their dependants’ cover in several emirates, and employers for their staff.', severity: 'high' },
+        { statement: 'Any chronic or pre-existing conditions were declared at inception', gapTitle: 'Undeclared conditions may be excluded', consequence: 'A condition not declared when the policy started can be treated as pre-existing and excluded permanently.', severity: 'high' },
+        { statement: 'Maternity cover is included if it is relevant to me', gapTitle: 'No maternity cover', consequence: 'Maternity is usually a separate benefit with a waiting period. Adding it once it is needed is generally too late.', severity: 'medium' },
+      ], cta: { label: 'Book a health review', href: '/contact?service=Health%20%26%20Medical%20Insurance' } },
       { type: 'h2', text: 'How we help' },
       { type: 'steps', items: [
         { title: 'Confirm your needs', text: 'Individual, family, or employee group.' },
@@ -1079,7 +1175,13 @@ export const servicePages = [
       { type: 'chips', items: ['Homeowners', 'Tenants', 'Villa owners', 'Apartment residents', 'Landlords', 'Expats', 'HNW individuals'] },
       { type: 'h2', text: "What's not covered" },
       { type: 'exclusions', items: ['Wear & tear', 'Gradual damage', 'Unoccupied property (beyond a period)', 'War & terrorism', 'Cash beyond the stated limit', 'Business use of the home'] },
-      { type: 'gapcheck', title: 'Is your home fully protected?', subtitle: 'Tick what you already have in place.', items: ['My contents are insured at replacement value', 'My valuables are listed separately where required', 'Buildings cover is in place if I own the property', 'My belongings are covered away from home', 'Alternative accommodation is included'], cta: { label: 'Book a home review', href: '/contact?service=Home%20%26%20Contents%20Insurance' } },
+      { type: 'gapcheck', title: 'Is your home fully protected?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My contents are insured at what it would cost to replace them new today', gapTitle: 'Contents insured below replacement cost', consequence: 'Replacement value means buying new at today’s prices. Estimating from what you originally paid leaves a shortfall across the whole claim.', severity: 'high' },
+        { statement: 'My jewellery, watches and other high-value items are individually specified', gapTitle: 'High-value items not specified', consequence: 'Policies cap any single unspecified item. Anything worth more than that cap is only covered if it is listed by name.', severity: 'high' },
+        { statement: 'Buildings cover is in place because I own the property', gapTitle: 'No buildings cover', consequence: 'Owners are responsible for the structure. Contents cover alone will not rebuild it.', severity: 'medium' },
+        { statement: 'My belongings are covered when I take them out of the house', gapTitle: 'No cover away from home', consequence: 'Personal effects carried outside the property need an all-risks extension — the home policy stops at the door.', severity: 'medium' },
+        { statement: 'Alternative accommodation is included if the property becomes uninhabitable', gapTitle: 'No alternative accommodation cover', consequence: 'This pays your rent while the property is repaired. Without it, you are covering two homes at once.', severity: 'medium' },
+      ], cta: { label: 'Book a home review', href: '/contact?service=Home%20%26%20Contents%20Insurance' } },
       { type: 'h2', text: 'How we help' },
       { type: 'steps', items: [
         { title: 'Value your contents', text: 'Insure at the cost to replace as new.' },
@@ -1137,7 +1239,13 @@ export const servicePages = [
       { type: 'chips', items: ['Individuals', 'Families', 'Self-employed', 'Manual workers', 'Frequent travellers', 'Sports enthusiasts', 'Sole earners'] },
       { type: 'h2', text: "What's not covered" },
       { type: 'exclusions', items: ['Illness or natural causes', 'Self-inflicted injury', 'Under the influence of alcohol / drugs', 'Hazardous activities (unless declared)', 'War & illegal acts', 'Pre-existing disabilities'] },
-      { type: 'gapcheck', title: 'Would an accident leave you exposed?', subtitle: 'Tick what you already have in place.', items: ['My cover reflects my income', 'Disability benefits are included, not just death', 'My cover is worldwide and 24-hour', 'My occupation is correctly declared', 'My beneficiaries are named'], cta: { label: 'Book a review', href: '/contact?service=Personal%20Accident%20Insurance' } },
+      { type: 'gapcheck', title: 'Would an accident leave you exposed?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My benefit amount reflects what I earn now', gapTitle: 'Benefit may not reflect your income', consequence: 'The sum insured should track your earnings. A figure set years ago falls steadily behind salary growth.', severity: 'high' },
+        { statement: 'Permanent disability benefits are included, not just death benefits', gapTitle: 'No disability benefit', consequence: 'Permanent disability is both the more likely outcome and the more expensive one — it brings ongoing care costs on top of lost income.', severity: 'high' },
+        { statement: 'My cover is worldwide and applies 24 hours a day, not only at work', gapTitle: 'Cover may be limited to working hours', consequence: 'Occupational-only cover leaves evenings, weekends and travel entirely uninsured.', severity: 'high' },
+        { statement: 'My occupation is correctly declared on the policy', gapTitle: 'Occupation may be misdeclared', consequence: 'Benefits are rated by occupational risk class. A misdeclared occupation can reduce a claim or void it.', severity: 'medium' },
+        { statement: 'My beneficiaries are named on the policy', gapTitle: 'No named beneficiary', consequence: 'Without a nomination, payment follows a legal process rather than your intention, and takes considerably longer.', severity: 'medium' },
+      ], cta: { label: 'Book a review', href: '/contact?service=Personal%20Accident%20Insurance' } },
       { type: 'h2', text: 'How we help' },
       { type: 'steps', items: [
         { title: 'Assess your needs', text: 'Income, dependants, and lifestyle.' },

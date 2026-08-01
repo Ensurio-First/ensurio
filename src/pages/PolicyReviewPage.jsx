@@ -48,6 +48,7 @@ export default function PolicyReviewPage() {
   const [when, setWhen] = useState('')
   const [wa, setWa] = useState(emptyWhatsApp)
   const [status, setStatus] = useState('idle') // idle | invalid | sending | done | error
+  const [receipt, setReceipt] = useState(null) // { reference, emailed } from submit-lead
   const setF = (k, v) => setForm((f) => ({ ...f, [k]: v }))
 
   useEffect(() => {
@@ -70,7 +71,7 @@ export default function PolicyReviewPage() {
     if (!contactValid) { setStatus('invalid'); return }
     setStatus('sending')
     try {
-      await submitLead({
+      const res = await submitLead({
         name: form.name,
         email: form.email,
         phone: form.phone,
@@ -79,8 +80,15 @@ export default function PolicyReviewPage() {
         source: 'policy-review-form',
         preferredTime: when || null,
         details: { reviewTypes: types, concern, renewal },
+        toolId: 'policy-review',
+        reportTitle: 'Your Policy Review Request',
+        report: {
+          headline: `We've logged your request to review ${types.join(', ')}.`,
+          summary: `Your main concern: ${concern.toLowerCase()}. Renewal timing: ${renewal.toLowerCase()}.`,
+        },
         ...resolveWhatsApp(wa, form.phone),
       })
+      setReceipt(res || null)
       setStatus('done')
     } catch (err) {
       if (err.message === 'not-configured') setStatus('done')
@@ -137,9 +145,14 @@ export default function PolicyReviewPage() {
                     <Check size={30} color="var(--teal)" strokeWidth={3} />
                   </div>
                   <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: isMobile ? '1.4rem' : '1.7rem', fontWeight: 800, color: 'var(--navy)', letterSpacing: '-0.02em', marginBottom: '0.6rem' }}>Your review request is in</h2>
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--text-muted)', lineHeight: 1.7, maxWidth: '440px', margin: '0 auto 1.75rem' }}>
-                    Thank you, {form.name.split(' ')[0] || 'there'}. An independent advisor will review your details and be in touch{when ? ` (${when.toLowerCase()})` : ''} — usually within one business day.
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--text-muted)', lineHeight: 1.7, maxWidth: '440px', margin: '0 auto 1.25rem' }}>
+                    Thank you, {form.name.split(' ')[0] || 'there'}. {receipt?.emailed ? `We've emailed a copy of your request to ${form.email}. ` : ''}An independent advisor will review your details and be in touch{when ? ` (${when.toLowerCase()})` : ''} — usually within one business day.
                   </p>
+                  {receipt?.reference && (
+                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'var(--text-muted)', margin: '0 auto 1.75rem' }}>
+                      Your reference: <strong style={{ color: 'var(--navy)', letterSpacing: '0.04em' }}>{receipt.reference}</strong>
+                    </p>
+                  )}
                   <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '13px 26px', background: 'var(--teal)', color: '#fff', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700, textDecoration: 'none' }}>Back to home <ArrowRight size={15} /></Link>
                 </div>
               ) : (

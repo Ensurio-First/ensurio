@@ -21,7 +21,13 @@ export const solutionPages = [
     body: [
       { type: 'lead', text: 'An insurance audit is a structured review of every policy you hold, measured against the risks your business actually carries today.' },
       { type: 'p', text: 'Most businesses only look at their insurance at renewal, under time pressure. An independent audit finds the gaps where a real exposure has no cover, the overlaps where you pay twice, and the sums insured that no longer reflect reality — before a loss does.' },
-      { type: 'gapcheck', title: 'How healthy is your insurance programme?', subtitle: 'Tick what is true today — anything unchecked is worth an audit.', items: ['Every policy has been reviewed in the last 12 months', 'My sums insured reflect current values', 'I have no overlapping or duplicated cover', 'I understand my key exclusions and conditions', 'My premiums have been benchmarked to the market'], cta: { label: 'Book an insurance audit', href: '/contact?service=Insurance%20Audit' } },
+      { type: 'gapcheck', title: 'How healthy is your insurance programme?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'Every policy in my programme has been reviewed in the last 12 months', gapTitle: 'Programme never reviewed as a whole', consequence: 'Policies bought one at a time drift apart. Reviewed individually, the overlaps and the gaps between them stay invisible.', severity: 'high' },
+        { statement: 'My sums insured reflect what things are worth today', gapTitle: 'Sums insured may have drifted', consequence: 'Values set at an earlier renewal quietly become under-insurance as costs rise, and average is then applied across the whole claim.', severity: 'high' },
+        { statement: 'I understand the key exclusions and conditions in each policy', gapTitle: 'Exclusions unexamined', consequence: 'The exclusions and conditions, not the headline limit, are what decide whether a claim gets paid.', severity: 'high' },
+        { statement: 'I have no cover that overlaps or duplicates between policies', gapTitle: 'You may be paying twice', consequence: 'Overlapping cover means two premiums for one exposure — and an argument between insurers about who pays when you claim.', severity: 'medium' },
+        { statement: 'My premiums have been benchmarked against the market this year', gapTitle: 'Premiums never benchmarked', consequence: 'Without a market comparison there is no way to tell whether your renewal increase is the market moving or just your broker.', severity: 'medium' },
+      ], cta: { label: 'Book an insurance audit', href: '/contact?service=Insurance%20Audit' } },
       { type: 'h2', text: "What's involved" },
       { type: 'steps', items: [
         { title: 'Collect your policies', text: 'We gather every current policy document.' },
@@ -56,7 +62,13 @@ export const solutionPages = [
     body: [
       { type: 'lead', text: 'A risk assessment is a structured evaluation of your operational, contractual, financial, and reputational exposures — the foundation of getting insurance right.' },
       { type: 'p', text: 'You cannot insure what you have not identified. We survey your business, map its hazards and exposures, and check that your cover actually matches the risks you carry — then recommend improvements that reduce both risk and premium.' },
-      { type: 'gapcheck', title: 'Do you know your real exposures?', subtitle: 'Tick what is true today.', items: ['My business risks have been formally assessed', 'My contractual insurance requirements are mapped', 'Business interruption exposure has been considered', 'Site and operational hazards have been reviewed', 'My cover is matched to my assessed exposures'], cta: { label: 'Book a risk assessment', href: '/contact?service=Risk%20Assessment' } },
+      { type: 'gapcheck', title: 'Do you know your real exposures?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My business risks have been formally assessed and written down', gapTitle: 'No formal risk assessment', consequence: 'Insurance bought without an assessment covers what the broker sells, not what the business is actually exposed to.', severity: 'high' },
+        { statement: 'The insurance requirements in my contracts are mapped against my policies', gapTitle: 'Contract requirements unmapped', consequence: 'Most commercial contracts specify limits and wordings. Falling short is a breach you carry until somebody checks.', severity: 'high' },
+        { statement: 'I have worked out how long the business could survive an interruption', gapTitle: 'Interruption exposure unquantified', consequence: 'The largest uninsured loss in most businesses is the income lost while they cannot trade, not the damage itself.', severity: 'high' },
+        { statement: 'Site and operational hazards have been reviewed on the ground', gapTitle: 'Hazards never surveyed', consequence: 'Insurers price on what they are told. An unsurveyed site risks both a higher premium and a disputed claim.', severity: 'medium' },
+        { statement: 'My cover has been matched back to my assessed exposures', gapTitle: 'Cover not matched to exposure', consequence: 'An assessment that never changes the policy schedule is a document, not a control.', severity: 'medium' },
+      ], cta: { label: 'Book a risk assessment', href: '/contact?service=Risk%20Assessment' } },
       { type: 'h2', text: "What's involved" },
       { type: 'steps', items: [
         { title: 'Risk survey', text: 'An on-site or remote survey of your operations.' },
@@ -91,7 +103,13 @@ export const solutionPages = [
     body: [
       { type: 'lead', text: 'A policy review is a line-by-line analysis of your wording, conditions, exclusions, and endorsements — so you know exactly what is covered before you need to claim.' },
       { type: 'p', text: 'The fine print decides whether a claim is paid. We translate the legal wording into plain language, flag the conditions and exclusions that matter, and confirm your sums insured are adequate.' },
-      { type: 'gapcheck', title: 'Do you know what your policy really says?', subtitle: 'Tick what is true today.', items: ['I have read my policy wording', 'I understand my key exclusions', 'I have checked the conditions and warranties', 'My endorsements are adequate for my business', 'My sums insured are correct'], cta: { label: 'Book a policy review', href: '/contact?service=Policy%20Review' } },
+      { type: 'gapcheck', title: 'Do you know what your policy really says?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'I have read my current policy wording, not just the schedule', gapTitle: 'Wording never read', consequence: 'The schedule shows the limits. The wording decides whether you get paid — and they are not the same document.', severity: 'high' },
+        { statement: 'I understand the key exclusions that apply to my business', gapTitle: 'Exclusions unknown', consequence: 'Every claim decision starts with the exclusions. Discovering them at claim time is the most expensive way to learn them.', severity: 'high' },
+        { statement: 'I have checked the conditions and warranties I am required to comply with', gapTitle: 'Warranties may be unmet', consequence: 'A warranty is a promise, not a suggestion. Breach one — an alarm not set, a survey not actioned — and the insurer can decline the claim entirely.', severity: 'high' },
+        { statement: 'My sums insured are correct and current', gapTitle: 'Sums insured may be wrong', consequence: 'Under-insurance triggers average, which reduces every claim in proportion — not only the large ones.', severity: 'high' },
+        { statement: 'My endorsements match how the business actually operates', gapTitle: 'Endorsements out of step', consequence: 'Endorsements are where cover gets narrowed. One added quietly at renewal can remove the protection you thought you bought.', severity: 'medium' },
+      ], cta: { label: 'Book a policy review', href: '/contact?service=Policy%20Review' } },
       { type: 'h2', text: "What's involved" },
       { type: 'steps', items: [
         { title: 'Wording examination', text: 'We read the policy end to end.' },
@@ -126,7 +144,13 @@ export const solutionPages = [
     body: [
       { type: 'lead', text: 'Claims advisory means expert guidance through every stage of the claims process — from first notification to final settlement — with an independent advocate working only for you.' },
       { type: 'p', text: 'When a loss happens, the insurer has a team; you should too. We handle strategy, documentation, and negotiation, deal with the loss adjuster, and push for the fullest settlement you are entitled to.' },
-      { type: 'gapcheck', title: 'Are you ready if a claim happens?', subtitle: 'Tick what is true today.', items: ['I know my policy notification deadlines', 'My documentation is ready to support a claim', 'I understand the claims process', 'I have an independent advocate on my side', 'My past claims have been handled well'], cta: { label: 'Get claims support', href: '/contact?service=Claims%20Advisory' } },
+      { type: 'gapcheck', title: 'Are you ready if a claim happens?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'I know the notification deadline in each of my policies', gapTitle: 'Notification deadlines unknown', consequence: 'Late notification is one of the most common reasons a valid claim gets declined. The clock usually starts at the incident, not at your convenience.', severity: 'high' },
+        { statement: 'My documentation is organised and ready to support a claim', gapTitle: 'Documentation not ready', consequence: 'Claims are settled on evidence. Reconstructing records after a loss is slower, weaker and often incomplete.', severity: 'high' },
+        { statement: 'I have someone independent representing my side of a claim', gapTitle: 'No independent advocate', consequence: 'The loss adjuster is appointed and paid by the insurer. Without your own advocate, only one side of the claim is being argued.', severity: 'high' },
+        { statement: 'I understand what the claims process will actually involve', gapTitle: 'Process not understood', consequence: 'Adjusters work to a set procedure. Not knowing it means missed steps, slower settlement and less leverage.', severity: 'medium' },
+        { statement: 'My past claims have been settled fairly and in full', gapTitle: 'Past claims may have been under-settled', consequence: 'A pattern of reduced settlements usually points at a wording problem that will repeat at the next loss.', severity: 'medium' },
+      ], cta: { label: 'Get claims support', href: '/contact?service=Claims%20Advisory' } },
       { type: 'h2', text: "What's involved" },
       { type: 'steps', items: [
         { title: 'Strategy & documentation', text: 'We build the strongest possible claim.' },
@@ -161,7 +185,13 @@ export const solutionPages = [
     body: [
       { type: 'lead', text: 'Legal claims support provides independent legal and technical advisory when a claim is disputed, complex, or rejected — representing your interests when the insurer pushes back.' },
       { type: 'p', text: 'A rejection is not the end of the road. We analyse the dispute, interpret the policy and the legal grounds, prepare formal correspondence, and escalate through the right channels to get a fair outcome.' },
-      { type: 'gapcheck', title: 'Has a claim been disputed or rejected?', subtitle: 'Tick what is true today.', items: ['My claim is being handled fairly', 'I understand the legal grounds of my policy', 'My deadlines are under control', 'I have independent representation', 'My correspondence is properly documented'], cta: { label: 'Get legal support', href: '/contact?service=Legal%20Claims%20Support' } },
+      { type: 'gapcheck', title: 'Has a claim been disputed or rejected?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My claim is being handled fairly and is moving forward', gapTitle: 'Claim may be heading for a decline', consequence: 'Delay, repeated document requests and shifting reasons are the usual signals that a decline is being prepared.', severity: 'high' },
+        { statement: 'I understand the specific policy terms my insurer is relying on', gapTitle: 'Grounds for decline unclear', consequence: 'A decline has to cite a specific term. If you cannot identify which one, it cannot be properly challenged.', severity: 'high' },
+        { statement: 'I know the deadlines for challenging the decision and they are under control', gapTitle: 'Challenge deadlines at risk', consequence: 'Policy and statutory time limits for disputing a decision are short. Once one passes, the merits of your case stop mattering.', severity: 'high' },
+        { statement: 'I have independent representation, not only the broker who placed the policy', gapTitle: 'No independent representation', consequence: 'The broker who sold the policy has an interest in how the claim resolves. A dispute needs someone without that conflict.', severity: 'high' },
+        { statement: 'All my correspondence with the insurer is written down and kept', gapTitle: 'Correspondence undocumented', consequence: 'Disputes are won on the paper trail. Verbal assurances from an adjuster carry almost no weight later.', severity: 'medium' },
+      ], cta: { label: 'Get legal support', href: '/contact?service=Legal%20Claims%20Support' } },
       { type: 'h2', text: "What's involved" },
       { type: 'steps', items: [
         { title: 'Dispute analysis', text: 'We assess the rejection and the grounds for it.' },
@@ -196,7 +226,13 @@ export const solutionPages = [
     body: [
       { type: 'lead', text: 'Coverage gap analysis is a forward-looking review that identifies the uninsured and under-insured exposures your current policies leave open.' },
       { type: 'p', text: 'Businesses grow faster than their insurance. New assets, contracts, and activities create exposures your existing policies never anticipated. We map what you have against what you are insuring, and close the gaps before they become liabilities.' },
-      { type: 'gapcheck', title: 'Where are you exposed?', subtitle: 'Tick what is true today.', items: ['All my assets are mapped to a cover', 'My key liabilities are insured', 'New activities have been added to my policies', 'My contractual insurance gaps are closed', 'Emerging risks like cyber are covered'], cta: { label: 'Book a gap analysis', href: '/contact?service=Coverage%20Gap%20Analysis' } },
+      { type: 'gapcheck', title: 'Where are you exposed?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'Every asset I own is mapped to a policy that actually covers it', gapTitle: 'Unmapped assets', consequence: 'Assets acquired between renewals routinely never make it onto a schedule — and a policy pays against its schedule.', severity: 'high' },
+        { statement: 'My key liabilities are insured, not just my property', gapTitle: 'Liability exposure uncovered', consequence: 'Property losses are capped by what you own. Liability losses are capped by what a court decides.', severity: 'high' },
+        { statement: 'Activities the business has taken on recently have been added to my policies', gapTitle: 'New activities undeclared', consequence: 'Cover follows the declared business description. A new service line sits outside it until the policy is endorsed.', severity: 'high' },
+        { statement: 'The insurance gaps in my contracts have been identified and closed', gapTitle: 'Contractual gaps still open', consequence: 'Where your contract promises more than your policy delivers, you have personally accepted the difference.', severity: 'high' },
+        { statement: 'Emerging risks such as cyber are covered', gapTitle: 'Emerging risks uncovered', consequence: 'Traditional policies were not written with cyber in mind, and most now exclude it explicitly.', severity: 'medium' },
+      ], cta: { label: 'Book a gap analysis', href: '/contact?service=Coverage%20Gap%20Analysis' } },
       { type: 'h2', text: "What's involved" },
       { type: 'steps', items: [
         { title: 'Asset & liability mapping', text: 'We map everything of value and every exposure.' },

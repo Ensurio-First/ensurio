@@ -30,7 +30,13 @@ export const industryPages = [
         { icon: 'flame', title: 'Project delay', text: 'Lost time and cost after an insured event.' },
         { icon: 'truck', title: 'Subcontractor risk', text: 'Gaps where risk is not properly transferred.' },
       ] },
-      { type: 'gapcheck', title: 'Is your project fully covered?', subtitle: 'Tick what is true today.', items: ['My CAR cover matches the full contract value', 'The cover period includes the maintenance phase', 'Subcontractor risk is properly transferred', 'My workforce is covered under Labour Law', 'Every contractor on site is named or covered'], cta: { label: 'Book a construction review', href: '/contact?service=Construction%20Review' } },
+      { type: 'gapcheck', title: 'Is your project fully covered?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My CAR policy is insured for the full contract value, including materials and variations', gapTitle: 'Contract works may be under-insured', consequence: 'If the sum insured sits below the true contract value, insurers apply average — a 25% shortfall cuts every claim payment by 25%, not just the excess.', severity: 'high' },
+        { statement: 'My cover runs past practical completion, through the maintenance and defects period', gapTitle: 'No maintenance-period cover', consequence: 'Most CAR policies end at handover. Defects that surface during the 12-month maintenance period are then entirely at your cost.', severity: 'high' },
+        { statement: 'Every subcontractor carries their own cover and I hold current certificates', gapTitle: 'Unverified subcontractor risk', consequence: "If a subcontractor's cover has lapsed, their liability lands on your policy — and on your claims record at renewal.", severity: 'high' },
+        { statement: 'All site workers are covered under UAE Labour Law and workmen’s compensation', gapTitle: 'Workforce cover may not meet Labour Law', consequence: 'Cover priced on an out-of-date wage roll or headcount can be reduced proportionally at claim time, leaving you to fund the difference.', severity: 'high' },
+        { statement: 'Principals, consultants and every contractor on site are named on the policy', gapTitle: 'Not all parties named on the policy', consequence: 'An unnamed party has no right to claim under your policy — and can sue you instead. Main contracts in the UAE usually require them to be named.', severity: 'medium' },
+      ], cta: { label: 'Book a construction review', href: '/contact?service=Construction%20Review' } },
       { type: 'cta', heading: 'Building something? Insure it properly.', text: 'An independent review that matches your cover to your contract and your site.', primary: { label: 'Book a Review', href: '/contact?service=Construction%20Review' }, secondary: { label: 'Call 050 976 5976', href: 'tel:+971509765976' } },
     ],
     relatedServices: [
@@ -60,7 +66,13 @@ export const industryPages = [
         { icon: 'truck', title: 'Supply chain', text: 'Disruption from a key supplier or customer.' },
         { icon: 'shield', title: 'Workforce injury', text: 'Labour Law liability on the factory floor.' },
       ] },
-      { type: 'gapcheck', title: 'Is your production protected?', subtitle: 'Tick what is true today.', items: ['My property is insured at full reinstatement value', 'Machinery breakdown cover is in place', 'My business interruption reflects real recovery time', 'Product liability is covered for what I make', 'My workforce is covered under Labour Law'], cta: { label: 'Book a manufacturing review', href: '/contact?service=Manufacturing%20Review' } },
+      { type: 'gapcheck', title: 'Is your production protected?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My buildings, plant and stock are insured at full reinstatement cost, not book value', gapTitle: 'Assets insured below reinstatement cost', consequence: 'Book value ignores inflation and replacement freight. Insure at a depreciated figure and the average clause reduces every claim in proportion.', severity: 'high' },
+        { statement: 'Machinery breakdown cover is in place for my critical production plant', gapTitle: 'No machinery breakdown cover', consequence: 'A property policy covers fire and named perils, not a motor burning out. The most common cause of a production stoppage is usually the one excluded.', severity: 'high' },
+        { statement: 'My business interruption indemnity period matches how long a rebuild would really take', gapTitle: 'Indemnity period too short', consequence: 'Twelve months is the default, but replacing specialised plant with a long lead time often takes longer. Cover stops on the anniversary, mid-recovery.', severity: 'high' },
+        { statement: 'Product liability covers everything I currently manufacture, including exports', gapTitle: 'Product liability may not match output', consequence: 'Policies list declared products and territories. A new line or a new export market added since renewal sits outside the cover.', severity: 'medium' },
+        { statement: 'My workforce is covered under UAE Labour Law and workmen’s compensation', gapTitle: 'Workforce cover may not meet Labour Law', consequence: 'Cover priced on an out-of-date wage roll can be reduced proportionally at claim time.', severity: 'high' },
+      ], cta: { label: 'Book a manufacturing review', href: '/contact?service=Manufacturing%20Review' } },
       { type: 'cta', heading: 'Keep production protected.', text: 'An independent review of your property, machinery, and interruption cover.', primary: { label: 'Book a Review', href: '/contact?service=Manufacturing%20Review' }, secondary: { label: 'Call 050 976 5976', href: 'tel:+971509765976' } },
     ],
     relatedServices: [
@@ -90,7 +102,13 @@ export const industryPages = [
         { icon: 'lock', title: 'Theft & pilferage', text: 'Loss of goods in transit or storage.' },
         { icon: 'flame', title: 'Delay & disruption', text: 'Costs from delayed or disrupted shipments.' },
       ] },
-      { type: 'gapcheck', title: 'Are your goods and fleet covered?', subtitle: 'Tick what is true today.', items: ['My cargo is insured warehouse-to-warehouse', 'All my vehicles are on one fleet policy', 'My warehouse and stock are insured', 'Third-party liability is in place', 'My cover matches every transit mode I use'], cta: { label: 'Book a logistics review', href: '/contact?service=Logistics%20Review' } },
+      { type: 'gapcheck', title: 'Are your goods and fleet covered?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My cargo is insured warehouse-to-warehouse, not just port-to-port', gapTitle: 'Gap at each end of the journey', consequence: 'Port-to-port cover leaves the inland legs uninsured — which is where a large share of handling damage and theft actually happens.', severity: 'high' },
+        { statement: 'Every vehicle is on a single fleet policy with an up-to-date schedule', gapTitle: 'Vehicles missing from the schedule', consequence: 'A vehicle bought mid-term but never declared is uninsured. Fleet schedules drift quickly as trucks are added and sold.', severity: 'high' },
+        { statement: 'My warehouse building and the stock inside it are separately insured to value', gapTitle: 'Stored goods may fall between policies', consequence: 'Marine cargo cover usually lapses after a set storage period. Goods sitting longer than that are covered by neither policy.', severity: 'high' },
+        { statement: 'Third-party liability is in place for my operations, not just my vehicles', gapTitle: 'Operational liability gap', consequence: 'Motor policies cover road risk only. Damage caused while loading, unloading or handling in a yard falls outside them.', severity: 'medium' },
+        { statement: 'My cover matches every mode I actually use — sea, air, road and rail', gapTitle: 'Not every transit mode is covered', consequence: 'Policies are written per mode. Switching a shipment to air freight at short notice can put it outside the cover entirely.', severity: 'medium' },
+      ], cta: { label: 'Book a logistics review', href: '/contact?service=Logistics%20Review' } },
       { type: 'cta', heading: 'Keep your goods and fleet moving safely.', text: 'An independent review of your cargo, fleet, and premises cover.', primary: { label: 'Book a Review', href: '/contact?service=Logistics%20Review' }, secondary: { label: 'Call 050 976 5976', href: 'tel:+971509765976' } },
     ],
     relatedServices: [
@@ -120,7 +138,13 @@ export const industryPages = [
         { icon: 'shield', title: 'Employee injury', text: 'Labour Law liability for your staff.' },
         { icon: 'lock', title: 'Theft & cash', text: 'Loss of stock, cash, and guest property.' },
       ] },
-      { type: 'gapcheck', title: 'Is your venue protected?', subtitle: 'Tick what is true today.', items: ['My public liability limit meets landlord/mall terms', 'My property and fit-out are insured to value', 'Business interruption cover is in place', 'Food-safety and product liability are covered', 'My staff are covered under Labour Law'], cta: { label: 'Book a hospitality review', href: '/contact?service=Hospitality%20Review' } },
+      { type: 'gapcheck', title: 'Is your venue protected?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My public liability limit meets what my landlord or mall agreement requires', gapTitle: 'Liability limit may breach your lease', consequence: 'Mall and landlord agreements set a minimum limit. Falling below it is a breach of contract as well as an uninsured exposure.', severity: 'high' },
+        { statement: 'My fit-out, not just the base building, is insured at replacement cost', gapTitle: 'Fit-out may be uninsured', consequence: 'Landlords insure the shell. The fit-out you paid for is usually your responsibility — and often the largest asset you own on site.', severity: 'high' },
+        { statement: 'Business interruption cover is in place and reflects my seasonal trade', gapTitle: 'No business interruption cover', consequence: 'Rebuilding a closed venue means months of rent and payroll with no income. Property cover pays for the damage, not the lost trade.', severity: 'high' },
+        { statement: 'Food safety and product liability are specifically covered', gapTitle: 'Food-safety exposure not covered', consequence: 'A general liability policy may exclude food-borne illness. One incident can bring a group claim alongside a municipality investigation.', severity: 'medium' },
+        { statement: 'All staff are covered under UAE Labour Law and workmen’s compensation', gapTitle: 'Staff cover may not meet Labour Law', consequence: 'High-turnover venues drift out of step with declared headcount, which can reduce a claim proportionally.', severity: 'medium' },
+      ], cta: { label: 'Book a hospitality review', href: '/contact?service=Hospitality%20Review' } },
       { type: 'cta', heading: 'Welcome guests with confidence.', text: 'An independent review of your guest, property, and interruption cover.', primary: { label: 'Book a Review', href: '/contact?service=Hospitality%20Review' }, secondary: { label: 'Call 050 976 5976', href: 'tel:+971509765976' } },
     ],
     relatedServices: [
@@ -150,7 +174,13 @@ export const industryPages = [
         { icon: 'gem', title: 'Crew & licence', text: 'Loss of crew medical certification.' },
         { icon: 'flame', title: 'War & hijack', text: 'Specialist hull war exposures.' },
       ] },
-      { type: 'gapcheck', title: 'Is your aviation risk covered?', subtitle: 'Tick what is true today.', items: ['My hull is insured at a current agreed value', 'Passenger and third-party limits meet requirements', 'Hull war cover is included', 'Ground and handling risks are covered', 'My cover is placed with the specialist market'], cta: { label: 'Book an aviation review', href: '/contact?service=Aviation%20Industry%20Review' } },
+      { type: 'gapcheck', title: 'Is your aviation risk covered?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My hull is insured at an agreed value that was reviewed this year', gapTitle: 'Agreed value may be out of date', consequence: 'An agreed value fixed years ago pays out at that figure after a total loss, not at today’s replacement cost.', severity: 'high' },
+        { statement: 'My passenger and third-party limits meet every regulator and lease requirement', gapTitle: 'Liability limits may fall short', consequence: 'Lessors and regulators set minimum limits. Falling below one can ground the aircraft as well as leave the exposure open.', severity: 'high' },
+        { statement: 'Hull war and allied perils cover is included', gapTitle: 'No hull war cover', consequence: 'War, terrorism and confiscation are excluded from standard hull cover and must be bought back separately — a material gap on regional routes.', severity: 'high' },
+        { statement: 'Ground handling and hangar-keeper risks are covered', gapTitle: 'Ground risk not covered', consequence: 'A large share of hull damage happens on the ground, where flight-risk cover does not respond.', severity: 'medium' },
+        { statement: 'My programme is placed with the specialist aviation market', gapTitle: 'Placed outside the specialist market', consequence: 'Generalist markets price aviation conservatively and may lack the wording and claims capability when it matters.', severity: 'low' },
+      ], cta: { label: 'Book an aviation review', href: '/contact?service=Aviation%20Industry%20Review' } },
       { type: 'cta', heading: 'Aviation cover, placed with specialists.', text: 'An independent review of your hull values, liability limits, and wordings.', primary: { label: 'Book a Review', href: '/contact?service=Aviation%20Industry%20Review' }, secondary: { label: 'Call 050 976 5976', href: 'tel:+971509765976' } },
     ],
     relatedServices: [
@@ -180,7 +210,13 @@ export const industryPages = [
         { icon: 'users', title: 'Third-party liability', text: 'Injury or damage arising from the works.' },
         { icon: 'shield', title: 'Design risk', text: 'Exposure from faulty or defective design.' },
       ] },
-      { type: 'gapcheck', title: 'Is your engineering risk covered?', subtitle: 'Tick what is true today.', items: ['My projects have erection all-risk cover', 'I hold professional indemnity for my designs', 'My PI retroactive date covers past projects', 'Machinery and plant are covered', 'Third-party liability is in place'], cta: { label: 'Book an engineering review', href: '/contact?service=Engineering%20Review' } },
+      { type: 'gapcheck', title: 'Is your engineering risk covered?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My installation projects carry erection all-risks cover', gapTitle: 'No erection all-risks cover', consequence: 'Standard property and CAR wordings do not respond to damage during installation, testing and commissioning — the highest-risk phase of the job.', severity: 'high' },
+        { statement: 'I hold professional indemnity cover for the design work I take on', gapTitle: 'Design liability uninsured', consequence: 'A design error is a professional liability, not physical damage. General liability policies exclude it outright.', severity: 'high' },
+        { statement: 'My PI retroactive date reaches back far enough to cover my earlier projects', gapTitle: 'Retroactive date leaves past work exposed', consequence: 'PI responds to when the work was done, not when the claim arrives. A recent retroactive date leaves years of completed projects uninsured.', severity: 'high' },
+        { statement: 'My machinery and plant are insured, including while in transit between sites', gapTitle: 'Plant may be uninsured in transit', consequence: 'Site-based cover often stops at the gate. Plant moving between projects is a common uninsured loss.', severity: 'medium' },
+        { statement: 'Third-party liability is in place for my site operations', gapTitle: 'Site liability gap', consequence: 'Injury to a visitor or damage to neighbouring property sits outside contract works cover.', severity: 'medium' },
+      ], cta: { label: 'Book an engineering review', href: '/contact?service=Engineering%20Review' } },
       { type: 'cta', heading: 'Cover the project and the professional risk.', text: 'An independent review of your project, machinery, and professional indemnity cover.', primary: { label: 'Book a Review', href: '/contact?service=Engineering%20Review' }, secondary: { label: 'Call 050 976 5976', href: 'tel:+971509765976' } },
     ],
     relatedServices: [

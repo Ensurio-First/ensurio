@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import StepIndicator from './StepIndicator'
 import { ScoreRingOnly, ScoreLabelOnly } from './ScoreResult'
 import LeadGateForm from './LeadGateForm'
+import toFinding from './toFinding'
 import { useWindowWidth } from '../../hooks/useWindowWidth'
 
 const STEPS = ['Governance', 'Succession', 'Legacy']
@@ -69,6 +70,7 @@ export default function FamilyCheck() {
   const [done, setDone] = useState(false)
   const [result, setResult] = useState(null)
   const [submitted, setSubmitted] = useState(false)
+  const [emailed, setEmailed] = useState(false)
 
   const answer = (key, val) => setAnswers((a) => ({ ...a, [key]: val }))
   const stepQuestions = QUESTIONS.filter((q) => q.step === step)
@@ -109,7 +111,9 @@ export default function FamilyCheck() {
         <div style={{ width: '52px', height: '52px', background: 'var(--teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', fontSize: '22px', color: 'var(--white)' }}>✓</div>
         <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.1rem', marginBottom: '0.5rem', color: 'var(--navy)' }}>Playbook on its Way!</h3>
         <p style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: 1.6 }}>
-          Your Family Business Continuity Playbook will be sent within one business day. Our team may reach out to arrange a complimentary discovery session.
+          {emailed
+            ? 'A copy of your Family Business Continuity Playbook is on its way to your inbox. Our team will reach out to arrange a complimentary discovery session.'
+            : 'Your Family Business Continuity Playbook will be sent within one business day. Our team may reach out to arrange a complimentary discovery session.'}
         </p>
         <button style={{ ...btnBase, background: 'var(--navy)', color: 'var(--white)', marginTop: '1.5rem' }} onClick={reset}
           onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--teal)')}
@@ -118,6 +122,28 @@ export default function FamilyCheck() {
         </button>
       </motion.div>
     )
+  }
+
+  // Shared by the desktop and mobile layouts — carries the answers and the
+  // computed maturity result through to the emailed copy and advisor alert.
+  const leadFormProps = result && {
+    reportLabel: 'Family Business Continuity Playbook',
+    tool: 'Family Business Readiness',
+    toolId: 'family-business-readiness',
+    score: result.total,
+    details: { answers, governance: result.gov, succession: result.suc, legacy: result.leg },
+    report: {
+      score: result.total,
+      headline: `Your family business continuity score is ${result.total} out of 100.`,
+      summary: result.desc,
+      findings: result.insights.map(toFinding),
+      benchmark: `Governance ${result.gov}% · Succession ${result.suc}% · Legacy ${result.leg}%`,
+    },
+    onSubmit: (_data, res) => {
+      setEmailed(Boolean(res?.emailed))
+      setSubmitted(true)
+      window.dispatchEvent(new CustomEvent('ensurio:submitted'))
+    },
   }
 
   return (
@@ -236,13 +262,7 @@ export default function FamilyCheck() {
                 </div>
 
                 {/* Zone 3 — Lead form */}
-                <LeadGateForm
-                  reportLabel="Family Business Continuity Playbook"
-                  tool="Family Business Readiness"
-                  score={result.total}
-                  onSubmit={() => { setSubmitted(true); window.dispatchEvent(new CustomEvent('ensurio:submitted')) }}
-                  horizontal
-                />
+                <LeadGateForm {...leadFormProps} horizontal />
               </div>
             ) : (
               /* Mobile stacked */
@@ -282,12 +302,7 @@ export default function FamilyCheck() {
                   })}
                 </div>
 
-                <LeadGateForm
-                  reportLabel="Family Business Continuity Playbook"
-                  tool="Family Business Readiness"
-                  score={result.total}
-                  onSubmit={() => { setSubmitted(true); window.dispatchEvent(new CustomEvent('ensurio:submitted')) }}
-                />
+                <LeadGateForm {...leadFormProps} />
               </>
             )}
           </motion.div>

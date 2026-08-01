@@ -28,7 +28,13 @@ export const audiencePages = [
         { strong: 'Renewal strategy', text: '& negotiation on your behalf.' },
         { strong: 'Claims history review', text: 'to strengthen your position.' },
       ] },
-      { type: 'gapcheck', title: 'Is your business properly protected?', subtitle: 'Tick what is true today.', items: ['My whole insurance programme has been reviewed recently', 'My sums insured reflect the true value of my business', 'I have no dangerous gaps between my policies', 'My premiums have been benchmarked', 'I have an independent advisor, not just a broker'], cta: { label: 'Book a business review', href: '/contact?service=Business%20Owner%20Review' } },
+      { type: 'gapcheck', title: 'Is your business properly protected?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My whole insurance programme has been reviewed as one thing, recently', gapTitle: 'Programme never reviewed as a whole', consequence: 'Policies bought one at a time drift apart. The dangerous gaps sit between them, where no single policy is responsible.', severity: 'high' },
+        { statement: 'My sums insured reflect what the business is actually worth today', gapTitle: 'Sums insured may have drifted', consequence: 'Values set years ago quietly become under-insurance, and average then reduces every claim in proportion.', severity: 'high' },
+        { statement: 'I am confident there are no gaps where one policy ends and the next begins', gapTitle: 'Gaps between policies', consequence: 'Each insurer covers its own section. A loss that falls between two policies gets argued about rather than paid.', severity: 'high' },
+        { statement: 'My premiums have been benchmarked against the market', gapTitle: 'Premiums never benchmarked', consequence: 'Without a market comparison a renewal increase cannot be challenged — you have nothing to hold it against.', severity: 'medium' },
+        { statement: 'I have an independent advisor, not only the broker who sold me the policies', gapTitle: 'No independent second opinion', consequence: 'The broker who placed the cover is not the right person to audit whether it works.', severity: 'medium' },
+      ], cta: { label: 'Book a business review', href: '/contact?service=Business%20Owner%20Review' } },
       { type: 'cta', heading: 'Protect what you have built.', text: 'A no-obligation review of your whole insurance programme by an independent advisor.', primary: { label: 'Book a Review', href: '/contact?service=Business%20Owner%20Review' }, secondary: { label: 'Call 050 976 5976', href: 'tel:+971509765976' } },
     ],
     relatedServices: [
@@ -57,7 +63,13 @@ export const audiencePages = [
         { strong: 'Lender insurance compliance', text: 'kept in order.' },
         { strong: 'Board-level risk reporting', text: 'in plain numbers.' },
       ] },
-      { type: 'gapcheck', title: 'Do you control your cost of risk?', subtitle: 'Tick what is true today.', items: ['I know my true Total Cost of Risk, not just premiums', 'My insurance spend is benchmarked and forecast', 'I meet all lender insurance requirements', 'Risk is reported clearly to the board', 'Retained vs transferred risk is a deliberate choice'], cta: { label: 'Book a TCOR review', href: '/contact?service=Finance%20TCOR%20Review' } },
+      { type: 'gapcheck', title: 'Do you control your cost of risk?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'I know my true Total Cost of Risk, not just my premium spend', gapTitle: 'TCOR unmeasured', consequence: 'Premium is often less than half the real cost. Deductibles, uninsured losses and administration make up the rest, and they sit unmeasured across the P&L.', severity: 'high' },
+        { statement: 'Where we retain risk rather than transfer it, that was a deliberate decision', gapTitle: 'Retention is accidental, not chosen', consequence: 'Every uninsured exposure is a retention. If it was never decided, it was never priced and never funded.', severity: 'high' },
+        { statement: 'I meet every insurance requirement in our lending and lease agreements', gapTitle: 'Lender requirements may be unmet', consequence: 'Facility agreements specify cover, limits and named parties. A breach can be an event of default entirely independent of any loss.', severity: 'high' },
+        { statement: 'My insurance spend is benchmarked and forecast, not simply renewed', gapTitle: 'Spend not benchmarked or forecast', consequence: 'A renewal quoted without a benchmark cannot be negotiated, and an unforecast increase lands as a surprise on the budget.', severity: 'high' },
+        { statement: 'Risk is reported to the board in terms they can act on', gapTitle: 'Risk not visible to the board', consequence: 'Risk reported as a premium line invites cost-cutting. Reported as exposure, it invites a decision.', severity: 'medium' },
+      ], cta: { label: 'Book a TCOR review', href: '/contact?service=Finance%20TCOR%20Review' } },
       { type: 'cta', heading: 'Turn insurance into a controllable cost.', text: 'An independent review that puts real numbers behind your risk spend.', primary: { label: 'Book a Review', href: '/contact?service=Finance%20TCOR%20Review' }, secondary: { label: 'Call 050 976 5976', href: 'tel:+971509765976' } },
     ],
     relatedServices: [
@@ -86,7 +98,13 @@ export const audiencePages = [
         { strong: 'Site & project coverage', text: 'reviewed end to end.' },
         { strong: 'Business interruption planning', text: 'for real downtime.' },
       ] },
-      { type: 'gapcheck', title: 'Is your operational risk covered?', subtitle: 'Tick what is true today.', items: ['My cover meets every contract requirement', 'Subcontractor risk is properly transferred', 'Every site and project is adequately covered', 'Business interruption has been planned for', 'My certificates are current and compliant'], cta: { label: 'Book an operations review', href: '/contact?service=Operations%20Review' } },
+      { type: 'gapcheck', title: 'Is your operational risk covered?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My cover meets every insurance requirement in the contracts we have signed', gapTitle: 'Contract requirements may be unmet', consequence: 'Main contracts specify limits, wordings and named parties. Falling short is a breach you carry until someone audits it.', severity: 'high' },
+        { statement: 'Subcontractor risk is properly transferred and I hold current certificates', gapTitle: 'Unverified subcontractor risk', consequence: 'A lapsed subcontractor policy pushes their liability onto yours — and onto your claims record at renewal.', severity: 'high' },
+        { statement: 'Every site and project we are running is declared and covered', gapTitle: 'Sites or projects may be uncovered', consequence: 'Cover is usually scheduled per site or per project. A new one started mid-term is uninsured until it is declared.', severity: 'high' },
+        { statement: 'We have planned for how long operations could survive an interruption', gapTitle: 'Interruption not planned for', consequence: 'Property cover repairs the damage. Nothing pays the fixed costs while operations are stopped unless business interruption is in place.', severity: 'high' },
+        { statement: 'My insurance certificates are current and compliant', gapTitle: 'Certificates may be out of date', consequence: 'An expired certificate can stop you being paid, or stop you being let on site, regardless of whether the cover actually exists.', severity: 'medium' },
+      ], cta: { label: 'Book an operations review', href: '/contact?service=Operations%20Review' } },
       { type: 'cta', heading: 'Match your cover to your operations.', text: 'An independent review that aligns your insurance with your contracts and sites.', primary: { label: 'Book a Review', href: '/contact?service=Operations%20Review' }, secondary: { label: 'Call 050 976 5976', href: 'tel:+971509765976' } },
     ],
     relatedServices: [
@@ -115,7 +133,13 @@ export const audiencePages = [
         { strong: 'Personal accident protection', text: 'for the unexpected.' },
         { strong: 'Expat insurance advisory', text: 'for life in the UAE.' },
       ] },
-      { type: 'gapcheck', title: 'Are you and your family protected?', subtitle: 'Tick what is true today.', items: ['My life cover would protect my family and clear my debts', 'My health cover meets my family’s needs', 'My home and belongings are insured to value', 'I have personal accident protection', 'My cover has been reviewed after major life changes'], cta: { label: 'Book a personal review', href: '/contact?service=Personal%20Review' } },
+      { type: 'gapcheck', title: 'Are you and your family protected?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My life cover would both replace my income and clear my debts', gapTitle: 'Cover may not do both jobs', consequence: 'A mortgage and outstanding loans do not disappear in the UAE. Cover has to clear them before it starts replacing income.', severity: 'high' },
+        { statement: 'My health cover meets my family’s needs and my emirate’s requirements', gapTitle: 'Health cover may fall short', consequence: 'Dubai and Abu Dhabi set different minimum benefits, and the network tier decides which hospitals you can actually use.', severity: 'high' },
+        { statement: 'I have personal accident cover that pays for disability, not just death', gapTitle: 'No disability protection', consequence: 'Permanent disability is both the more likely outcome and the more expensive one — ongoing care costs on top of lost income.', severity: 'high' },
+        { statement: 'My home and belongings are insured at replacement value', gapTitle: 'Home cover may be below replacement cost', consequence: 'Replacement value means buying new at today’s prices. Estimating from what you paid leaves a shortfall across the whole claim.', severity: 'medium' },
+        { statement: 'I have reviewed my cover since my last major life change', gapTitle: 'Not reviewed after life changes', consequence: 'Marriage, a child, a new mortgage or a business loan each change the amount your family would actually need.', severity: 'medium' },
+      ], cta: { label: 'Book a personal review', href: '/contact?service=Personal%20Review' } },
       { type: 'cta', heading: 'Protect the people who matter most.', text: 'A no-obligation review of your family’s personal insurance by an independent advisor.', primary: { label: 'Book a Review', href: '/contact?service=Personal%20Review' }, secondary: { label: 'Call 050 976 5976', href: 'tel:+971509765976' } },
     ],
     relatedServices: [
