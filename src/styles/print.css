@@ -34,6 +34,15 @@
     display: none !important;
   }
 
+  /* The SalesIQ chat bubble. It is injected outside our markup so it cannot
+     carry .no-print; every element the widget creates is zsiq-prefixed, and it
+     floats over exactly the corner of the report people are trying to print. */
+  [id^='zsiq'],
+  [class^='zsiq'],
+  [class*=' zsiq'] {
+    display: none !important;
+  }
+
   /* Dark panels: keep the structure, lose the ink-flooding background. */
   .print-invert,
   .print-invert * {

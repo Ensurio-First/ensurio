@@ -19,6 +19,7 @@ import PolicyReviewPage from './pages/PolicyReviewPage'
 import QuoteModal from './components/QuoteModal'
 import { LeadJourneyProvider } from './context/LeadJourneyContext'
 import { trackPageView } from './lib/analytics'
+import { trackSalesIQPage } from './lib/salesiq'
 import PrototypeHome from './prototype/home/index.jsx'
 
 /*
@@ -39,7 +40,12 @@ function ScrollToTop() {
   // gtag fires page_view once on load. Every client-side navigation after that
   // is invisible to GA unless we report it, which would have made almost the
   // whole site look like it got no traffic.
-  useEffect(() => { trackPageView(pathname + hash) }, [pathname, hash])
+  // SalesIQ has the same blind spot, for the same reason — an operator would
+  // otherwise see whichever page the visitor first landed on.
+  useEffect(() => {
+    trackPageView(pathname + hash)
+    trackSalesIQPage(pathname + hash)
+  }, [pathname, hash])
 
   useEffect(() => {
     if (!hash) {

@@ -4,6 +4,39 @@ All notable changes to the Insure First / Ensurio website are documented here.
 Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 The site is a Vite + React SPA deployed on Vercel at **insurefirst.ae**.
 
+## 2026-08-01 — Zoho SalesIQ live chat
+
+### Added
+
+- **SalesIQ chat widget** (Zoho One, EU datacentre). Loaded from `index.html`,
+  which also owns the `ready` callback — it must be assigned before the widget
+  script runs, and `src/lib/salesiq.js` loads with the React bundle, far too late
+  to win that race. The callback drains a queue of calls made while the widget
+  was still loading.
+- **`src/lib/salesiq.js`** — wrapper over the widget's JS API. No-ops entirely
+  when the widget is absent (ad blockers, local dev), on the same rule as
+  `analytics.js`: chat failing must never cost a lead.
+- **Visitor identification.** `ToolCapture` hands the lead's name, email, phone,
+  score, tool and reference to the widget on submit, so an operator opening the
+  chat sees a named lead rather than "Visitor 42".
+- **SPA page tracking.** Verified in a browser: SalesIQ fires **no** request on a
+  client-side route change, so its idea of the visitor's location freezes on the
+  landing page. `trackSalesIQPage` refreshes a `Current page` visitor field from
+  the same effect that reports to GA4.
+
+### Notes
+
+- `$zoho.salesiq.reset()` reads like the SPA navigation hook and is not used: it
+  clears cookies, ends a connected chat abruptly and makes the person a new
+  visitor. On a route change it would hang up on someone mid-conversation.
+- `visitor.name()` takes the **object** form `{firstname, lastname}`. The string
+  form most published examples show puts the entire name into `lastname` on this
+  widget build — confirmed by probing the live API.
+- `visitor.cpage()` / `visitor.pagetitle()` exist on the widget but are
+  undocumented and returned nothing when probed; not relied on.
+- Print stylesheet hides the `zsiq`-prefixed elements, and the bubble is lifted
+  66px at ≤1280px to clear the sticky Call/WhatsApp bar.
+
 ## 2026-08-01 — Interactive tools, lead email pipeline, analytics
 
 The largest change to date: every page that previously ended in "Book a Free
