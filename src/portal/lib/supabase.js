@@ -93,7 +93,13 @@ export async function invokeFn(name, body = {}) {
   if (detail?.error === 'not-staff' || detail?.error === 'sign-in-required') {
     throw new Error('Your portal access could not be confirmed — try signing in again.')
   }
-  throw new Error(detail?.error || error.message || 'Request failed.')
+
+  // Zoho's own error code says far more than the HTTP status does, so it goes
+  // on screen rather than only into the logs.
+  const zoho = detail?.zohoCode
+    ? ` [${detail.zohoCode}${detail.zohoDetails?.api_name ? `: ${detail.zohoDetails.api_name}` : ''}]`
+    : ''
+  throw new Error(`${detail?.error || error.message || 'Request failed.'}${zoho}`)
 }
 
 /**

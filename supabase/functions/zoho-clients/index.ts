@@ -130,13 +130,53 @@ function presentable(record: Record<string, unknown>): Array<{ key: string; valu
     .sort((a, b) => priorityOf(a.key) - priorityOf(b.key) || a.key.localeCompare(b.key))
 }
 
+/*
+ * Which fields a module actually has.
+ *
+ * v7 makes `fields` MANDATORY when fetching all records — omitting it is a 400
+ * REQUIRED_PARAM_MISSING, not a default-everything. (v2 allowed it, which is why
+ * most examples online do not pass it.) Asking for a field the module does not
+ * have is also an error, and the client module might be Accounts or Contacts
+ * with entirely different names, so the list is read from the module rather than
+ * hardcoded. Cached per instance; layouts change about never.
+ */
+const fieldCache = new Map<string, Set<string>>()
+
+async function fieldsFor(module: string): Promise<Set<string>> {
+  const hit = fieldCache.get(module)
+  if (hit) return hit
+
+  const res = await zohoFetch<{ fields?: Array<{ api_name: string }> }>(
+    `/crm/v7/settings/fields?module=${encodeURIComponent(module)}`,
+  )
+  const set = new Set((res.fields ?? []).map((f) => f.api_name))
+  fieldCache.set(module, set)
+  return set
+}
+
+// Ordered by usefulness in a list row. Whichever of these the module has is
+// what gets requested; the rest are ignored rather than erroring.
+const LIST_FIELDS = [
+  'Account_Name', 'Full_Name', 'Last_Name', 'First_Name', 'Company',
+  'Email', 'Primary_Email', 'Secondary_Email',
+  'Phone', 'Mobile',
+  'Billing_City', 'Mailing_City', 'Website', 'Account_Type',
+]
+
 async function listClients(query: string, page: number) {
   const per = 50
+
+  const available = await fieldsFor(CLIENT_MODULE)
+  const chosen = LIST_FIELDS.filter((f) => available.has(f))
+  // A module with none of the expected names still has to return something
+  // rather than a 400, so fall back to whatever it does have.
+  const fields = (chosen.length ? chosen : [...available].slice(0, 10)).join(',')
+
   // search vs plain list: Zoho's word search covers name, email and phone in one
   // call, which is what the box above the table is for.
   const path = query
-    ? `/crm/v7/${CLIENT_MODULE}/search?word=${encodeURIComponent(query)}&page=${page}&per_page=${per}`
-    : `/crm/v7/${CLIENT_MODULE}?page=${page}&per_page=${per}&sort_by=Modified_Time&sort_order=desc`
+    ? `/crm/v7/${CLIENT_MODULE}/search?word=${encodeURIComponent(query)}&page=${page}&per_page=${per}&fields=${encodeURIComponent(fields)}`
+    : `/crm/v7/${CLIENT_MODULE}?page=${page}&per_page=${per}&sort_by=Modified_Time&sort_order=desc&fields=${encodeURIComponent(fields)}`
 
   const res = await zohoFetch<{
     data?: Array<Record<string, unknown>>
@@ -238,10 +278,15 @@ Deno.serve(async (req: Request) => {
     return json({ ...result, clientModule: CLIENT_MODULE })
   } catch (e) {
     const status = e instanceof ZohoError ? e.status : 500
-    console.error('zoho-clients failed', e)
+    const detail = e instanceof ZohoError ? (e.detail as Record<string, unknown> | undefined) : undefined
+    console.error('zoho-clients failed', e instanceof Error ? e.message : e, detail)
     return json(
       {
         error: e instanceof Error ? e.message : 'failed',
+        // Zoho's own code and details, surfaced so the next failure diagnoses
+        // itself on screen instead of needing a trip through the logs.
+        zohoCode: detail?.code ?? null,
+        zohoDetails: detail?.details ?? null,
         // 429 is Zoho's rate limit; the UI says something useful about it.
         rateLimited: status === 429,
       },

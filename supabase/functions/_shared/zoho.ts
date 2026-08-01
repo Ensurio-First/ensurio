@@ -114,10 +114,17 @@ export async function zohoFetch<T = unknown>(
   const json = await res.json().catch(() => ({}))
 
   if (!res.ok) {
+    const body = json as Record<string, unknown>
+    /*
+     * Zoho's own code and details are the only parts worth propagating — the
+     * HTTP status alone sends you looking in the wrong place. REQUIRED_PARAM_MISSING
+     * with details.api_name says exactly which parameter, which is the difference
+     * between a fix and an afternoon.
+     */
     throw new ZohoError(
-      `zoho ${path} returned ${res.status}`,
+      `zoho ${path} returned ${res.status}${body?.code ? ` (${body.code})` : ''}`,
       res.status === 429 ? 429 : 502,
-      { code: (json as Record<string, unknown>)?.code ?? null },
+      { code: body?.code ?? null, message: body?.message ?? null, details: body?.details ?? null },
     )
   }
 
