@@ -144,6 +144,21 @@ const OPTIONS = [
   { value: ANSWERS.UNSURE, label: 'Not sure', Icon: HelpCircle, tone: '#F59E0B' },
 ]
 
+/*
+ * How long ago it happened is the single most decisive fact about a fresh
+ * claim, and the visitor always knows it. Asked after the checklist rather
+ * than before it — help first, question second — and phrased so it never
+ * asserts a specific window, because those differ per policy and getting one
+ * wrong here would be worse than saying nothing.
+ */
+const SINCE = [
+  { value: 'today', label: 'Today', urgency: 'ok', note: 'You are almost certainly still inside your notification window. Notify in writing today and it stays that way.' },
+  { value: 'yesterday', label: 'Yesterday', urgency: 'ok', note: 'Still early. Notify in writing today rather than tomorrow — the window is measured from the incident, not from when you got organised.' },
+  { value: 'week', label: '2–7 days ago', urgency: 'warn', note: 'Several days have already gone. If you have not notified in writing yet, that is the single most urgent thing on your list today.' },
+  { value: 'fortnight', label: 'Over a week ago', urgency: 'warn', note: 'Some policies set notification windows shorter than this. Confirm what yours actually allows before you do anything else — and notify now regardless.' },
+  { value: 'month', label: 'Over a month ago', urgency: 'high', note: 'Late notification is where insurers begin. It can often still be dealt with, but it needs handling deliberately rather than hoping it goes unnoticed — this is worth a call today.' },
+]
+
 const PHONE_DISPLAY = '050 976 5976'
 const PHONE_HREF = 'tel:+971509765976'
 
@@ -155,6 +170,7 @@ export default function ClaimStageRouter({ block, isMobile }) {
   const [index, setIndex] = useState(0)
   const [answers, setAnswers] = useState({})
   const [phase, setPhase] = useState('stage') // stage | checklist | question | result | done
+  const [since, setSince] = useState(null)
   const [receipt, setReceipt] = useState(null)
 
   const questions = useMemo(
@@ -204,7 +220,9 @@ export default function ClaimStageRouter({ block, isMobile }) {
   const advance = () =>
     (index === questions.length - 1 ? setPhase('result') : setIndex((i) => i + 1))
 
-  const restart = () => { setStage(null); setPhase('stage'); setAnswers({}); setIndex(0) }
+  const restart = () => { setStage(null); setPhase('stage'); setAnswers({}); setIndex(0); setSince(null) }
+
+  const sinceOption = SINCE.find((o) => o.value === since)
 
   const CallLink = ({ strong }) => (
     <a href={PHONE_HREF} style={strong
@@ -276,12 +294,38 @@ export default function ClaimStageRouter({ block, isMobile }) {
             ))}
           </ol>
 
-          <div style={{ background: 'var(--navy)', color: '#fff', padding: isMobile ? '1.1rem 1.25rem' : '1.25rem 1.5rem', display: 'flex', gap: '12px', alignItems: 'flex-start', marginTop: '0.5rem' }}>
-            <ShieldAlert size={18} color="var(--teal)" style={{ flexShrink: 0, marginTop: '2px' }} />
-            <div style={{ fontFamily: 'var(--font-body)', fontSize: '14px', lineHeight: 1.65, color: 'rgba(255,255,255,0.86)' }}>
-              Your notification clock has already started. If you are not certain what your policy allows,
-              that is the single most urgent thing to establish today — not next week.
+          <div style={{ background: 'var(--navy)', color: '#fff', padding: isMobile ? '1.1rem 1.25rem' : '1.25rem 1.5rem', marginTop: '0.5rem' }}>
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+              <ShieldAlert size={18} color="var(--teal)" style={{ flexShrink: 0, marginTop: '2px' }} />
+              <div style={{ fontFamily: 'var(--font-body)', fontSize: '14px', lineHeight: 1.65, color: 'rgba(255,255,255,0.86)' }}>
+                Your notification clock started at the incident, not today. One question so we know how much
+                room you have left:
+              </div>
             </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(5, 1fr)', gap: '6px', marginTop: '1rem' }}>
+              {SINCE.map((o) => {
+                const on = since === o.value
+                return (
+                  <button key={o.value} type="button" onClick={() => { startCheck(); setSince(o.value) }}
+                    style={{ padding: '10px 6px', fontFamily: 'var(--font-body)', fontSize: '12.5px', fontWeight: 700, cursor: 'pointer', border: `1px solid ${on ? 'var(--teal)' : 'rgba(255,255,255,0.3)'}`, background: on ? 'var(--teal)' : 'transparent', color: '#fff' }}>
+                    {o.label}
+                  </button>
+                )
+              })}
+            </div>
+
+            {sinceOption && (
+              <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+                style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.2)' }}>
+                <div style={{ fontFamily: 'var(--font-body)', fontSize: '10.5px', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: sinceOption.urgency === 'high' ? '#FCA5A5' : sinceOption.urgency === 'warn' ? '#FCD34D' : 'var(--teal)', marginBottom: '6px' }}>
+                  {sinceOption.urgency === 'high' ? 'Act today' : sinceOption.urgency === 'warn' ? 'Time is against you' : 'You are in good time'}
+                </div>
+                <div style={{ fontFamily: 'var(--font-body)', fontSize: '14px', lineHeight: 1.65, color: 'rgba(255,255,255,0.9)' }}>
+                  {sinceOption.note}
+                </div>
+              </motion.div>
+            )}
           </div>
 
           <div style={s.divider}>
@@ -292,12 +336,17 @@ export default function ClaimStageRouter({ block, isMobile }) {
                 source="claim-stage-router"
                 toolId="claim-stage-fresh-loss"
                 reportTitle="Your first-48-hours claim checklist"
-                message="Fresh loss — requested claims support via the stage router."
-                details={{ stage: 'Fresh loss' }}
+                message={`Fresh loss${sinceOption ? ` — incident ${sinceOption.label.toLowerCase()}` : ''}. Requested claims support via the stage router.`}
+                details={{ stage: 'Fresh loss', incidentWhen: sinceOption?.label ?? 'not stated' }}
                 report={{
                   headline: 'A copy of your first-48-hours checklist.',
-                  summary: 'Fresh loss — advisor requested.',
-                  findings: FIRST_48.map((f) => ({ title: f.action, detail: f.why, severity: 'high' })),
+                  summary: sinceOption
+                    ? `Fresh loss — incident ${sinceOption.label.toLowerCase()}.`
+                    : 'Fresh loss — advisor requested.',
+                  findings: [
+                    ...(sinceOption ? [{ title: `Incident was ${sinceOption.label.toLowerCase()}`, detail: sinceOption.note, severity: sinceOption.urgency === 'ok' ? 'low' : 'high' }] : []),
+                    ...FIRST_48.map((f) => ({ title: f.action, detail: f.why, severity: 'medium' })),
+                  ],
                 }}
                 heading="Want someone on this with you?"
                 note="We'll check your notification deadline, take the adjuster off your hands, and build the claim properly from day one."

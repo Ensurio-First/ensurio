@@ -11,6 +11,7 @@ import ProtectionGap from '../../../components/interactive/ProtectionGap'
 import RiskRegister from '../../../components/interactive/RiskRegister'
 import ClaimStageRouter from '../../../components/interactive/ClaimStageRouter'
 import scrollToCheck, { CHECK_ANCHOR_ID } from '../../../components/interactive/scrollToCheck'
+import { useLeadJourney } from '../../../context/LeadJourneyContext'
 
 /*
  * Shared content-block system. Drives both the blog (BlogPostPage) and the
@@ -168,6 +169,13 @@ function Steps({ block, isMobile }) {
 
 /* ── Action: inline CTA band ── */
 function CtaBand({ block, isMobile }) {
+  // Every page carries one of these mid-article and a PageCtaBand at the foot.
+  // The closing band already stands down once the visitor has submitted; this
+  // one used to keep selling to someone who had just bought, which is the exact
+  // repetition the on-page tools were meant to end.
+  const { state } = useLeadJourney()
+  if (state === 'submitted') return null
+
   return (
     <div style={{ background: 'linear-gradient(120deg, var(--navy), var(--navy-mid))', color: '#fff', borderLeft: '3px solid var(--teal)', padding: isMobile ? '1.5rem 1.25rem' : '1.85rem 2rem', margin: '1rem 0 1.75rem', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '1.25rem' }}>
       <div>
