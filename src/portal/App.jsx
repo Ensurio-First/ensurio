@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { supabase, isConfigured, isStaff } from './lib/supabase'
 import SignIn from './SignIn'
+import Shell from './Shell'
 import LeadsView from './LeadsView'
+import ClientsView from './ClientsView'
 
 /*
  * Session gate.
@@ -15,6 +17,7 @@ export default function App() {
   const [session, setSession] = useState(null)
   const [staff, setStaff] = useState(null) // null = not yet checked
   const [ready, setReady] = useState(false)
+  const [tab, setTab] = useState('leads')
 
   useEffect(() => {
     if (!supabase) { setReady(true); return }
@@ -66,7 +69,11 @@ export default function App() {
     )
   }
 
-  return <LeadsView session={session} />
+  return (
+    <Shell email={session.user.email} tab={tab} onTab={setTab}>
+      {tab === 'clients' ? <ClientsView /> : <LeadsView />}
+    </Shell>
+  )
 }
 
 /* ── Shared shells ───────────────────────────────────────────────────── */

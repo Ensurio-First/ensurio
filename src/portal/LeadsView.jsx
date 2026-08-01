@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
-import { ShieldCheck, LogOut, Search, RefreshCw, X, Mail, Phone, FileText, AlertTriangle } from 'lucide-react'
-import { supabase, fetchLeads, updateLeadStatus } from './lib/supabase'
+import { Search, RefreshCw, X, Mail, Phone, FileText, AlertTriangle } from 'lucide-react'
+import { fetchLeads, updateLeadStatus } from './lib/supabase'
 
 /*
  * The leads dashboard.
@@ -31,7 +31,7 @@ const STATUS_STYLE = {
 const dateFmt = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
 const timeFmt = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false })
 
-export default function LeadsView({ session }) {
+export default function LeadsView() {
   const [leads, setLeads] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -111,32 +111,29 @@ export default function LeadsView({ session }) {
   }, [filtered])
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--light-bg)' }}>
-      <Header email={session.user.email} />
+    <>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px', marginBottom: '1.25rem' }}>
+        <StatTile label="Leads shown" value={stats.total} />
+        <StatTile label="Last 7 days" value={stats.week} />
+        <StatTile label="Awaiting contact" value={stats.untouched} />
+        <StatTile label="Average score" value={stats.avgScore ?? '—'} />
+      </div>
 
-      <main style={{ maxWidth: '1400px', margin: '0 auto', padding: '1.5rem 1.25rem 3rem' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px', marginBottom: '1.25rem' }}>
-          <StatTile label="Leads shown" value={stats.total} />
-          <StatTile label="Last 7 days" value={stats.week} />
-          <StatTile label="Awaiting contact" value={stats.untouched} />
-          <StatTile label="Average score" value={stats.avgScore ?? '—'} />
-        </div>
+      <Filters
+        q={q} setQ={setQ}
+        status={status} setStatus={setStatus}
+        tool={tool} setTool={setTool}
+        tools={tools}
+        onRefresh={load} loading={loading}
+      />
 
-        <Filters
-          q={q} setQ={setQ}
-          status={status} setStatus={setStatus}
-          tool={tool} setTool={setTool}
-          tools={tools}
-          onRefresh={load} loading={loading}
-        />
+      {error && (
+        <p role="alert" style={{ padding: '14px 16px', background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 'var(--radius-sm)', color: 'var(--danger)', fontSize: '13.5px', marginBottom: '1rem' }}>
+          {error}
+        </p>
+      )}
 
-        {error && (
-          <p role="alert" style={{ padding: '14px 16px', background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 'var(--radius-sm)', color: 'var(--danger)', fontSize: '13.5px', marginBottom: '1rem' }}>
-            {error}
-          </p>
-        )}
-
-        <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
+      <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
           <div style={{ flex: 1, minWidth: 0, background: 'var(--white)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
             <div style={{ overflowX: 'auto' }}>
               <table className="portal-table">
@@ -201,35 +198,13 @@ export default function LeadsView({ session }) {
               saving={savingStatus}
               statusError={statusError}
             />
-          )}
-        </div>
-      </main>
-    </div>
+        )}
+      </div>
+    </>
   )
 }
 
 /* ── Pieces ──────────────────────────────────────────────────────────── */
-
-function Header({ email }) {
-  return (
-    <header style={{ background: 'var(--navy)', padding: '0 1.25rem' }}>
-      <div style={{ maxWidth: '1400px', margin: '0 auto', height: '58px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '9px', minWidth: 0 }}>
-          <ShieldCheck size={18} color="var(--teal)" />
-          <span style={{ fontFamily: 'var(--font-heading)', fontSize: '14.5px', fontWeight: 800, color: '#fff' }}>Insure First</span>
-          <span style={{ fontSize: '12.5px', color: 'rgba(255,255,255,0.55)' }}>Leads</span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', minWidth: 0 }}>
-          <span style={{ fontSize: '12.5px', color: 'rgba(255,255,255,0.7)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{email}</span>
-          <button onClick={() => supabase.auth.signOut()} title="Sign out"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '7px 12px', background: 'rgba(255,255,255,0.1)', color: '#fff', border: 'none', borderRadius: 'var(--radius-sm)', fontSize: '12.5px', fontWeight: 600, cursor: 'pointer' }}>
-            <LogOut size={14} /> Sign out
-          </button>
-        </div>
-      </div>
-    </header>
-  )
-}
 
 // Label in sentence case, value in the same sans as everything else, with
 // proportional figures — tabular-nums is for columns, not display numbers.

@@ -68,6 +68,35 @@ export async function fetchLeads() {
 }
 
 /**
+ * Call an edge function with the signed-in staff session.
+ *
+ * supabase.functions.invoke attaches the session token, which is what the
+ * function's staff check reads — so authorisation is the portal_staff allowlist
+ * in both places, with no second rule to keep in step.
+ *
+ * invoke() reports a non-2xx as an opaque "Edge Function returned a non-2xx
+ * status code", which tells a person nothing. The real body is on error.context,
+ * so it is unwrapped here and the function's own message surfaces instead.
+ */
+export async function invokeFn(name, body = {}) {
+  if (!supabase) throw new Error('not-configured')
+
+  const { data, error } = await supabase.functions.invoke(name, { body })
+  if (!error) return data
+
+  let detail = null
+  try { detail = await error.context?.json() } catch { /* not json */ }
+
+  if (detail?.rateLimited) {
+    throw new Error('Zoho is rate limiting us. Wait a minute and try again.')
+  }
+  if (detail?.error === 'not-staff' || detail?.error === 'sign-in-required') {
+    throw new Error('Your portal access could not be confirmed — try signing in again.')
+  }
+  throw new Error(detail?.error || error.message || 'Request failed.')
+}
+
+/**
  * Move a lead to a new workflow stage.
  *
  * `lead_status` is the only column staff hold an UPDATE grant on, so this is
