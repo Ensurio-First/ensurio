@@ -19,12 +19,31 @@ import { createClient } from 'jsr:@supabase/supabase-js@2'
 
 const RESEND_ENDPOINT = 'https://api.resend.com/emails'
 
-const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY') ?? ''
-const FROM_EMAIL = Deno.env.get('LEAD_FROM_EMAIL') ?? 'Insure First <noreply@insurefirst.ae>'
-const NOTIFY_EMAIL = Deno.env.get('LEAD_NOTIFY_EMAIL') ?? 'consult@insurefirst.ae'
-const SITE_URL = (Deno.env.get('SITE_URL') ?? 'https://www.insurefirst.ae').replace(/\/$/, '')
-const PHONE_DISPLAY = Deno.env.get('LEAD_PHONE_DISPLAY') ?? '050 976 5976'
-const PHONE_E164 = Deno.env.get('LEAD_PHONE_E164') ?? '+971509765976'
+/*
+ * Read config per request, not at module scope. Module-level Deno.env.get()
+ * is evaluated once when the isolate boots, so a secret added afterwards is
+ * invisible to any isolate still warm — which makes "I saved the secret but
+ * nothing sends" impossible to diagnose. Reading per request costs nothing.
+ */
+function config() {
+  const env = (k: string, fallback = '') => Deno.env.get(k)?.trim() || fallback
+  // LEAD_NOTIFY_EMAIL takes a comma-separated list, so the team can add or
+  // remove recipients from the dashboard without touching this function.
+  const notify = env('LEAD_NOTIFY_EMAIL', 'consult@insurefirst.ae')
+    .split(',')
+    .map((a) => a.trim())
+    .filter(Boolean)
+  return {
+    resendKey: env('RESEND_API_KEY'),
+    from: env('LEAD_FROM_EMAIL', 'Insure First <noreply@insurefirst.ae>'),
+    notify: notify.length ? notify : ['consult@insurefirst.ae'],
+    siteUrl: env('SITE_URL', 'https://www.insurefirst.ae').replace(/\/$/, ''),
+    phoneDisplay: env('LEAD_PHONE_DISPLAY', '050 976 5976'),
+    phoneE164: env('LEAD_PHONE_E164', '+971509765976'),
+  }
+}
+
+type Config = ReturnType<typeof config>
 
 // Brand tokens, mirrored from src/styles/tokens.css (email clients need them inline).
 const NAVY = '#0D1B4B'
@@ -97,8 +116,10 @@ function leadEmailHtml(opts: {
   reference: string
   report: Report | null
   preferredTime: string | null
+  cfg: Config
 }): string {
-  const { name, reportTitle, reference, report, preferredTime } = opts
+  const { name, reportTitle, reference, report, preferredTime, cfg } = opts
+  const { siteUrl: SITE_URL, phoneDisplay: PHONE_DISPLAY, phoneE164: PHONE_E164 } = cfg
   const firstName = name.trim().split(/\s+/)[0] || 'there'
   const score = typeof report?.score === 'number' ? report.score : null
   const band = score !== null ? scoreBand(score) : null
@@ -252,14 +273,14 @@ function teamEmailHtml(row: Record<string, unknown>, report: Report | null): str
 
 /* ── Resend ──────────────────────────────────────────────────────────── */
 
-async function sendEmail(payload: Record<string, unknown>): Promise<void> {
+async function sendEmail(cfg: Config, payload: Record<string, unknown>): Promise<void> {
   const res = await fetch(RESEND_ENDPOINT, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${RESEND_API_KEY}`,
+      Authorization: `Bearer ${cfg.resendKey}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ from: FROM_EMAIL, ...payload }),
+    body: JSON.stringify({ from: cfg.from, ...payload }),
   })
   if (!res.ok) {
     throw new Error(`Resend ${res.status}: ${(await res.text()).slice(0, 300)}`)
@@ -330,6 +351,7 @@ Deno.serve(async (req: Request) => {
     email_status: 'pending',
   }
 
+  const cfg = config()
   const supabase = createClient(
     Deno.env.get('SUPABASE_URL')!,
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
@@ -351,23 +373,41 @@ Deno.serve(async (req: Request) => {
   }
 
   let emailStatus = 'skipped'
-  if (RESEND_API_KEY) {
+  // Never the value — only whether it arrived and roughly how long it is, which
+  // is enough to tell "not saved" apart from "saved under the wrong name".
+  const reasons: string[] = []
+
+  if (!cfg.resendKey) {
+    const visible = Object.keys(Deno.env.toObject()).filter((k) => /^(LEAD_|SITE_|RESEND)/.test(k))
+    console.error(
+      `RESEND_API_KEY not visible to this function. Config keys the function can see: ${visible.join(', ') || '(none)'}`,
+    )
+    reasons.push('no-resend-key')
+  } else {
+    console.log(`RESEND_API_KEY present (${cfg.resendKey.length} chars), from=${cfg.from}, notify=${cfg.notify.join(', ')}`)
+
     const [toLead, toTeam] = await Promise.allSettled([
-      sendEmail({
+      sendEmail(cfg, {
         to: [row.email],
         subject: `${reportTitle} — ${reference}`,
-        html: leadEmailHtml({ name, reportTitle, reference, report, preferredTime: row.preferred_time }),
+        html: leadEmailHtml({ name, reportTitle, reference, report, preferredTime: row.preferred_time, cfg }),
       }),
-      sendEmail({
-        to: [NOTIFY_EMAIL],
+      sendEmail(cfg, {
+        to: cfg.notify,
         reply_to: [row.email],
         subject: `New lead: ${name}${row.service ? ` — ${row.service}` : ''}${row.score !== null ? ` (score ${row.score})` : ''}`,
         html: teamEmailHtml({ ...row, id: inserted.id }, report),
       }),
     ])
 
-    if (toLead.status === 'rejected') console.error('lead email failed', toLead.reason)
-    if (toTeam.status === 'rejected') console.error('team email failed', toTeam.reason)
+    if (toLead.status === 'rejected') {
+      console.error('lead email failed', toLead.reason)
+      reasons.push(`lead: ${toLead.reason?.message ?? toLead.reason}`)
+    }
+    if (toTeam.status === 'rejected') {
+      console.error('team email failed', toTeam.reason)
+      reasons.push(`team: ${toTeam.reason?.message ?? toTeam.reason}`)
+    }
 
     emailStatus =
       toLead.status === 'fulfilled' && toTeam.status === 'fulfilled' ? 'sent'
@@ -379,7 +419,14 @@ Deno.serve(async (req: Request) => {
   await supabase.from('leads').update({ email_status: emailStatus }).eq('id', inserted.id)
 
   return new Response(
-    JSON.stringify({ ok: true, id: inserted.id, reference, emailed: emailStatus === 'sent' }),
+    JSON.stringify({
+      ok: true,
+      id: inserted.id,
+      reference,
+      emailed: emailStatus === 'sent',
+      status: emailStatus,
+      ...(reasons.length ? { reasons } : {}),
+    }),
     { headers: { ...cors, 'Content-Type': 'application/json' } },
   )
 })

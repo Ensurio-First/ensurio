@@ -50,7 +50,7 @@ into Supabase, so an advisor opens a pre-briefed lead.
 
 ---
 
-## 🔴 Lead email pipeline — code is DONE, needs your Resend + DNS setup
+## ✅ Lead email pipeline — LIVE (verified 1 Aug 2026)
 
 Every submission now goes through the **`submit-lead` Edge Function** instead of
 inserting straight from the browser. The function:
@@ -73,39 +73,61 @@ and in the email so a caller can quote it.
 **Verified working:** valid payload → 200 + row + reference; honeypot → 200 +
 nothing saved; invalid payload → 400.
 
-### ⛔ Two manual steps before any email actually sends
+Sending is via **Resend**, from a verified domain. Configuration lives in
+Supabase → Edge Functions → Secrets (never in `.env` — these are server-side):
 
-Until these are done, `email_status` will read `skipped`: leads save correctly
-and the UI honestly says "will be sent within one business day" rather than
-claiming an email was sent.
+| Secret | Required | Default if unset |
+|---|---|---|
+| `RESEND_API_KEY` | ✅ | — (no email sent, `email_status = 'skipped'`) |
+| `LEAD_FROM_EMAIL` | ✅ | `Insure First <noreply@insurefirst.ae>` — **must be on the Resend-verified domain or every send is rejected** |
+| `LEAD_NOTIFY_EMAIL` | | `consult@insurefirst.ae` — **comma-separated list**, e.g. `webservices@insurefirst.ae,consult@insurefirst.ae` |
+| `SITE_URL` | | `https://www.insurefirst.ae` |
+| `LEAD_PHONE_DISPLAY` / `LEAD_PHONE_E164` | | `050 976 5976` / `+971509765976` |
 
-**1. Resend account + domain verification**
-   - Create a [Resend](https://resend.com) account and add `insurefirst.ae`.
-   - Add the SPF and DKIM DNS records Resend gives you. **Without this, mail to
-     Gmail/Outlook lands in spam or is rejected outright** — this is the single
-     highest-risk item in the whole setup.
-   - Create an API key.
+### Diagnosing a failed send
 
-**2. Set the Edge Function secrets**
-   Supabase → Project Settings → Edge Functions → Secrets:
+The function returns `status` and `reasons` in its HTTP response and records the
+outcome in `leads.email_status`:
 
-   | Secret | Required | Default if unset |
-   |---|---|---|
-   | `RESEND_API_KEY` | ✅ | — (no email sent) |
-   | `LEAD_FROM_EMAIL` | | `Insure First <noreply@insurefirst.ae>` |
-   | `LEAD_NOTIFY_EMAIL` | | `consult@insurefirst.ae` |
-   | `SITE_URL` | | `https://www.insurefirst.ae` |
-   | `LEAD_PHONE_DISPLAY` / `LEAD_PHONE_E164` | | `050 976 5976` / `+971509765976` |
+| `email_status` | Meaning |
+|---|---|
+| `sent` | both emails accepted |
+| `lead-only` | visitor got theirs; a notify address failed |
+| `team-only` | team got theirs; the visitor's failed — usually `LEAD_FROM_EMAIL` is not on the verified domain |
+| `failed` | Resend rejected both — usually a bad or missing key |
+| `skipped` | `RESEND_API_KEY` not visible to the function |
+| `direct-insert` | the edge function was unreachable; lead saved but no email |
 
-   Then submit any form and confirm `email_status = 'sent'` in the `leads` table.
+Two traps that cost real time during setup, both now guarded against:
 
-### After it's verified
+1. **The secret NAME is the variable name.** A key saved as `Insurefirst_key`
+   is invisible to `Deno.env.get('RESEND_API_KEY')`. Vault secrets (Database →
+   Vault) are a different store entirely and Edge Functions cannot read them.
+2. **Verifying a domain in Resend does not change what the site sends *from*.**
+   `LEAD_FROM_EMAIL` has to be updated separately, or Resend keeps treating the
+   send as a sandbox test and will only deliver to the account owner.
 
-- **Drop the anon INSERT policy** so leads can only arrive via the function:
-  `drop policy "website can insert leads" on public.leads;`
-  Do this only once `email_status = 'sent'` is confirmed, since it disables the
-  direct-insert fallback.
-- Consider a Resend webhook for bounces/complaints.
+### Table security — hardened 1 Aug 2026
+
+`public.leads` now has **RLS enabled with zero policies**, so the anon key cannot
+insert. Leads arrive only via the edge function, which uses the service-role key
+and bypasses RLS. Verify with:
+
+```sql
+select relrowsecurity,
+       (select count(*) from pg_policies
+         where schemaname='public' and tablename='leads') as policies
+from pg_class where relname = 'leads';   -- expect: true, 0
+```
+
+Consequence: the `direct-insert` fallback in `submitLead()` can no longer write.
+If the edge function is unreachable the form shows an error rather than quietly
+saving the lead — deliberate, but it means **function downtime costs leads**.
+Restore a fallback by re-adding an anon INSERT policy if that trade ever looks wrong.
+
+### Still open
+
+- Consider a Resend webhook for bounces and complaints.
 
 ### Not done yet
 
@@ -188,7 +210,5 @@ dashboard). Verify by submitting the contact form once.
   topic-specific photos (esp. Group Medical, Professional Indemnity, personal lines).
 - **Content polish.** Page and blog copy is solid draft quality — a final pass with
   the client's real figures, claims data, and named articles would sharpen it.
-- **Migrate legacy forms.** The contact section and the scroll popup still reference
-  unconfigured EmailJS — point them at `submitLead()` so everything flows to the same
-  `leads` table. (The diagnostic tool's lead form is done — it now sends its answers
-  and computed report through as well.)
+- ~~**Migrate legacy forms.**~~ Done — no EmailJS references remain anywhere in
+  `src/`. Every form on the site routes through `submitLead()`.

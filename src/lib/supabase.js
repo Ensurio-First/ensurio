@@ -78,6 +78,12 @@ export async function submitLead(lead) {
  * Last-resort path: write straight to the table with the anon key, exactly as
  * the site did before the edge function existed. No email is sent — the row is
  * tagged `email_status: 'direct-insert'` so these can be found and followed up.
+ *
+ * NOTE: as of 1 Aug 2026 the `leads` table has RLS on with no policies, so the
+ * anon key can no longer insert and this path throws instead of saving. That is
+ * deliberate — it closes the public write path, and a visitor seeing an error
+ * beats a lead disappearing silently. Kept in place because it starts working
+ * again the moment an anon INSERT policy is restored.
  */
 async function directInsert(lead) {
   const { data, error } = await supabase
