@@ -66,3 +66,35 @@ export async function fetchLeads() {
   if (error) throw error
   return data ?? []
 }
+
+/**
+ * Move a lead to a new workflow stage.
+ *
+ * `lead_status` is the only column staff hold an UPDATE grant on, so this is
+ * the whole of what the portal can write. `lead_status_updated_at` and
+ * `_by` come back stamped by a database trigger — they are not sent from here,
+ * and could not be if we tried.
+ *
+ * @param {string} id      Lead uuid
+ * @param {string} status  received | contacted | in-review | advising | closed
+ * @returns {Promise<{id: string, lead_status: string, lead_status_updated_at: string, lead_status_updated_by: string}>}
+ */
+export async function updateLeadStatus(id, status) {
+  if (!supabase) throw new Error('not-configured')
+
+  const { data, error } = await supabase
+    .from('leads')
+    .update({ lead_status: status })
+    .eq('id', id)
+    .select('id, lead_status, lead_status_updated_at, lead_status_updated_by')
+    .single()
+
+  // RLS returns no rows rather than an error when the caller is not staff, and
+  // .single() turns that into PGRST116. Say so plainly instead of surfacing a
+  // Postgrest code to someone trying to mark a call as made.
+  if (error) {
+    if (error.code === 'PGRST116') throw new Error('Not allowed — your access may have been revoked.')
+    throw error
+  }
+  return data
+}

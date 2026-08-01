@@ -4,6 +4,34 @@ All notable changes to the Insure First / Ensurio website are documented here.
 Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 The site is a Vite + React SPA deployed on Vercel at **insurefirst.ae**.
 
+## 2026-08-01 — Portal: lead status editing
+
+The leads view was read-only, so `lead_status` could only be changed with the
+service-role key — "Awaiting contact" counted every lead forever and the
+workflow stages were dead columns.
+
+### Added
+
+- **Stage control** in the detail panel. Buttons rather than a dropdown: five
+  options clicked dozens of times a day are worth one tap.
+- **`lead_status_updated_at` / `_by`**, stamped by a database trigger. The team
+  shares mailboxes (`webservices@`, `consult@`), so "it says contacted" is not
+  much use without knowing who said so.
+
+### Security
+
+- **The column grant is what scopes this, not the policy.** An RLS policy
+  decides which *rows* an update may touch, never which *columns* — and Supabase
+  grants UPDATE on every column to `authenticated` by default. Adding an UPDATE
+  policy alone would have let any staff account rewrite a lead's name, email,
+  report or reference number. UPDATE is now revoked wholesale and re-granted on
+  `lead_status` alone.
+- The audit columns have no grant at all, so they cannot be forged from the
+  client — the trigger is the only thing that writes them.
+- Verified against the live database: staff setting `lead_status` succeeds and
+  is stamped; staff setting `name` or `lead_status_updated_by` is denied at the
+  table; a non-allowlisted account updates 0 rows.
+
 ## 2026-08-01 — Internal staff portal (leads view)
 
 First slice of the internal dashboard, at `portal.insurefirst.ae`. Setup and
