@@ -19,13 +19,43 @@ import QuoteModal from './components/QuoteModal'
 import { LeadJourneyProvider } from './context/LeadJourneyContext'
 import PrototypeHome from './prototype/home/index.jsx'
 
-// Reset scroll to the top on route change, but leave in-page anchor
-// navigation (e.g. /services#solutions) to scroll to its target.
+/*
+ * Reset scroll on route change — and actually honour the hash when there is one.
+ *
+ * The browser only jumps to an #anchor on a full page load. On a client-side
+ * route change it does nothing, so links like /services#solutions were landing
+ * at whatever scroll position the previous page happened to be at. This bailed
+ * out of scrolling when a hash was present and left the rest to the browser,
+ * which meant nobody did it.
+ *
+ * The target may not be mounted on the same tick the route changes, so retry on
+ * the next frame before giving up and going to the top.
+ */
 function ScrollToTop() {
   const { pathname, hash } = useLocation()
+
   useEffect(() => {
-    if (!hash) window.scrollTo(0, 0)
+    if (!hash) {
+      window.scrollTo(0, 0)
+      return
+    }
+
+    let frame
+    const jump = (attemptsLeft) => {
+      const el = document.getElementById(hash.slice(1))
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      } else if (attemptsLeft > 0) {
+        frame = requestAnimationFrame(() => jump(attemptsLeft - 1))
+      } else {
+        window.scrollTo(0, 0)
+      }
+    }
+    jump(10)
+
+    return () => cancelAnimationFrame(frame)
   }, [pathname, hash])
+
   return null
 }
 

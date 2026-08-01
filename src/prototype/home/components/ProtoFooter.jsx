@@ -1,29 +1,35 @@
+import { Link } from 'react-router-dom'
 import logoImg from '../../../assets/insure-first-logo.svg'
 import { socialLinks } from '../data/index.js'
 import { useIsMobile } from '../hooks/useIsMobile.js'
 
+/*
+ * Every one of these was href="#" — the whole footer looked like navigation and
+ * went nowhere. Each label now points at the page that actually exists, and the
+ * hash targets are real ids (ScrollToTop honours them across route changes).
+ */
 const footerLinks = {
   Solutions: [
-    'Insurance Audit',
-    'Risk Assessment',
-    'Policy Review',
-    'Making a Claim',
-    'Claim Refused or Underpaid',
-    'Coverage Gap Analysis',
+    { label: 'Insurance Audit', href: '/solutions/insurance-audit' },
+    { label: 'Risk Assessment', href: '/solutions/risk-assessment' },
+    { label: 'Policy Review', href: '/solutions/policy-review' },
+    { label: 'Making a Claim', href: '/solutions/claims-advisory' },
+    { label: 'Claim Refused or Underpaid', href: '/solutions/legal-claims-support' },
+    { label: 'Coverage Gap Analysis', href: '/solutions/coverage-gap-analysis' },
   ],
   'Insurance Services': [
-    'Business Insurance',
-    'Specialist Insurance',
-    'Professional Protection',
-    'Personal Insurance',
+    { label: 'Business Insurance', href: '/insurance-services/business' },
+    { label: 'Specialist Insurance', href: '/insurance-services/specialist' },
+    { label: 'Professional Protection', href: '/insurance-services/professional' },
+    { label: 'Personal Insurance', href: '/insurance-services/personal' },
   ],
   Company: [
-    'About Us',
-    'Our Founder',
-    'How We Work',
-    'Industries We Serve',
-    'Insights',
-    'Contact',
+    { label: 'About Us', href: '/about' },
+    { label: 'Our Founder', href: '/#founder' },
+    { label: 'Who We Help', href: '/services#who-we-help' },
+    { label: 'Industries We Serve', href: '/#industries' },
+    { label: 'Insights', href: '/blog' },
+    { label: 'Contact', href: '/contact' },
   ],
 }
 
@@ -102,16 +108,16 @@ export default function ProtoFooter() {
                 {heading}
               </h4>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                {links.map((link) => (
-                  <li key={link} style={{ marginBottom: isMobile ? '0.45rem' : '0.6rem' }}>
-                    <a
-                      href="#"
+                {links.map(({ label, href }) => (
+                  <li key={label} style={{ marginBottom: isMobile ? '0.45rem' : '0.6rem' }}>
+                    <Link
+                      to={href}
                       style={{ fontFamily: 'var(--font-body)', fontSize: isMobile ? '13px' : '14px', color: 'rgba(255,255,255,0.65)', textDecoration: 'none' }}
                       onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--teal)' }}
                       onMouseLeave={(e) => { e.currentTarget.style.color = 'rgba(255,255,255,0.65)' }}
                     >
-                      {link}
-                    </a>
+                      {label}
+                    </Link>
                   </li>
                 ))}
               </ul>
