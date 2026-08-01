@@ -28,13 +28,29 @@ export default function ClientsView() {
   const [detailLoading, setDetailLoading] = useState(false)
   const [detailError, setDetailError] = useState('')
 
+  const [counts, setCounts] = useState(null)
+  const [countsPartial, setCountsPartial] = useState(false)
+
   const load = async (query, pageNum) => {
-    setLoading(true); setError('')
+    setLoading(true); setError(''); setCounts(null); setCountsPartial(false)
     try {
       const res = await invokeFn('zoho-clients', { action: 'list', query, page: pageNum })
-      setRows(res.rows ?? [])
+      const list = res.rows ?? []
+      setRows(list)
       setHasMore(Boolean(res.hasMore))
       setClientModule(res.clientModule ?? null)
+
+      /*
+       * Counts come after the table is already on screen. They are five
+       * aggregate queries against Zoho, and making the list wait on them would
+       * trade a fast page for a tidier one. A failure here leaves the counts
+       * blank rather than emptying the client list.
+       */
+      if (list.length) {
+        invokeFn('zoho-clients', { action: 'counts', ids: list.map((r) => r.id) })
+          .then((c) => { setCounts(c.counts ?? {}); setCountsPartial(Boolean(c.partial)) })
+          .catch(() => setCounts({}))
+      }
     } catch (e) {
       setError(e.message || 'Could not load clients.')
       setRows([])
@@ -92,6 +108,13 @@ export default function ClientsView() {
             from CRM <strong style={{ color: 'var(--text-muted)' }}>{clientModule}</strong>
           </span>
         )}
+        {/* A count that silently omits a module would be read as the truth. */}
+        {countsPartial && (
+          <span title="At least one policy module could not be counted — totals may be understated."
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11.5px', color: 'var(--gold-dark)' }}>
+            <AlertTriangle size={13} /> counts incomplete
+          </span>
+        )}
       </form>
 
       {error && (
@@ -105,7 +128,10 @@ export default function ClientsView() {
           <div style={{ overflowX: 'auto' }}>
             <table className="portal-table">
               <thead>
-                <tr><th>Client</th><th>Email</th><th>Phone</th><th>City</th></tr>
+                <tr>
+                  <th>Client</th><th>Email</th><th>Phone</th><th>City</th>
+                  <th style={{ textAlign: 'right' }}>Policies</th>
+                </tr>
               </thead>
               <tbody>
                 {rows.map((r) => (
@@ -114,6 +140,7 @@ export default function ClientsView() {
                     <td style={{ fontSize: '12.5px', color: 'var(--text-mid)' }}>{r.email || '—'}</td>
                     <td style={{ fontSize: '12.5px', color: 'var(--text-mid)' }}>{r.phone || '—'}</td>
                     <td style={{ fontSize: '12.5px', color: 'var(--text-muted)' }}>{r.city || '—'}</td>
+                    <td style={{ textAlign: 'right' }}><PolicyCount entry={counts?.[r.id]} pending={counts === null} /></td>
                   </tr>
                 ))}
               </tbody>
@@ -147,6 +174,34 @@ export default function ClientsView() {
         )}
       </div>
     </>
+  )
+}
+
+/*
+ * Three states, not two. A count still loading must not render as 0 — an
+ * advisor reading "0 policies" against a client who has four would believe it.
+ * Pending shows a dash placeholder; a genuine zero shows a muted 0.
+ */
+function PolicyCount({ entry, pending }) {
+  if (pending) {
+    return <span style={{ color: 'var(--text-light)', fontSize: '12px' }}>·</span>
+  }
+  if (!entry) {
+    return <span style={{ color: 'var(--text-light)', fontSize: '12.5px' }}>—</span>
+  }
+
+  const breakdown = Object.entries(entry.byModule)
+    .map(([label, n]) => `${label}: ${n}`)
+    .join('\n')
+
+  return (
+    <span title={breakdown || undefined}
+      style={{
+        fontVariantNumeric: 'tabular-nums', fontWeight: 700, fontSize: '13px',
+        color: entry.total ? 'var(--navy)' : 'var(--text-light)',
+      }}>
+      {entry.total}
+    </span>
   )
 }
 

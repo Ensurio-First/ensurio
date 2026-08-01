@@ -140,18 +140,41 @@ function presentable(record: Record<string, unknown>): Array<{ key: string; valu
  * with entirely different names, so the list is read from the module rather than
  * hardcoded. Cached per instance; layouts change about never.
  */
-const fieldCache = new Map<string, Set<string>>()
+interface ZohoField {
+  api_name: string
+  data_type: string
+  lookup?: { module?: { api_name?: string } }
+}
 
-async function fieldsFor(module: string): Promise<Set<string>> {
+const fieldCache = new Map<string, ZohoField[]>()
+
+async function fieldMetaFor(module: string): Promise<ZohoField[]> {
   const hit = fieldCache.get(module)
   if (hit) return hit
 
-  const res = await zohoFetch<{ fields?: Array<{ api_name: string }> }>(
+  const res = await zohoFetch<{ fields?: ZohoField[] }>(
     `/crm/v7/settings/fields?module=${encodeURIComponent(module)}`,
   )
-  const set = new Set((res.fields ?? []).map((f) => f.api_name))
-  fieldCache.set(module, set)
-  return set
+  const fields = res.fields ?? []
+  fieldCache.set(module, fields)
+  return fields
+}
+
+async function fieldsFor(module: string): Promise<Set<string>> {
+  return new Set((await fieldMetaFor(module)).map((f) => f.api_name))
+}
+
+/**
+ * The field on a policy module that points back at the client — "Insured Name",
+ * "Account Name", whatever this org called it. Found by asking which lookup
+ * targets the client module, rather than guessing the label.
+ */
+async function clientLookupField(module: string): Promise<string | null> {
+  const fields = await fieldMetaFor(module)
+  const match = fields.find(
+    (f) => f.data_type === 'lookup' && f.lookup?.module?.api_name === CLIENT_MODULE,
+  )
+  return match?.api_name ?? null
 }
 
 // Ordered by usefulness in a list row. Whichever of these the module has is
@@ -192,6 +215,91 @@ async function listClients(query: string, page: number) {
   }))
 
   return { rows, hasMore: Boolean(res.info?.more_records), page }
+}
+
+/*
+ * Policy counts for a page of clients.
+ *
+ * The obvious implementation — fetch each client's related lists and count —
+ * is 50 clients × 5 modules = 250 API calls for one page. Zoho meters credits
+ * per org, shared with everything else, so that is not a rounding error.
+ *
+ * COQL does it in ONE call per module: COUNT grouped by the client lookup,
+ * filtered to the ids actually on screen. Five calls, one credit each, however
+ * many clients are listed.
+ *
+ * Limits that shape this: `in` takes at most 100 values, so ids are chunked;
+ * aggregate function names must be UPPERCASE; a query returning under 200 rows
+ * costs a single credit.
+ */
+async function policyCounts(ids: string[]) {
+  const counts: Record<string, { total: number; byModule: Record<string, number> }> = {}
+  for (const id of ids) counts[id] = { total: 0, byModule: {} }
+  if (!ids.length) return { counts, partial: false }
+
+  const modules = await detectPolicyModules()
+  let partial = false
+
+  const chunks: string[][] = []
+  for (let i = 0; i < ids.length; i += 100) chunks.push(ids.slice(i, i + 100))
+
+  await Promise.all(
+    modules.map(async (m) => {
+      const lookup = await clientLookupField(m.api_name)
+      // No lookup to the client module means these records cannot be attributed
+      // to a client at all — silently counting zero would be a lie, so the
+      // response is marked partial and the UI stops claiming a total.
+      if (!lookup) { partial = true; return }
+
+      try {
+        for (const chunk of chunks) {
+          const list = chunk.map((i) => `'${i}'`).join(',')
+          const res = await zohoFetch<{ data?: Array<Record<string, unknown>> }>(
+            '/crm/v7/coql',
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                select_query:
+                  `select ${lookup}, COUNT(id) from ${m.api_name} ` +
+                  `where ${lookup} in (${list}) group by ${lookup}`,
+              }),
+            },
+          )
+
+          for (const row of res.data ?? []) {
+            /*
+             * The aggregate's key is not documented consistently — it comes back
+             * as "count", "COUNT(id)" or similar depending on version. Rather
+             * than depend on one spelling, take the lookup's id from the lookup
+             * column and the count from whichever value is a number.
+             */
+            const lookupVal = row[lookup]
+            const clientId =
+              typeof lookupVal === 'object' && lookupVal !== null
+                ? String((lookupVal as Record<string, unknown>).id ?? '')
+                : String(lookupVal ?? '')
+
+            const n = Object.entries(row)
+              .filter(([k]) => k !== lookup)
+              .map(([, v]) => Number(v))
+              .find((v) => Number.isFinite(v))
+
+            if (clientId && counts[clientId] && n) {
+              counts[clientId].byModule[m.label] = (counts[clientId].byModule[m.label] ?? 0) + n
+              counts[clientId].total += n
+            }
+          }
+        }
+      } catch (e) {
+        // One module failing must not silently understate every client's total.
+        console.error(`counts failed for ${m.api_name}`, e instanceof Error ? e.message : e)
+        partial = true
+      }
+    }),
+  )
+
+  return { counts, partial }
 }
 
 async function clientDetail(id: string) {
@@ -269,6 +377,17 @@ Deno.serve(async (req: Request) => {
       const id = String(body.id ?? '')
       if (!id) return json({ error: 'id-required' }, 400)
       return json(await clientDetail(id))
+    }
+
+    /*
+     * Counts are a separate call from the list on purpose: the table renders
+     * immediately and the numbers arrive after, rather than the whole page
+     * waiting on five aggregate queries. It also means a counts failure costs
+     * the counts and not the client list.
+     */
+    if (action === 'counts') {
+      const ids = Array.isArray(body.ids) ? body.ids.map(String).filter(Boolean) : []
+      return json(await policyCounts(ids))
     }
 
     const result = await listClients(
