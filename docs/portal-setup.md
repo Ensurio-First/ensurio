@@ -54,9 +54,34 @@ VITE_SUPABASE_ANON_KEY
 The anon key is safe to ship. Row Level Security is what protects the data, and
 every policy requires an allowlisted staff JWT.
 
-Add a `vercel.json` **in the Vercel project settings** (not the repo root, which
-belongs to the public site) with the SPA rewrite, or set Framework Preset to
-Vite and let Vercel handle it.
+**No extra `vercel.json` is needed.** Both projects share the repo root, so both
+pick up the existing one — and its single rule, `/(.*) → /index.html`, is the
+SPA rewrite the portal wants too. It resolves against whichever output directory
+that project builds, so the portal gets `dist-portal/index.html`. Leave it alone.
+
+Both projects also watch the same repo, so a push to either rebuilds both. That
+is wasteful rather than harmful; if it becomes annoying, set an **Ignored Build
+Step** on each project:
+
+```bash
+# portal project — skip the build unless something it depends on changed
+git diff --quiet HEAD^ HEAD -- src/portal vite.portal.config.js package.json src/styles
+```
+
+### Which branch deploys
+
+Production builds come from the project's **Production Branch** (`main` by
+default), so the portal goes live once `feat/internal-portal` is merged. Before
+that, every push to the branch gets a **preview URL** — which is the right place
+to test, but preview URLs change on every deploy. Add a wildcard to Supabase's
+redirect list rather than chasing them:
+
+```
+https://*.vercel.app/**
+```
+
+Remove that wildcard once the custom domain is live; it lets any Vercel-hosted
+page receive a magic link for this project.
 
 ### Supabase Auth settings
 
