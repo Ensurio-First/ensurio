@@ -63,13 +63,7 @@ export const audiencePages = [
         { strong: 'Lender insurance compliance', text: 'kept in order.' },
         { strong: 'Board-level risk reporting', text: 'in plain numbers.' },
       ] },
-      { type: 'gapcheck', title: 'Do you control your cost of risk?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
-        { statement: 'I know my true Total Cost of Risk, not just my premium spend', gapTitle: 'TCOR unmeasured', consequence: 'Premium is often less than half the real cost. Deductibles, uninsured losses and administration make up the rest, and they sit unmeasured across the P&L.', severity: 'high' },
-        { statement: 'Where we retain risk rather than transfer it, that was a deliberate decision', gapTitle: 'Retention is accidental, not chosen', consequence: 'Every uninsured exposure is a retention. If it was never decided, it was never priced and never funded.', severity: 'high' },
-        { statement: 'I meet every insurance requirement in our lending and lease agreements', gapTitle: 'Lender requirements may be unmet', consequence: 'Facility agreements specify cover, limits and named parties. A breach can be an event of default entirely independent of any loss.', severity: 'high' },
-        { statement: 'My insurance spend is benchmarked and forecast, not simply renewed', gapTitle: 'Spend not benchmarked or forecast', consequence: 'A renewal quoted without a benchmark cannot be negotiated, and an unforecast increase lands as a surprise on the budget.', severity: 'high' },
-        { statement: 'Risk is reported to the board in terms they can act on', gapTitle: 'Risk not visible to the board', consequence: 'Risk reported as a premium line invites cost-cutting. Reported as exposure, it invites a decision.', severity: 'medium' },
-      ], cta: { label: 'Book a TCOR review', href: '/contact?service=Finance%20TCOR%20Review' } },
+      { type: 'tcor', title: 'Do you control your cost of risk?', subtitle: 'Premium is the number you negotiate. It is rarely the number that matters. Move the sliders to your figures.' },
       { type: 'cta', heading: 'Turn insurance into a controllable cost.', text: 'An independent review that puts real numbers behind your risk spend.', primary: { label: 'Book a Review', href: '/contact?service=Finance%20TCOR%20Review' }, secondary: { label: 'Call 050 976 5976', href: 'tel:+971509765976' } },
     ],
     relatedServices: [
@@ -133,13 +127,7 @@ export const audiencePages = [
         { strong: 'Personal accident protection', text: 'for the unexpected.' },
         { strong: 'Expat insurance advisory', text: 'for life in the UAE.' },
       ] },
-      { type: 'gapcheck', title: 'Are you and your family protected?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
-        { statement: 'My life cover would both replace my income and clear my debts', gapTitle: 'Cover may not do both jobs', consequence: 'A mortgage and outstanding loans do not disappear in the UAE. Cover has to clear them before it starts replacing income.', severity: 'high' },
-        { statement: 'My health cover meets my family’s needs and my emirate’s requirements', gapTitle: 'Health cover may fall short', consequence: 'Dubai and Abu Dhabi set different minimum benefits, and the network tier decides which hospitals you can actually use.', severity: 'high' },
-        { statement: 'I have personal accident cover that pays for disability, not just death', gapTitle: 'No disability protection', consequence: 'Permanent disability is both the more likely outcome and the more expensive one — ongoing care costs on top of lost income.', severity: 'high' },
-        { statement: 'My home and belongings are insured at replacement value', gapTitle: 'Home cover may be below replacement cost', consequence: 'Replacement value means buying new at today’s prices. Estimating from what you paid leaves a shortfall across the whole claim.', severity: 'medium' },
-        { statement: 'I have reviewed my cover since my last major life change', gapTitle: 'Not reviewed after life changes', consequence: 'Marriage, a child, a new mortgage or a business loan each change the amount your family would actually need.', severity: 'medium' },
-      ], cta: { label: 'Book a personal review', href: '/contact?service=Personal%20Review' } },
+      { type: 'protectiongap', title: 'Would your family be financially secure without you?', subtitle: 'Four figures and two questions. The arithmetic is shown in full — no black box.' },
       { type: 'cta', heading: 'Protect the people who matter most.', text: 'A no-obligation review of your family’s personal insurance by an independent advisor.', primary: { label: 'Book a Review', href: '/contact?service=Personal%20Review' }, secondary: { label: 'Call 050 976 5976', href: 'tel:+971509765976' } },
     ],
     relatedServices: [

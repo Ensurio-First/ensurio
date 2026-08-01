@@ -40,12 +40,29 @@ findings.
 Submissions carry `tool_id`, `score`, the ranked findings, and every raw answer
 into Supabase, so an advisor opens a pre-briefed lead.
 
-### Still open on this workstream
+### Purpose-built tools (Phase 2)
 
-- **Bespoke tools (Phase 2).** The 6 solution and 4 audience pages currently use
-  the generic check. They were scoped for purpose-built tools — a TCOR calculator
-  for finance managers, a dispute triage for legal claims support, a risk register
-  builder for risk assessment. The generic check is a solid interim.
+Four pages carry a tool of their own, because on those the result is a different
+kind of thing than a questionnaire score:
+
+| Page | Block type | What it returns |
+|---|---|---|
+| `/who-we-help/finance-managers` | `tcor` | Total Cost of Risk in AED + premium's share of it |
+| `/who-we-help/individuals-families` | `protectiongap` | the shortfall in AED, with the arithmetic shown |
+| `/solutions/legal-claims-support` | `triage` | an urgency verdict + what is weakening their position |
+| `/solutions/risk-assessment` | `riskregister` | exposures plotted on a likelihood/severity grid |
+
+The other six solution and audience pages keep the generic check on purpose —
+they are questionnaire-shaped, and a bespoke version there would be a reskin.
+
+All tools share `ToolCapture` (the capture form and lead submission) and
+`toolStyles` (chrome), so they read as one family without forcing four different
+layouts through the same markup. `hasToolBlock()` / `toolCtaLabel()` in
+`scrollToCheck.js` drive the hero CTA and the closing band, so adding a tool type
+means adding it to `TOOL_BLOCK_TYPES` and nothing else.
+
+### Still open
+
 - **Home page triage, blog teasers, PDF reports** (Phase 4).
 
 ---

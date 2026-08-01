@@ -62,13 +62,7 @@ export const solutionPages = [
     body: [
       { type: 'lead', text: 'A risk assessment is a structured evaluation of your operational, contractual, financial, and reputational exposures — the foundation of getting insurance right.' },
       { type: 'p', text: 'You cannot insure what you have not identified. We survey your business, map its hazards and exposures, and check that your cover actually matches the risks you carry — then recommend improvements that reduce both risk and premium.' },
-      { type: 'gapcheck', title: 'Do you know your real exposures?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
-        { statement: 'My business risks have been formally assessed and written down', gapTitle: 'No formal risk assessment', consequence: 'Insurance bought without an assessment covers what the broker sells, not what the business is actually exposed to.', severity: 'high' },
-        { statement: 'The insurance requirements in my contracts are mapped against my policies', gapTitle: 'Contract requirements unmapped', consequence: 'Most commercial contracts specify limits and wordings. Falling short is a breach you carry until somebody checks.', severity: 'high' },
-        { statement: 'I have worked out how long the business could survive an interruption', gapTitle: 'Interruption exposure unquantified', consequence: 'The largest uninsured loss in most businesses is the income lost while they cannot trade, not the damage itself.', severity: 'high' },
-        { statement: 'Site and operational hazards have been reviewed on the ground', gapTitle: 'Hazards never surveyed', consequence: 'Insurers price on what they are told. An unsurveyed site risks both a higher premium and a disputed claim.', severity: 'medium' },
-        { statement: 'My cover has been matched back to my assessed exposures', gapTitle: 'Cover not matched to exposure', consequence: 'An assessment that never changes the policy schedule is a document, not a control.', severity: 'medium' },
-      ], cta: { label: 'Book a risk assessment', href: '/contact?service=Risk%20Assessment' } },
+      { type: 'riskregister', title: 'Which of these could actually happen to you?', subtitle: 'Pick the ones that are real for your business. You will rate each in a single tap, then see them plotted.' },
       { type: 'h2', text: "What's involved" },
       { type: 'steps', items: [
         { title: 'Risk survey', text: 'An on-site or remote survey of your operations.' },
@@ -185,13 +179,7 @@ export const solutionPages = [
     body: [
       { type: 'lead', text: 'Legal claims support provides independent legal and technical advisory when a claim is disputed, complex, or rejected — representing your interests when the insurer pushes back.' },
       { type: 'p', text: 'A rejection is not the end of the road. We analyse the dispute, interpret the policy and the legal grounds, prepare formal correspondence, and escalate through the right channels to get a fair outcome.' },
-      { type: 'gapcheck', title: 'Has a claim been disputed or rejected?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
-        { statement: 'My claim is being handled fairly and is moving forward', gapTitle: 'Claim may be heading for a decline', consequence: 'Delay, repeated document requests and shifting reasons are the usual signals that a decline is being prepared.', severity: 'high' },
-        { statement: 'I understand the specific policy terms my insurer is relying on', gapTitle: 'Grounds for decline unclear', consequence: 'A decline has to cite a specific term. If you cannot identify which one, it cannot be properly challenged.', severity: 'high' },
-        { statement: 'I know the deadlines for challenging the decision and they are under control', gapTitle: 'Challenge deadlines at risk', consequence: 'Policy and statutory time limits for disputing a decision are short. Once one passes, the merits of your case stop mattering.', severity: 'high' },
-        { statement: 'I have independent representation, not only the broker who placed the policy', gapTitle: 'No independent representation', consequence: 'The broker who sold the policy has an interest in how the claim resolves. A dispute needs someone without that conflict.', severity: 'high' },
-        { statement: 'All my correspondence with the insurer is written down and kept', gapTitle: 'Correspondence undocumented', consequence: 'Disputes are won on the paper trail. Verbal assurances from an adjuster carry almost no weight later.', severity: 'medium' },
-      ], cta: { label: 'Get legal support', href: '/contact?service=Legal%20Claims%20Support' } },
+      { type: 'triage', title: 'Has your claim been declined, cut or stalled?', subtitle: 'Five questions. You will see where your position stands and what is weakening it — before you give us any details.' },
       { type: 'h2', text: "What's involved" },
       { type: 'steps', items: [
         { title: 'Dispute analysis', text: 'We assess the rejection and the grounds for it.' },

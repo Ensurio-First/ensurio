@@ -9,7 +9,7 @@ import { useIsMobile } from '../prototype/home/hooks/useIsMobile'
 import { getServiceBySlug } from '../prototype/home/data/services.js'
 import { getPostBySlug } from '../prototype/home/data/blog.js'
 import PageCtaBand from '../components/PageCtaBand'
-import scrollToCheck from '../components/interactive/scrollToCheck'
+import scrollToCheck, { hasToolBlock, toolCtaLabel } from '../components/interactive/scrollToCheck'
 import '../prototype/prototype.css'
 
 export default function ServicePage() {
@@ -17,7 +17,8 @@ export default function ServicePage() {
   const isMobile = useIsMobile()
   const service = getServiceBySlug(slug)
   // Pages carrying an on-page check lead with it instead of asking for a meeting.
-  const hasCheck = Boolean(service?.body?.some((b) => b.type === 'gapcheck'))
+  const hasCheck = hasToolBlock(service?.body)
+  const checkCta = toolCtaLabel(service?.body)
 
   useEffect(() => {
     if (!service) return
@@ -77,7 +78,7 @@ export default function ServicePage() {
                     click away for anyone who already knows what they want. */}
                 {hasCheck && (
                   <button type="button" onClick={scrollToCheck} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '13px 26px', background: 'var(--teal)', color: '#fff', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700 }}>
-                    Check my cover — 2 min <ArrowRight size={15} />
+                    {checkCta} <ArrowRight size={15} />
                   </button>
                 )}
                 <Link to={`/contact?service=${encodeURIComponent(service.title)}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '13px 26px', background: hasCheck ? 'transparent' : 'var(--teal)', color: '#fff', border: hasCheck ? '1px solid rgba(255,255,255,0.32)' : 'none', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700, textDecoration: 'none' }}>

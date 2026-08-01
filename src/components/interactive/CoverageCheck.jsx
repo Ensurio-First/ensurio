@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowRight, ArrowLeft, Check, X, HelpCircle, Lock, Phone, ShieldAlert } from 'lucide-react'
 import useToolEngine, { ANSWERS } from './useToolEngine'
 import { CHECK_ANCHOR_ID } from './scrollToCheck'
+import ToolCapture from './ToolCapture'
 import { useLeadJourney } from '../../context/LeadJourneyContext'
-import { submitLead } from '../../lib/supabase'
 
 /*
  * The on-page coverage check — one question at a time, a score they earn, and
@@ -15,9 +15,6 @@ import { submitLead } from '../../lib/supabase'
  * block shape, so blocks upgrade as their content is deepened rather than all
  * at once.
  */
-
-const CALLBACK_TIMES = ['Morning', 'Afternoon', 'Evening', 'Anytime']
-const isValidEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
 
 // The existing blocks already encode the service in their CTA link, e.g.
 // `/contact?service=Construction%20Review` — reuse it so leads stay tagged.
@@ -37,24 +34,16 @@ const OPTIONS = [
 
 export default function CoverageCheck({ block, isMobile }) {
   const engine = useToolEngine(block.items)
-  const { startCheck, completeCheck } = useLeadJourney()
+  const { startCheck } = useLeadJourney()
 
   const [phase, setPhase] = useState('intro') // intro | question | result | done
-  const [form, setForm] = useState({ name: '', email: '', phone: '' })
-  const [when, setWhen] = useState('')
-  const [hp, setHp] = useState('')
-  const [status, setStatus] = useState('idle') // idle | invalid | sending | error
   const [receipt, setReceipt] = useState(null)
 
-  const setF = (k, v) => setForm((f) => ({ ...f, [k]: v }))
   const { questions, index, current, currentAnswer, result } = engine
   const service = serviceFrom(block)
 
   // A block with no items has nothing to ask — render nothing rather than crash.
   if (questions.length === 0) return null
-
-  const contactValid =
-    form.name.trim() && isValidEmail(form.email) && form.phone.replace(/\s/g, '').length >= 7
 
   /* ── Flow ─────────────────────────────────────────────────────────── */
 
@@ -70,46 +59,32 @@ export default function CoverageCheck({ block, isMobile }) {
     advance()
   }
 
-  const submit = async (e) => {
-    e.preventDefault()
-    if (!contactValid) { setStatus('invalid'); return }
-    setStatus('sending')
-
+  // What travels with the lead: the raw answers, plus the computed result in the
+  // shape the confirmation email and the advisor alert both render from.
+  const leadPayload = () => {
     const { score, findings, band } = result
-    try {
-      const res = await submitLead({
-        name: form.name,
-        email: form.email,
-        phone: form.phone,
-        message: `${block.title} — scored ${score}/100 with ${findings.length} gap${findings.length === 1 ? '' : 's'} flagged.`,
-        service,
-        source: 'coverage-check',
-        toolId: toolIdFrom(service),
-        preferredTime: when || null,
-        reportTitle: `Your ${service}`,
-        details: {
-          check: block.title,
-          answers: questions.map((q, i) => ({ statement: q.statement, answer: engine.answers[i] })),
-        },
-        report: {
-          score,
-          headline: findings.length
-            ? `You flagged ${findings.length} area${findings.length === 1 ? '' : 's'} worth a closer look.`
-            : 'Your answers suggest your cover is in good shape.',
-          summary: band.label,
-          findings: findings.map((f) => ({
-            title: f.gapTitle,
-            detail: f.consequence || undefined,
-            severity: f.severity,
-          })),
-        },
-        honeypot: hp,
-      })
-      setReceipt(res || null)
-      setPhase('done')
-      completeCheck()
-    } catch {
-      setStatus('error')
+    return {
+      service,
+      source: 'coverage-check',
+      toolId: toolIdFrom(service),
+      reportTitle: `Your ${service}`,
+      message: `${block.title} — scored ${score}/100 with ${findings.length} gap${findings.length === 1 ? '' : 's'} flagged.`,
+      details: {
+        check: block.title,
+        answers: questions.map((q, i) => ({ statement: q.statement, answer: engine.answers[i] })),
+      },
+      report: {
+        score,
+        headline: findings.length
+          ? `You flagged ${findings.length} area${findings.length === 1 ? '' : 's'} worth a closer look.`
+          : 'Your answers suggest your cover is in good shape.',
+        summary: band.label,
+        findings: findings.map((f) => ({
+          title: f.gapTitle,
+          detail: f.consequence || undefined,
+          severity: f.severity,
+        })),
+      },
     }
   }
 
@@ -132,12 +107,6 @@ export default function CoverageCheck({ block, isMobile }) {
     fontSize: isMobile ? '1.2rem' : '1.4rem', letterSpacing: '-0.02em', margin: '0.75rem 0 0.35rem',
   }
   const muted = { fontFamily: 'var(--font-body)', fontSize: '13.5px', color: 'var(--text-muted)', lineHeight: 1.6 }
-  const inputStyle = {
-    width: '100%', height: '46px', padding: '0 14px', boxSizing: 'border-box',
-    fontFamily: 'var(--font-body)', fontSize: '14px', color: 'var(--text-dark)',
-    background: 'var(--white)', border: '1.5px solid var(--border-dark)', outline: 'none',
-    marginBottom: '10px',
-  }
   const primaryBtn = {
     display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '13px 26px',
     background: 'var(--teal)', color: '#fff', border: 'none', cursor: 'pointer',
@@ -341,12 +310,12 @@ export default function CoverageCheck({ block, isMobile }) {
                 <Check size={15} color="var(--teal)" strokeWidth={3} />
               </span>
               <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.05rem', fontWeight: 800, color: 'var(--navy)', margin: 0 }}>
-                Saved, {form.name.trim().split(/\s+/)[0]}
+                Saved, {receipt?.name?.trim().split(/\s+/)[0]}
               </h4>
             </div>
             <p style={{ ...muted, margin: 0 }}>
               An independent advisor will go through these against your actual policy wording and come back to you
-              {when ? ` ${when.toLowerCase()}` : ''} — usually within one business day.
+              {receipt?.when ? ` ${receipt.when.toLowerCase()}` : ''} — usually within one business day.
               {receipt?.reference && <> Your reference is <strong style={{ color: 'var(--navy)' }}>{receipt.reference}</strong>.</>}
             </p>
             <a href="tel:+971509765976" style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', marginTop: '1rem', color: 'var(--teal-dark)', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700, textDecoration: 'none' }}>
@@ -354,48 +323,16 @@ export default function CoverageCheck({ block, isMobile }) {
             </a>
           </div>
         ) : (
-          <form onSubmit={submit} noValidate style={{ marginTop: findings.length ? '1.5rem' : 0, borderTop: findings.length ? '1px solid var(--border)' : 'none', paddingTop: findings.length ? '1.5rem' : 0 }}>
-            <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.05rem', fontWeight: 800, color: 'var(--navy)', margin: '0 0 4px' }}>
-              {findings.length ? 'See all your findings' : 'Get your check in writing'}
-            </h4>
-            <p style={{ ...muted, margin: '0 0 1rem' }}>
-              We will send this to an independent advisor who will confirm each point against your policy — no obligation.
-            </p>
-
-            {/* Honeypot — invisible to people, tempting to bots. */}
-            <input type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" value={hp}
-              onChange={(e) => setHp(e.target.value)}
-              style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', opacity: 0 }} />
-
-            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '0 10px' }}>
-              <input aria-label="Full name" type="text" placeholder="Full name" value={form.name} onChange={(e) => setF('name', e.target.value)} style={inputStyle} />
-              <input aria-label="Email address" type="email" placeholder="Email address" value={form.email} onChange={(e) => setF('email', e.target.value)} style={inputStyle} />
-            </div>
-            <input aria-label="Phone number" type="tel" placeholder="Phone number" value={form.phone} onChange={(e) => setF('phone', e.target.value)} style={inputStyle} />
-
-            <label style={{ display: 'block', fontFamily: 'var(--font-body)', fontSize: '11px', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--text-mid)', margin: '4px 0 8px' }}>
-              Preferred callback time
-            </label>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px', marginBottom: '14px' }}>
-              {CALLBACK_TIMES.map((t) => {
-                const on = when === t
-                return (
-                  <button key={t} type="button" onClick={() => setWhen(on ? '' : t)}
-                    style={{ padding: '9px 4px', fontFamily: 'var(--font-body)', fontSize: '12.5px', fontWeight: 700, cursor: 'pointer', border: `1px solid ${on ? 'var(--teal)' : 'var(--border-dark)'}`, background: on ? 'var(--teal-pale)' : 'var(--light-bg)', color: on ? 'var(--teal-dark)' : 'var(--text-mid)' }}>
-                    {t}
-                  </button>
-                )
-              })}
-            </div>
-
-            {status === 'invalid' && <p role="alert" style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#EF4444', margin: '0 0 10px' }}>Please enter your name, a valid email, and a phone number.</p>}
-            {status === 'error' && <p role="alert" style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#EF4444', margin: '0 0 10px' }}>Something went wrong — please try again, or call us directly.</p>}
-
-            <button type="submit" disabled={status === 'sending'} style={{ ...primaryBtn, width: isMobile ? '100%' : 'auto', justifyContent: 'center', cursor: status === 'sending' ? 'wait' : 'pointer' }}>
-              {status === 'sending' ? 'Sending…' : <>{findings.length ? 'Show my findings' : 'Send me my check'} <ArrowRight size={15} /></>}
-            </button>
-            <p style={{ ...muted, fontSize: '11.5px', margin: '0.75rem 0 0' }}>We never share your data with third parties.</p>
-          </form>
+          <div style={{ marginTop: findings.length ? '1.5rem' : 0, borderTop: findings.length ? '1px solid var(--border)' : 'none', paddingTop: findings.length ? '1.5rem' : 0 }}>
+            <ToolCapture
+              isMobile={isMobile}
+              {...leadPayload()}
+              heading={findings.length ? 'See all your findings' : 'Get your check in writing'}
+              note="We will send this to an independent advisor who will confirm each point against your policy — no obligation."
+              ctaLabel={findings.length ? 'Show my findings' : 'Send me my check'}
+              onSubmitted={(r) => { setReceipt(r); setPhase('done') }}
+            />
+          </div>
         )}
       </div>
     </div>

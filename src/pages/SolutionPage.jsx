@@ -8,7 +8,7 @@ import { Block } from '../prototype/home/components/contentBlocks'
 import { useIsMobile } from '../prototype/home/hooks/useIsMobile'
 import { getSolutionBySlug } from '../prototype/home/data/solutions.js'
 import PageCtaBand from '../components/PageCtaBand'
-import scrollToCheck from '../components/interactive/scrollToCheck'
+import scrollToCheck, { hasToolBlock, toolCtaLabel } from '../components/interactive/scrollToCheck'
 import '../prototype/prototype.css'
 
 export default function SolutionPage() {
@@ -16,7 +16,8 @@ export default function SolutionPage() {
   const isMobile = useIsMobile()
   const solution = getSolutionBySlug(slug)
   // Pages carrying an on-page check lead with it instead of asking for a meeting.
-  const hasCheck = Boolean(solution?.body?.some((b) => b.type === 'gapcheck'))
+  const hasCheck = hasToolBlock(solution?.body)
+  const checkCta = toolCtaLabel(solution?.body)
 
   useEffect(() => {
     if (!solution) return
@@ -67,7 +68,7 @@ export default function SolutionPage() {
               <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: solution.badges ? '1.75rem' : 0 }}>
                 {hasCheck ? (
                   <button type="button" onClick={scrollToCheck} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '13px 26px', background: 'var(--teal)', color: '#fff', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700 }}>
-                    Start the 2-minute check <ArrowRight size={15} />
+                    {checkCta} <ArrowRight size={15} />
                   </button>
                 ) : (
                   <Link to="/contact" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '13px 26px', background: 'var(--teal)', color: '#fff', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700, textDecoration: 'none' }}>
