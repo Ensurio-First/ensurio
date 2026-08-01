@@ -52,7 +52,7 @@ export default function CoverageCheck({ block, isMobile }) {
 
   const handleAnswer = (value) => {
     engine.answer(value)
-    startCheck()
+    startCheck(toolIdFrom(service))
     // Pause only when there is something to learn — a "yes" has no consequence
     // to show, and the legacy blocks have no consequence copy at all, so those
     // stay a single tap per question.
@@ -134,7 +134,7 @@ export default function CoverageCheck({ block, isMobile }) {
           <span style={badge}>Quick check</span>
           <h3 style={heading}>{block.title}</h3>
           {block.subtitle && <p style={{ ...muted, margin: '0 0 1.25rem' }}>{block.subtitle}</p>}
-          <button type="button" style={primaryBtn} onClick={() => { startCheck(); setPhase('question') }}>
+          <button type="button" style={primaryBtn} onClick={() => { startCheck(toolIdFrom(service)); setPhase('question') }}>
             Start the check <ArrowRight size={15} />
           </button>
           <p style={{ ...muted, fontSize: '12.5px', margin: '0.85rem 0 0' }}>

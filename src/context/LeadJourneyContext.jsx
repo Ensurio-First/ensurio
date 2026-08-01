@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { useLocation } from 'react-router-dom'
+import { trackToolStart } from '../lib/analytics'
 
 /*
  * Tracks how far the visitor has got with the page's interactive check, so the
@@ -27,8 +28,17 @@ export function LeadJourneyProvider({ children }) {
 
   const value = useMemo(() => ({
     state,
-    // Never walk backwards: a finished check stays finished.
-    startCheck: () => setState((s) => (s === 'submitted' ? s : 'started')),
+    /*
+     * Tools call this on every interaction, but the analytics event should fire
+     * once — the first time someone actually engages. Firing inside the state
+     * updater means we see the previous state and can tell a genuine start from
+     * the twentieth slider nudge.
+     */
+    startCheck: (toolId) => setState((s) => {
+      if (s === 'submitted') return s
+      if (s === 'idle') trackToolStart(toolId)
+      return 'started'
+    }),
     completeCheck: () => setState('submitted'),
   }), [state])
 

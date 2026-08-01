@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { submitLead } from '../../lib/supabase'
+import { trackLeadSubmit } from '../../lib/analytics'
 import { useLeadJourney } from '../../context/LeadJourneyContext'
 
 /*
@@ -62,6 +63,7 @@ export default function ToolCapture({
         honeypot: hp,
       })
       completeCheck()
+      trackLeadSubmit({ toolId, service, source, score: report?.score })
       onSubmitted?.({ ...(receipt || {}), name: form.name, email: form.email, when })
     } catch {
       setStatus('error')

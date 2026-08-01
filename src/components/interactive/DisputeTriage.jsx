@@ -173,7 +173,7 @@ export default function DisputeTriage({ block, isMobile }) {
   }, [answers])
 
   const choose = (value) => {
-    startCheck()
+    startCheck('dispute-triage')
     setAnswers((prev) => ({ ...prev, [current.key]: value }))
     if (index === QUESTIONS.length - 1) setPhase('result')
     else setIndex((i) => i + 1)
@@ -204,7 +204,7 @@ export default function DisputeTriage({ block, isMobile }) {
             {block?.subtitle || 'Five questions. You will see where your position stands and what is weakening it — before you give us any details.'}
           </p>
           <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center', flexWrap: 'wrap' }}>
-            <button type="button" style={s.primaryBtn} onClick={() => { startCheck(); setPhase('question') }}>
+            <button type="button" style={s.primaryBtn} onClick={() => { startCheck('dispute-triage'); setPhase('question') }}>
               Start the triage <ArrowRight size={15} />
             </button>
             <a href="tel:+971509765976" style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', color: 'var(--teal-dark)', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 700, textDecoration: 'none' }}>

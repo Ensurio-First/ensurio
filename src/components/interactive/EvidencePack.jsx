@@ -99,9 +99,9 @@ export default function EvidencePack({ block, isMobile }) {
     } catch { /* private browsing — the pack still works, it just will not persist */ }
   }, [values, photos])
 
-  const set = (k, v) => { startCheck(); setValues((prev) => ({ ...prev, [k]: v })) }
+  const set = (k, v) => { startCheck('evidence-pack'); setValues((prev) => ({ ...prev, [k]: v })) }
   const togglePhoto = (item) => {
-    startCheck()
+    startCheck('evidence-pack')
     setPhotos((prev) => (prev.includes(item) ? prev.filter((p) => p !== item) : [...prev, item]))
   }
 

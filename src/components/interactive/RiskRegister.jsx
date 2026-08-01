@@ -57,7 +57,7 @@ export default function RiskRegister({ block, isMobile }) {
   const [receipt, setReceipt] = useState(null)
 
   const toggle = (key) => {
-    startCheck()
+    startCheck('risk-register')
     setSelected((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]))
   }
 

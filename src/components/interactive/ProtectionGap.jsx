@@ -55,7 +55,7 @@ export default function ProtectionGap({ block, isMobile }) {
   const [phase, setPhase] = useState('input') // input | done
   const [receipt, setReceipt] = useState(null)
 
-  const set = (k, v) => { startCheck(); setVals((p) => ({ ...p, [k]: v })) }
+  const set = (k, v) => { startCheck('protection-gap'); setVals((p) => ({ ...p, [k]: v })) }
 
   const result = useMemo(() => {
     const incomeNeed = vals.income * years
@@ -131,7 +131,7 @@ export default function ProtectionGap({ block, isMobile }) {
       <label style={{ ...s.label, marginBottom: '8px' }}>{label}</label>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
         {[{ l: 'Yes', v: true }, { l: 'No', v: false }].map(({ l, v }) => (
-          <button key={l} type="button" onClick={() => { startCheck(); onChange(value === v ? null : v) }}
+          <button key={l} type="button" onClick={() => { startCheck('protection-gap'); onChange(value === v ? null : v) }}
             style={{ padding: '10px 4px', fontFamily: 'var(--font-body)', fontSize: '13px', fontWeight: 700, cursor: 'pointer', border: `1px solid ${value === v ? 'var(--teal)' : 'var(--border-dark)'}`, background: value === v ? 'var(--teal-pale)' : 'var(--light-bg)', color: value === v ? 'var(--teal-dark)' : 'var(--text-mid)' }}>
             {l}
           </button>
@@ -166,7 +166,7 @@ export default function ProtectionGap({ block, isMobile }) {
           <label style={{ ...s.label, marginBottom: '8px' }}>Years of income your family would need</label>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
             {YEARS_OPTIONS.map((y) => (
-              <button key={y} type="button" onClick={() => { startCheck(); setYears(y) }}
+              <button key={y} type="button" onClick={() => { startCheck('protection-gap'); setYears(y) }}
                 style={{ padding: '10px 4px', fontFamily: 'var(--font-body)', fontSize: '13px', fontWeight: 700, cursor: 'pointer', border: `1px solid ${years === y ? 'var(--teal)' : 'var(--border-dark)'}`, background: years === y ? 'var(--teal-pale)' : 'var(--light-bg)', color: years === y ? 'var(--teal-dark)' : 'var(--text-mid)' }}>
                 {y} years
               </button>

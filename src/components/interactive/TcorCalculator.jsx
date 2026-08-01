@@ -72,7 +72,7 @@ export default function TcorCalculator({ block, isMobile }) {
   const [phase, setPhase] = useState('input') // input | done
   const [receipt, setReceipt] = useState(null)
 
-  const set = (key, v) => { startCheck(); setVals((prev) => ({ ...prev, [key]: v })) }
+  const set = (key, v) => { startCheck('tcor-calculator'); setVals((prev) => ({ ...prev, [key]: v })) }
 
   const result = useMemo(() => {
     const { premium, deductibles, uninsured } = vals
@@ -173,7 +173,7 @@ export default function TcorCalculator({ block, isMobile }) {
             <label style={{ ...s.label, marginBottom: '8px' }}>Management time spent on insurance, per month</label>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
               {ADMIN_LOAD.map((a, i) => (
-                <button key={a.label} type="button" onClick={() => { startCheck(); setAdminIdx(i) }}
+                <button key={a.label} type="button" onClick={() => { startCheck('tcor-calculator'); setAdminIdx(i) }}
                   style={{ padding: '9px 4px', fontFamily: 'var(--font-body)', fontSize: '12px', fontWeight: 700, cursor: 'pointer', border: `1px solid ${i === adminIdx ? 'var(--teal)' : 'var(--border-dark)'}`, background: i === adminIdx ? 'var(--teal-pale)' : 'var(--light-bg)', color: i === adminIdx ? 'var(--teal-dark)' : 'var(--text-mid)' }}>
                   {a.label}
                 </button>
@@ -184,7 +184,7 @@ export default function TcorCalculator({ block, isMobile }) {
             <label style={{ ...s.label, marginBottom: '8px' }}>Claims in the last 3 years</label>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
               {CLAIMS_HISTORY.map((c, i) => (
-                <button key={c.label} type="button" onClick={() => { startCheck(); setClaimsIdx(i) }}
+                <button key={c.label} type="button" onClick={() => { startCheck('tcor-calculator'); setClaimsIdx(i) }}
                   style={{ padding: '9px 4px', fontFamily: 'var(--font-body)', fontSize: '12px', fontWeight: 700, cursor: 'pointer', border: `1px solid ${i === claimsIdx ? 'var(--teal)' : 'var(--border-dark)'}`, background: i === claimsIdx ? 'var(--teal-pale)' : 'var(--light-bg)', color: i === claimsIdx ? 'var(--teal-dark)' : 'var(--text-mid)' }}>
                   {c.label}
                 </button>

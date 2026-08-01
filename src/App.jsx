@@ -17,6 +17,7 @@ import AboutPage from './pages/AboutPage'
 import PolicyReviewPage from './pages/PolicyReviewPage'
 import QuoteModal from './components/QuoteModal'
 import { LeadJourneyProvider } from './context/LeadJourneyContext'
+import { trackPageView } from './lib/analytics'
 import PrototypeHome from './prototype/home/index.jsx'
 
 /*
@@ -33,6 +34,11 @@ import PrototypeHome from './prototype/home/index.jsx'
  */
 function ScrollToTop() {
   const { pathname, hash } = useLocation()
+
+  // gtag fires page_view once on load. Every client-side navigation after that
+  // is invisible to GA unless we report it, which would have made almost the
+  // whole site look like it got no traffic.
+  useEffect(() => { trackPageView(pathname + hash) }, [pathname, hash])
 
   useEffect(() => {
     if (!hash) {

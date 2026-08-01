@@ -201,7 +201,7 @@ export default function ClaimStageRouter({ block, isMobile }) {
   }, [questions, answers])
 
   const chooseStage = (value) => {
-    startCheck()
+    startCheck('claim-stage-router')
     setStage(value)
     setIndex(0)
     setAnswers({})
@@ -307,7 +307,7 @@ export default function ClaimStageRouter({ block, isMobile }) {
               {SINCE.map((o) => {
                 const on = since === o.value
                 return (
-                  <button key={o.value} type="button" onClick={() => { startCheck(); setSince(o.value) }}
+                  <button key={o.value} type="button" onClick={() => { startCheck('claim-stage-router'); setSince(o.value) }}
                     style={{ padding: '10px 6px', fontFamily: 'var(--font-body)', fontSize: '12.5px', fontWeight: 700, cursor: 'pointer', border: `1px solid ${on ? 'var(--teal)' : 'rgba(255,255,255,0.3)'}`, background: on ? 'var(--teal)' : 'transparent', color: '#fff' }}>
                     {o.label}
                   </button>

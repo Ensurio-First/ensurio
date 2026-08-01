@@ -48,7 +48,7 @@ export default function OfferCheck({ block, isMobile }) {
   const [done, setDone] = useState(false)
   const [receipt, setReceipt] = useState(null)
 
-  const set = (k, v) => { startCheck(); setVals((p) => ({ ...p, [k]: v })) }
+  const set = (k, v) => { startCheck('offer-check'); setVals((p) => ({ ...p, [k]: v })) }
 
   const result = useMemo(() => {
     const { claimed, offered, excess, sumInsured, trueValue } = vals
@@ -162,7 +162,7 @@ export default function OfferCheck({ block, isMobile }) {
           {BASIS.map((b) => {
             const on = basis === b.value
             return (
-              <button key={b.value} type="button" onClick={() => { startCheck(); setBasis(on ? null : b.value) }}
+              <button key={b.value} type="button" onClick={() => { startCheck('offer-check'); setBasis(on ? null : b.value) }}
                 style={{ padding: '10px 6px', fontFamily: 'var(--font-body)', fontSize: '12.5px', fontWeight: 700, cursor: 'pointer', border: `1px solid ${on ? 'var(--teal)' : 'var(--border-dark)'}`, background: on ? 'var(--teal-pale)' : 'var(--light-bg)', color: on ? 'var(--teal-dark)' : 'var(--text-mid)' }}>
                 {b.label}
               </button>
