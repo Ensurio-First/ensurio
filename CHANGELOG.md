@@ -4,6 +4,46 @@ All notable changes to the Insure First / Ensurio website are documented here.
 Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 The site is a Vite + React SPA deployed on Vercel at **insurefirst.ae**.
 
+## 2026-08-01 — Internal staff portal (leads view)
+
+First slice of the internal dashboard, at `portal.insurefirst.ae`. Setup and
+deploy steps in `docs/portal-setup.md`.
+
+### Added
+
+- **`portal_staff` allowlist + `is_portal_staff()`** and the first RLS policies
+  the `leads` table has ever had. Authentication proves an address; membership
+  of the allowlist grants access. Verified against the live database: anon sees
+  0 rows, a signed-in non-allowlisted account sees 0, an allowlisted one sees
+  all — and email matching is case-insensitive.
+- **Separate portal build** (`npm run build:portal` → `dist-portal/`), its own
+  Vercel project from the same repo. Not a route in the main app: the public
+  bundle is already ~1.2MB, and the two have opposite constraints — the public
+  site is tuned for first paint and SEO, the portal for neither. 387kB vs the
+  site's 1,229kB, and a portal bug cannot break lead capture.
+- **Magic-link sign-in.** No passwords for a small internal team. The
+  confirmation reads the same whether or not the address has access, so the form
+  cannot be used to enumerate staff.
+- **Leads view** — table, search, status and tool filters, and a detail panel
+  with the computed report and findings. Counts follow the filters rather than
+  quietly reporting the whole table. A lead whose result email failed is flagged
+  in the list, since that is the one most likely to have gone cold wondering why.
+
+### Notes
+
+- The allowlist has no insert/update policy anywhere, deliberately: it is what
+  grants access to every lead, so it changes with the service-role key only.
+- Portal auth uses its own storage key, so a staff session cannot leak into the
+  public site's Supabase client.
+- `envDir` is pinned to the repo root in `vite.portal.config.js` — it follows
+  `root` by default, so the portal would have looked for `.env.local` inside
+  `src/portal`, found nothing, and rendered "Not configured".
+- `is_portal_staff()` had to be revoked from `PUBLIC`, not just from `anon`.
+  Postgres grants EXECUTE on a new function to PUBLIC, and anon inherits it
+  through that — so the original revoke did nothing and the function stayed
+  callable at `/rest/v1/rpc/is_portal_staff` with the anon key. Caught by the
+  Supabase security advisor; anon is now denied outright.
+
 ## 2026-08-01 — Interactive tools, lead email pipeline, analytics
 
 The largest change to date: every page that previously ended in "Book a Free
