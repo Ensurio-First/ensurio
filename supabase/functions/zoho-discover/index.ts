@@ -14,45 +14,73 @@
  * Zoho. That is deliberate: a diagnostics endpoint is exactly the kind of thing
  * that quietly becomes a data export.
  *
- * Service-role only. It is not for the portal and not for the public.
+ * Authorised by the portal_staff allowlist, using the caller's own session —
+ * the same gate as the portal itself. An earlier version compared against
+ * SUPABASE_SERVICE_ROLE_KEY, which meant the most dangerous credential in the
+ * project had to be copied around by hand to run a diagnostic. A staff session
+ * the caller already holds is both safer and less work.
  */
 
+import { createClient } from 'jsr:@supabase/supabase-js@2'
 import { zohoFetch, booksOrgId, ZohoError } from '../_shared/zoho.ts'
+
+const cors = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+}
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body, null, 2), {
     status,
-    headers: { 'Content-Type': 'application/json' },
+    headers: { ...cors, 'Content-Type': 'application/json' },
   })
-
-/*
- * Constant-time-ish comparison. String equality on a secret leaks its prefix
- * through timing; the cost of avoiding that here is one line.
- */
-function safeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false
-  let diff = 0
-  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i)
-  return diff === 0
-}
 
 interface ZohoModule {
   api_name: string
   module_name: string
   plural_label: string
   generated_type: string
-  creatable: boolean
   api_supported: boolean
 }
 
 Deno.serve(async (req: Request) => {
-  const auth = req.headers.get('Authorization') ?? ''
-  const presented = auth.replace(/^Bearer\s+/i, '')
-  const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: cors })
 
-  if (!serviceKey || !safeEqual(presented, serviceKey)) {
-    return json({ error: 'forbidden' }, 403)
+  const authHeader = req.headers.get('Authorization') ?? ''
+  const url = Deno.env.get('SUPABASE_URL')
+  const anon = Deno.env.get('SUPABASE_ANON_KEY')
+
+  // Presence only, never values — enough to diagnose a misconfigured function
+  // from the logs without putting key material in them.
+  console.log('env present:', {
+    SUPABASE_URL: Boolean(url),
+    SUPABASE_ANON_KEY: Boolean(anon),
+    ZOHO_CLIENT_ID: Boolean(Deno.env.get('ZOHO_CLIENT_ID')),
+    ZOHO_CLIENT_SECRET: Boolean(Deno.env.get('ZOHO_CLIENT_SECRET')),
+    ZOHO_REFRESH_TOKEN: Boolean(Deno.env.get('ZOHO_REFRESH_TOKEN')),
+    ZOHO_BOOKS_ORG_ID: Boolean(Deno.env.get('ZOHO_BOOKS_ORG_ID')),
+    hasAuthHeader: authHeader.length > 0,
+  })
+
+  if (!url || !anon) return json({ error: 'function-misconfigured' }, 500)
+  if (!authHeader) return json({ error: 'sign-in-required' }, 401)
+
+  /*
+   * Ask the database, with the caller's own token, whether they are staff. This
+   * reuses is_portal_staff() rather than re-implementing the rule, so revoking
+   * someone in portal_staff revokes them here too, with no redeploy.
+   */
+  const supabase = createClient(url, anon, {
+    global: { headers: { Authorization: authHeader } },
+  })
+
+  const { data: isStaff, error: staffError } = await supabase.rpc('is_portal_staff')
+  if (staffError) {
+    console.error('staff check failed', staffError.message)
+    return json({ error: 'staff-check-failed' }, 403)
   }
+  if (isStaff !== true) return json({ error: 'not-staff' }, 403)
 
   try {
     /* ── 1. What modules exist, and which look like policies ─────────────── */
@@ -60,14 +88,8 @@ Deno.serve(async (req: Request) => {
 
     const usable = (modules.modules ?? [])
       .filter((m) => m.api_supported)
-      .map((m) => ({
-        api_name: m.api_name,
-        label: m.plural_label,
-        type: m.generated_type, // 'default' | 'custom' | 'subform' | ...
-      }))
+      .map((m) => ({ api_name: m.api_name, label: m.plural_label, type: m.generated_type }))
 
-    // Anything a policy might plausibly be filed under, so the fields of the
-    // likely candidates come back in the same round trip.
     const candidates = usable.filter((m) =>
       m.type === 'custom' ||
       /polic|cover|insur|deal|potential/i.test(`${m.api_name} ${m.label}`),
@@ -92,14 +114,9 @@ Deno.serve(async (req: Request) => {
         `/books/v3/contacts?organization_id=${booksOrgId()}&per_page=1`,
       )
       const sample = contacts.contacts?.[0]
-
       booksJoin = sample
         ? {
-            // Keys only. The values are a real customer's details.
             contactFieldsPresent: Object.keys(sample).sort(),
-            // These are what the CRM-Books integration adds. Present means the
-            // join is an id lookup; absent means name/email matching, which is
-            // the fragile path worth avoiding.
             crmLinkFields: Object.keys(sample).filter((k) => /zcrm|crm/i.test(k)),
           }
         : { note: 'no contacts in Books yet — cannot tell whether the CRM link exists' }
