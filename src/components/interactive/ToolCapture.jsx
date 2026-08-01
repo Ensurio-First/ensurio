@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { submitLead } from '../../lib/supabase'
 import { trackLeadSubmit } from '../../lib/analytics'
+import { identifyVisitor } from '../../lib/salesiq'
 import { useLeadJourney } from '../../context/LeadJourneyContext'
 
 /*
@@ -64,6 +65,24 @@ export default function ToolCapture({
       })
       completeCheck()
       trackLeadSubmit({ toolId, service, source, score: report?.score })
+
+      // Hand the same details to the chat widget. Someone who has just finished
+      // a tool is the most likely person on the site to open a chat, and this is
+      // the difference between an operator seeing "Visitor 42" and seeing a
+      // named lead with their score, their tool and their reference number.
+      identifyVisitor({
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        info: {
+          Tool: reportTitle || toolId,
+          Service: service,
+          Score: report?.score,
+          Reference: receipt?.reference,
+          'Preferred callback': when,
+        },
+      })
+
       onSubmitted?.({ ...(receipt || {}), name: form.name, email: form.email, when })
     } catch {
       setStatus('error')

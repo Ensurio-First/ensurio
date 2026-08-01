@@ -23,5 +23,24 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+
+    <!-- Zoho SalesIQ live chat (Zoho One, EU datacentre).
+         The ready callback is defined HERE, before the widget script, so it is
+         guaranteed to be the one SalesIQ invokes — assigning it later from the
+         React bundle would race the widget and silently lose the callback. It
+         flips a flag and drains anything the app queued while the widget was
+         still loading. See src/lib/salesiq.js. -->
+    <script>
+      window.$zoho = window.$zoho || {};
+      window.__salesiqQueue = [];
+      $zoho.salesiq = $zoho.salesiq || {};
+      $zoho.salesiq.ready = function () {
+        window.__salesiqReady = true;
+        window.__salesiqQueue.splice(0).forEach(function (fn) {
+          try { fn(); } catch (e) { /* never let chat break the page */ }
+        });
+      };
+    </script>
+    <script id="zsiqscript" src="https://salesiq.zohopublic.eu/widget?wc=siq6b75fcf9d63f4b7c3c4f2e16c77f4a2bbdc1709cf86945e6d6a55aa2a1f392a90457371b9151019a9fe0d7ac1841a379" defer></script>
   </body>
 </html>

@@ -11,4 +11,13 @@
   .proto-hamburger   { display: flex !important; }
   .proto-nav-desktop { display: none !important; }
   .proto-mobile-menu { display: block !important; }
+
+  /* Lift the SalesIQ chat bubble clear of the sticky Call/WhatsApp bar, which
+     occupies the same bottom-right corner at these widths. The widget is
+     injected outside our markup, so this has to reach in by its own class and
+     out-!important Zoho's inline positioning. */
+  .zsiq_floatmain,
+  #zsiq_float {
+    bottom: 66px !important;
+  }
 }
