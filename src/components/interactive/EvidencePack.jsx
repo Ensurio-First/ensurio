@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { Check, Save, Phone, FileText } from 'lucide-react'
+import { Check, Save, Phone, FileText, Printer } from 'lucide-react'
 import toolStyles from './toolStyles'
 import { CHECK_ANCHOR_ID } from './scrollToCheck'
 import ToolCapture from './ToolCapture'
@@ -137,15 +137,31 @@ export default function EvidencePack({ block, isMobile }) {
 
   return (
     <div id={block?.secondary ? undefined : CHECK_ANCHOR_ID} style={s.shell}>
+      {/* Only appears on paper: a loose printout has to say what it is and
+          who produced it, or it is just an anonymous page of notes. */}
+      <div className="print-only" style={{ borderBottom: '2px solid #000', paddingBottom: '8px', marginBottom: '16px' }}>
+        <strong style={{ fontSize: '13pt' }}>Claim evidence record</strong>
+        <div style={{ fontSize: '9pt' }}>
+          Insure First · consult@insurefirst.ae · 050 976 5976
+          {sent?.reference ? ` · Reference ${sent.reference}` : ''}
+        </div>
+      </div>
+
       <div style={s.pad}>
         <span style={s.badge}>Evidence pack</span>
         <h3 style={s.heading}>{block?.title || 'Write it down now, while you still remember it'}</h3>
         <p style={{ ...s.muted, margin: '0 0 0.5rem' }}>
           {block?.subtitle || 'Claims are settled on the documented record — and the record is always weakest where it was rebuilt from memory weeks later. Nothing here is required, and nothing is sent to us until you ask.'}
         </p>
-        <p style={{ ...s.muted, fontSize: '12.5px', margin: '0 0 1.5rem' }}>
-          Saved in this browser as you type, so you can come back to it over the next few days.
-        </p>
+        <div className="no-print" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', margin: '0 0 1.5rem' }}>
+          <p style={{ ...s.muted, fontSize: '12.5px', margin: 0 }}>
+            Saved in this browser as you type, so you can come back to it over the next few days.
+          </p>
+          <button type="button" onClick={() => window.print()}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', padding: '9px 16px', background: 'transparent', border: '1.5px solid var(--border-dark)', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: '13px', fontWeight: 700, color: 'var(--navy)', whiteSpace: 'nowrap' }}>
+            <Printer size={14} /> Print or save as PDF
+          </button>
+        </div>
 
         {restored && (
           <div style={{ background: 'var(--teal-pale)', border: '1px solid var(--teal)', padding: '11px 14px', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>

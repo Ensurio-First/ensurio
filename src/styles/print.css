@@ -1,0 +1,89 @@
+/*
+ * Print / Save-as-PDF.
+ *
+ * The tools produce documents people genuinely want to keep — an evidence pack
+ * they will add to for weeks, a TCOR breakdown to take to a board meeting. The
+ * browser's own "Save as PDF" gets that done for free, but only if the page
+ * stops behaving like a website when it hits paper.
+ *
+ * Chosen over generating PDFs server-side: Deno edge functions cannot run
+ * headless Chrome, so that route means either hand-laying every report in a JS
+ * PDF library or taking on an HTML-to-PDF vendor — real cost and a new
+ * dependency, for a document that largely duplicates the HTML email people
+ * already receive.
+ *
+ * The site styles inline, so almost everything here needs !important to win.
+ */
+
+@media print {
+  /* Ink, and the fact that most printers drop backgrounds by default. */
+  html, body {
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 11pt;
+  }
+
+  @page {
+    margin: 16mm 14mm;
+  }
+
+  /* Navigation, CTAs and anything asking for an action are noise on paper. */
+  .no-print,
+  nav,
+  footer {
+    display: none !important;
+  }
+
+  /* Dark panels: keep the structure, lose the ink-flooding background. */
+  .print-invert,
+  .print-invert * {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  .print-invert {
+    border: 1px solid #999 !important;
+  }
+
+  /* A finding split across a page break is much harder to read. */
+  li,
+  blockquote,
+  table,
+  .print-keep {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  h1, h2, h3, h4 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  /* Blurred content is withheld on screen; it must not print either — the
+     filter is a visual effect, not redaction, and some renderers ignore it. */
+  [aria-hidden='true'] {
+    display: none !important;
+  }
+
+  /* Shadows and rounding cost ink and gain nothing. */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Links are dead on paper — show where they went, but only for real URLs. */
+  a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 9pt;
+    color: #555;
+  }
+
+  /* The print-only masthead, so a loose page identifies itself. */
+  .print-only {
+    display: block !important;
+  }
+}
+
+/* Hidden on screen, revealed by the rule above when printing. */
+.print-only {
+  display: none;
+}

@@ -95,7 +95,7 @@ export default function ProtoNav() {
     <>
       {/* ── Top bar — hidden on mobile ── */}
       {!isMobile && (
-        <div style={{ background: 'var(--white)', padding: '7px 0', fontSize: '12px', color: 'var(--text-muted)', borderBottom: '1px solid var(--border)' }}>
+        <div className="no-print" style={{ background: 'var(--white)', padding: '7px 0', fontSize: '12px', color: 'var(--text-muted)', borderBottom: '1px solid var(--border)' }}>
           <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 4rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
             <span>www.insurefirst.ae is powered by Fredrick Insurance Consultant licensed by CBUAE — LICENSE 143</span>
             <div style={{ display: 'flex', gap: '0.5rem' }}>

@@ -79,7 +79,7 @@ export default function ToolCapture({
   }
 
   return (
-    <form onSubmit={submit} noValidate>
+    <form onSubmit={submit} noValidate className="no-print">
       <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.05rem', fontWeight: 800, color: 'var(--navy)', margin: '0 0 4px' }}>
         {heading}
       </h4>

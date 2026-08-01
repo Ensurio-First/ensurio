@@ -181,7 +181,7 @@ export default function ProtectionGap({ block, isMobile }) {
       </div>
 
       {/* The number */}
-      <div style={{ background: 'var(--navy)', color: '#fff', padding: isMobile ? '1.4rem 1.25rem' : '1.75rem 2rem' }}>
+      <div className="print-invert print-keep" style={{ background: 'var(--navy)', color: '#fff', padding: isMobile ? '1.4rem 1.25rem' : '1.75rem 2rem' }}>
         <div style={{ ...s.eyebrow, color: 'var(--teal)' }}>{result.gap > 0 ? 'Your protection gap' : 'Your position'}</div>
         <div style={{ fontFamily: 'var(--font-heading)', fontSize: isMobile ? '2.1rem' : '2.8rem', fontWeight: 800, color: result.gap > 0 ? 'var(--gold)' : 'var(--teal)', letterSpacing: '-0.02em', lineHeight: 1.1, margin: '6px 0 8px' }}>
           {result.gap > 0 ? fmtAED(result.gap) : 'Covered'}

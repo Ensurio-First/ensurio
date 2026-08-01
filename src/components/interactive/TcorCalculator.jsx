@@ -195,7 +195,7 @@ export default function TcorCalculator({ block, isMobile }) {
       </div>
 
       {/* Live result — the whole point is that this moves as they type */}
-      <div style={{ background: 'var(--navy)', color: '#fff', padding: isMobile ? '1.4rem 1.25rem' : '1.75rem 2rem' }}>
+      <div className="print-invert print-keep" style={{ background: 'var(--navy)', color: '#fff', padding: isMobile ? '1.4rem 1.25rem' : '1.75rem 2rem' }}>
         <div style={{ ...s.eyebrow, color: 'var(--teal)' }}>Your Total Cost of Risk</div>
         <div style={{ fontFamily: 'var(--font-heading)', fontSize: isMobile ? '2.1rem' : '2.8rem', fontWeight: 800, color: 'var(--gold)', letterSpacing: '-0.02em', lineHeight: 1.1, margin: '6px 0 4px' }}>
           {fmtAED(result.total)}<span style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.5)', fontWeight: 600 }}> / year</span>

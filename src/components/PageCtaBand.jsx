@@ -67,7 +67,7 @@ export default function PageCtaBand({
 
   if (mode === 'done') {
     return (
-      <section style={section}>
+      <section className="no-print" style={section}>
         <div style={{ ...inner, maxWidth: '760px' }}>
           <div>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '9px', marginBottom: '1rem' }}>
@@ -95,7 +95,7 @@ export default function PageCtaBand({
 
   if (mode === 'resume') {
     return (
-      <section style={section}>
+      <section className="no-print" style={section}>
         <div style={{ ...inner, maxWidth: '760px' }}>
           <div>
             <h2 style={h2}>You're partway through your check</h2>
@@ -118,7 +118,7 @@ export default function PageCtaBand({
   }
 
   return (
-    <section style={section}>
+    <section className="no-print" style={section}>
       <div style={inner}>
         <div>
           <h2 style={h2}>{title}</h2>
