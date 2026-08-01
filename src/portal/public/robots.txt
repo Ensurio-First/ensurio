@@ -1,0 +1,7 @@
+# Internal staff portal. Nothing here is for the public web.
+#
+# The pages are behind a login, but a login is not a reason for the URL to be
+# in an index — and the public site's robots.txt says "Allow: /", which is what
+# this build would otherwise have inherited.
+User-agent: *
+Disallow: /

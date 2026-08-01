@@ -16,7 +16,13 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   root: 'src/portal',
-  publicDir: '../../public',
+  // The portal's own public dir (src/portal/public), NOT the site's.
+  //
+  // Pointing this at ../../public copied the marketing site's robots.txt,
+  // sitemap.xml and proposal.html into the portal build — so portal.insurefirst.ae
+  // would have served "Allow: /" plus a sitemap of public URLs, inviting crawlers
+  // onto an internal tool and flatly contradicting the noindex meta tag.
+  publicDir: 'public',
   // envDir follows `root` by default, which would look for .env.local inside
   // src/portal and silently find nothing — the app would render "Not
   // configured" against a perfectly good .env.local at the repo root.

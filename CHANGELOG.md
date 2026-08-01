@@ -38,6 +38,12 @@ deploy steps in `docs/portal-setup.md`.
 - `envDir` is pinned to the repo root in `vite.portal.config.js` — it follows
   `root` by default, so the portal would have looked for `.env.local` inside
   `src/portal`, found nothing, and rendered "Not configured".
+- The portal has its **own** `public/` dir. Pointing `publicDir` at the site's
+  copied `robots.txt`, `sitemap.xml` and `proposal.html` into the portal build —
+  so `portal.insurefirst.ae` would have served `Allow: /` and a sitemap of public
+  URLs, inviting crawlers onto an internal tool and contradicting its own
+  `noindex` tag. It now ships a `Disallow: /` robots.txt and a favicon, nothing
+  else.
 - `is_portal_staff()` had to be revoked from `PUBLIC`, not just from `anon`.
   Postgres grants EXECUTE on a new function to PUBLIC, and anon inherits it
   through that — so the original revoke did nothing and the function stayed
