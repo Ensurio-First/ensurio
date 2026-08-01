@@ -1266,6 +1266,16 @@ export const servicePages = [
   },
 ]
 
+/*
+ * The reverse of `relatedBlog`. Services name the article that supports them;
+ * nothing pointed the other way, so a reader arriving from search dead-ended at
+ * a generic "book a consultation". Derived rather than duplicated in blog.js so
+ * the two can never drift apart.
+ */
+export function getServiceByRelatedBlog(blogSlug) {
+  return servicePages.find((s) => s.relatedBlog === blogSlug)
+}
+
 export function getServiceBySlug(slug) {
   return servicePages.find((s) => s.slug === slug)
 }

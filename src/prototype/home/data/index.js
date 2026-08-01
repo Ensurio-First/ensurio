@@ -5,12 +5,18 @@ export const trustStats = [
   { value: 'UAE-Wide', label: 'Coverage' },
 ]
 
+/*
+ * These five already describe the visitor's situation in their own words, which
+ * makes them the best triage on the site — they were just sitting there as
+ * static text. Each now routes to the tool built for that problem, so the
+ * homepage sorts people instead of asking them to sort themselves.
+ */
 export const problems = [
-  { icon: 'ShieldQuestion', title: 'Underinsured?', desc: 'Unsure if your current policies actually cover your real business exposure.' },
-  { icon: 'TrendingDown', title: 'Overpaying on Premiums?', desc: 'Paying high premiums without a clear breakdown of what you are paying for.' },
-  { icon: 'XCircle', title: 'Worried About Claim Rejection?', desc: 'Concerned your insurer may reject or partially settle a legitimate claim.' },
-  { icon: 'FileQuestion', title: 'Confused by Policy Wording?', desc: 'Policy exclusions and fine print that is hard to understand until it is too late.' },
-  { icon: 'Scale', title: 'Facing a Dispute?', desc: 'Need expert support during complex claim negotiations or legal disputes.' },
+  { icon: 'ShieldQuestion', title: 'Underinsured?', desc: 'Unsure if your current policies actually cover your real business exposure.', href: '/solutions/coverage-gap-analysis', action: 'Find your gaps' },
+  { icon: 'TrendingDown', title: 'Overpaying on Premiums?', desc: 'Paying high premiums without a clear breakdown of what you are paying for.', href: '/who-we-help/finance-managers', action: 'Work out your real cost of risk' },
+  { icon: 'XCircle', title: 'Worried About Claim Rejection?', desc: 'Concerned your insurer may reject or partially settle a legitimate claim.', href: '/solutions/claims-advisory', action: 'Get claim-ready' },
+  { icon: 'FileQuestion', title: 'Confused by Policy Wording?', desc: 'Policy exclusions and fine print that is hard to understand until it is too late.', href: '/solutions/policy-review', action: 'Check what yours says' },
+  { icon: 'Scale', title: 'Facing a Dispute?', desc: 'Need expert support during complex claim negotiations or legal disputes.', href: '/solutions/legal-claims-support', action: 'See where you stand' },
 ]
 
 // `slug` maps each card to its page in solutions.js — /solutions/:slug.

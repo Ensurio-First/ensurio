@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { ShieldQuestion, TrendingDown, XCircle, FileQuestion, Scale, ClipboardCheck, Search, FileText, Headphones, Gavel, BarChart3 } from 'lucide-react'
+import { ShieldQuestion, TrendingDown, XCircle, FileQuestion, Scale, ClipboardCheck, Search, FileText, Headphones, Gavel, BarChart3, ArrowRight } from 'lucide-react'
 import { problems, solutions } from '../data/index.js'
 import problemsImg from '../../../assets/advisor-documents-banner.jpg'
 import { useIsMobile } from '../hooks/useIsMobile.js'
@@ -64,23 +64,33 @@ export default function ProtoProblems() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.07, duration: 0.35 }}
-                  style={{
-                    display: 'flex', gap: isMobile ? '0.75rem' : '1rem', alignItems: 'flex-start',
-                    padding: isMobile ? '0.75rem 1rem' : '1.1rem 2rem',
-                    borderBottom: i < problems.length - 1 ? '1px solid rgba(255,255,255,0.07)' : 'none',
-                  }}
+                  style={{ borderBottom: i < problems.length - 1 ? '1px solid rgba(255,255,255,0.07)' : 'none' }}
                 >
-                  <div style={{ width: isMobile ? '28px' : '34px', height: isMobile ? '28px' : '34px', background: 'rgba(14,164,114,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>
-                    {Icon && <Icon size={16} color="var(--teal)" />}
-                  </div>
-                  <div>
-                    <p style={{ fontFamily: 'var(--font-heading)', fontSize: '13.5px', fontWeight: 700, color: 'var(--white)', marginBottom: '3px' }}>
-                      {problem.title}
-                    </p>
-                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '12.5px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.6, margin: 0 }}>
-                      {problem.desc}
-                    </p>
-                  </div>
+                  <Link
+                    to={problem.href}
+                    style={{
+                      display: 'flex', gap: isMobile ? '0.75rem' : '1rem', alignItems: 'flex-start',
+                      padding: isMobile ? '0.75rem 1rem' : '1.1rem 2rem',
+                      textDecoration: 'none', transition: 'background 0.18s',
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)' }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+                  >
+                    <div style={{ width: isMobile ? '28px' : '34px', height: isMobile ? '28px' : '34px', background: 'rgba(14,164,114,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>
+                      {Icon && <Icon size={16} color="var(--teal)" />}
+                    </div>
+                    <div>
+                      <p style={{ fontFamily: 'var(--font-heading)', fontSize: '13.5px', fontWeight: 700, color: 'var(--white)', marginBottom: '3px' }}>
+                        {problem.title}
+                      </p>
+                      <p style={{ fontFamily: 'var(--font-body)', fontSize: '12.5px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.6, margin: '0 0 5px' }}>
+                        {problem.desc}
+                      </p>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontFamily: 'var(--font-body)', fontSize: '11.5px', fontWeight: 700, color: 'var(--teal)' }}>
+                        {problem.action} <ArrowRight size={12} />
+                      </span>
+                    </div>
+                  </Link>
                 </motion.div>
               )
             })}

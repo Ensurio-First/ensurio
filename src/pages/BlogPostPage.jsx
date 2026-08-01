@@ -7,12 +7,19 @@ import ProtoFooter from '../prototype/home/components/ProtoFooter'
 import { Block } from '../prototype/home/components/contentBlocks'
 import { useIsMobile } from '../prototype/home/hooks/useIsMobile'
 import { blogPosts, getPostBySlug } from '../prototype/home/data/blog.js'
+import { getServiceByRelatedBlog } from '../prototype/home/data/services.js'
+import ToolTeaser from '../components/interactive/ToolTeaser'
 import '../prototype/prototype.css'
 
 export default function BlogPostPage() {
   const { slug } = useParams()
   const isMobile = useIsMobile()
   const post = getPostBySlug(slug)
+
+  // Only promise a check if the service this article points at actually has one.
+  const linkedCheck = Boolean(
+    getServiceByRelatedBlog(slug)?.body?.some((b) => b.type === 'gapcheck'),
+  )
 
   // Apply the post's SEO meta title / description while it is mounted, then
   // restore the previous values on unmount.
@@ -84,15 +91,26 @@ export default function BlogPostPage() {
               <Block key={i} block={block} isMobile={isMobile} />
             ))}
 
-            {/* Related service — closes the blog → service funnel */}
+            {/* Blog → service hand-off. Where that service carries a check, offer
+                the check rather than the service: someone who has just read why
+                cargo cover fails is ready to test their own, not to browse. */}
             {post.serviceLink && (
-              <Link to={post.serviceLink.href} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', background: 'var(--teal-pale)', border: '1px solid var(--teal)', padding: isMobile ? '1rem 1.1rem' : '1.15rem 1.5rem', margin: '1.25rem 0 0', textDecoration: 'none', flexWrap: 'wrap' }}>
-                <span>
-                  <span style={{ display: 'block', fontFamily: 'var(--font-body)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--teal-dark)', marginBottom: '2px' }}>Related service</span>
-                  <span style={{ display: 'block', fontFamily: 'var(--font-heading)', fontWeight: 800, color: 'var(--navy)', fontSize: '1.05rem' }}>{post.serviceLink.label}</span>
-                </span>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--teal-dark)', fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '14px', whiteSpace: 'nowrap' }}>Explore this service <ArrowRight size={15} /></span>
-              </Link>
+              linkedCheck ? (
+                <ToolTeaser
+                  isMobile={isMobile}
+                  href={post.serviceLink.href}
+                  title="You have just read the theory. Now check yours."
+                  prompt={`A few questions on your ${post.serviceLink.label.toLowerCase()} — your score shows before you give any details.`}
+                />
+              ) : (
+                <Link to={post.serviceLink.href} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', background: 'var(--teal-pale)', border: '1px solid var(--teal)', padding: isMobile ? '1rem 1.1rem' : '1.15rem 1.5rem', margin: '1.25rem 0 0', textDecoration: 'none', flexWrap: 'wrap' }}>
+                  <span>
+                    <span style={{ display: 'block', fontFamily: 'var(--font-body)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--teal-dark)', marginBottom: '2px' }}>Related service</span>
+                    <span style={{ display: 'block', fontFamily: 'var(--font-heading)', fontWeight: 800, color: 'var(--navy)', fontSize: '1.05rem' }}>{post.serviceLink.label}</span>
+                  </span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--teal-dark)', fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '14px', whiteSpace: 'nowrap' }}>Explore this service <ArrowRight size={15} /></span>
+                </Link>
+              )
             )}
 
             {/* Back link */}
