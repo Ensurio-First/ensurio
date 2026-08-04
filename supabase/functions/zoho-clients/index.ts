@@ -302,6 +302,49 @@ async function policyCounts(ids: string[]) {
   return { counts, partial }
 }
 
+/*
+ * COQL cannot select every field type — subforms and multi-select lookups are
+ * fetched separately by the API and asking for them fails the whole query.
+ */
+const COQL_UNSUPPORTED = new Set([
+  'subform', 'multiselectlookup', 'multiuserlookup', 'linking', 'RRULE', 'ALARM',
+])
+
+/*
+ * One client's policies from one module.
+ *
+ * Uses COQL rather than the related-records endpoint. That endpoint wants the
+ * RELATED LIST api_name, which is not the module api_name — on this org the
+ * policy modules are CustomModule1, CustomModule6 and so on, while their related
+ * lists carry their own labels ("Claims Under Policies"). COQL needs only the
+ * module api_name and the lookup field, both of which come from metadata, so
+ * there is nothing left to guess.
+ */
+async function policiesForClient(module: string, clientId: string) {
+  const lookup = await clientLookupField(module)
+  if (!lookup) throw new Error(`no lookup to ${CLIENT_MODULE}`)
+
+  const meta = await fieldMetaFor(module)
+  // COQL caps the select list at 50 fields.
+  const selectable = meta
+    .filter((f) => !COQL_UNSUPPORTED.has(f.data_type) && !NOISE.has(f.api_name))
+    .map((f) => f.api_name)
+    .slice(0, 49)
+
+  const fields = ['id', ...selectable].join(', ')
+
+  const res = await zohoFetch<{ data?: Array<Record<string, unknown>> }>('/crm/v7/coql', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      select_query:
+        `select ${fields} from ${module} where ${lookup} = '${clientId}' limit 200`,
+    }),
+  })
+
+  return (res.data ?? []).map((p) => ({ id: String(p.id), fields: presentable(p) }))
+}
+
 async function clientDetail(id: string) {
   const record = await zohoFetch<{ data?: Array<Record<string, unknown>> }>(
     `/crm/v7/${CLIENT_MODULE}/${encodeURIComponent(id)}`,
@@ -321,23 +364,14 @@ async function clientDetail(id: string) {
   const groups = await Promise.all(
     modules.map(async (m) => {
       try {
-        // The related-list endpoint is the correct way to get "this account's X",
-        // and it works regardless of what the lookup field happens to be called.
-        const rel = await zohoFetch<{ data?: Array<Record<string, unknown>> }>(
-          `/crm/v7/${CLIENT_MODULE}/${encodeURIComponent(id)}/${encodeURIComponent(m.api_name)}`,
-        )
-        const policies = (rel.data ?? []).map((p) => ({ id: String(p.id), fields: presentable(p) }))
+        const policies = await policiesForClient(m.api_name, id)
         return { module: m.api_name, label: m.label, policies, note: null as string | null }
       } catch (e) {
-        // Usually means this module is not a related list of the client module.
-        // Saying so beats an empty table implying the client has no cover.
         return {
           module: m.api_name,
           label: m.label,
           policies: [],
-          note: `Not readable as a related list of ${CLIENT_MODULE} (${
-            e instanceof Error ? e.message : 'failed'
-          }).`,
+          note: `Could not read ${m.label} (${e instanceof Error ? e.message : 'failed'}).`,
         }
       }
     }),
