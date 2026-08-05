@@ -4,6 +4,64 @@ All notable changes to the Insure First / Ensurio website are documented here.
 Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 The site is a Vite + React SPA deployed on Vercel at **insurefirst.ae**.
 
+## 2026-08-05 — Clients tab reads a local mirror, not Zoho
+
+Caching the access token stopped the integration falling over, but it was
+treating a symptom. The tab still called Zoho on every render — one list call
+plus eight COQL aggregates, two to five seconds, repeated every time someone
+switched tabs — against an API that meters credits per org and caps token mints
+per ten minutes. My own note at the top of that function said "live now, sync
+when we build the reports"; this is the wall that justified the sync.
+
+### Added
+
+- **`crm_clients` / `crm_policies` / `crm_sync_runs`**, plus a
+  `crm_client_summary` view giving policy totals and the next renewal in one
+  query. All five modules flatten into one policy table — they disagree about
+  field names but not about what a policy is, and one table is what makes
+  "everything expiring this month, across the book" a single query.
+- **`zoho-sync`**, incremental by `Modified_Time`: records come back
+  newest-modified first and the pass stops at the first one older than the last
+  successful run, so a routine sync costs a page or two per module.
+- **A visible freshness line** with "Sync now". A mirror with no visible
+  freshness quietly goes stale, and "no policies" and "nothing has synced since
+  Tuesday" otherwise look identical on screen.
+
+### Changed
+
+- **Sorting by renewal date now covers the whole book.** This is the part the
+  live version could not do at all: expiry lives on the policy modules, so Zoho
+  cannot order a *client* query by it and the old UI could only sort the fifty
+  rows already on screen — which it had to admit in a footnote. Postgres sorts
+  all of them.
+- Switching tabs no longer costs anything. That was the original complaint and
+  it was a fair one.
+
+### Notes
+
+- **The watermark is the START of the last successful run, not its end.** A
+  record modified while a sync was mid-flight may have been read before the edit
+  landed; starting from the finish time would skip it permanently. Re-reading a
+  few records is free, missing one is not.
+- **Deletions can only be seen by a full pass.** A record deleted in Zoho stops
+  being returned rather than being reported, so `mode: full` re-stamps every
+  live record and prunes whatever kept an older `synced_at`. Running that prune
+  after an incremental pass would delete the entire book bar the few rows that
+  changed — hence the guard.
+- Policy rows carry **no foreign key** to clients. A policy can point at a
+  client the Accounts pass has not reached yet, and a sync that dies halfway on
+  referential integrity is worse than a briefly orphaned row.
+- The sync reads **all readable fields** and keeps the record in `raw`, not just
+  the eight columns we name today. Storing only those would mean a full re-sync
+  the first time anyone wants a ninth.
+- `zoho-sync` is deployed with `verify_jwt` off because it has two callers with
+  two credentials — a staff JWT through the usual allowlist, or a shared secret
+  for the scheduled run. Authentication is inside the function, not in front
+  of it.
+- The mirror tables have **no write policy for anyone**. The CRM is the system
+  of record; a row edited in the portal would look saved and be silently
+  overwritten by the next sync.
+
 ## 2026-08-05 — Zoho token: one mint an hour, not one per isolate
 
 The Clients tab worked for four requests and then failed every request after

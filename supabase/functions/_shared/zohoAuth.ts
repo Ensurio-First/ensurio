@@ -11,7 +11,9 @@ import { createClient } from 'jsr:@supabase/supabase-js@2'
 
 export const cors = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  // x-sync-secret is how the scheduled sync identifies itself; it has no user
+  // and so no JWT, and a preflight that strips the header would fail it.
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-sync-secret',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
