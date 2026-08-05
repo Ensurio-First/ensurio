@@ -4,6 +4,186 @@ All notable changes to the Insure First / Ensurio website are documented here.
 Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 The site is a Vite + React SPA deployed on Vercel at **insurefirst.ae**.
 
+## 2026-08-05 — Clients tab reads a local mirror, not Zoho
+
+Caching the access token stopped the integration falling over, but it was
+treating a symptom. The tab still called Zoho on every render — one list call
+plus eight COQL aggregates, two to five seconds, repeated every time someone
+switched tabs — against an API that meters credits per org and caps token mints
+per ten minutes. My own note at the top of that function said "live now, sync
+when we build the reports"; this is the wall that justified the sync.
+
+### Added
+
+- **`crm_clients` / `crm_policies` / `crm_sync_runs`**, plus a
+  `crm_client_summary` view giving policy totals and the next renewal in one
+  query. All five modules flatten into one policy table — they disagree about
+  field names but not about what a policy is, and one table is what makes
+  "everything expiring this month, across the book" a single query.
+- **`zoho-sync`**, incremental by `Modified_Time`: records come back
+  newest-modified first and the pass stops at the first one older than the last
+  successful run, so a routine sync costs a page or two per module.
+- **A visible freshness line** with "Sync now". A mirror with no visible
+  freshness quietly goes stale, and "no policies" and "nothing has synced since
+  Tuesday" otherwise look identical on screen.
+
+### Changed
+
+- **Sorting by renewal date now covers the whole book.** This is the part the
+  live version could not do at all: expiry lives on the policy modules, so Zoho
+  cannot order a *client* query by it and the old UI could only sort the fifty
+  rows already on screen — which it had to admit in a footnote. Postgres sorts
+  all of them.
+- Switching tabs no longer costs anything. That was the original complaint and
+  it was a fair one.
+
+### Notes
+
+- **The watermark is the START of the last successful run, not its end.** A
+  record modified while a sync was mid-flight may have been read before the edit
+  landed; starting from the finish time would skip it permanently. Re-reading a
+  few records is free, missing one is not.
+- **Deletions can only be seen by a full pass.** A record deleted in Zoho stops
+  being returned rather than being reported, so `mode: full` re-stamps every
+  live record and prunes whatever kept an older `synced_at`. Running that prune
+  after an incremental pass would delete the entire book bar the few rows that
+  changed — hence the guard.
+- Policy rows carry **no foreign key** to clients. A policy can point at a
+  client the Accounts pass has not reached yet, and a sync that dies halfway on
+  referential integrity is worse than a briefly orphaned row.
+- The sync reads **all readable fields** and keeps the record in `raw`, not just
+  the eight columns we name today. Storing only those would mean a full re-sync
+  the first time anyone wants a ninth.
+- `zoho-sync` is deployed with `verify_jwt` off because it has two callers with
+  two credentials — a staff JWT through the usual allowlist, or a shared secret
+  for the scheduled run. Authentication is inside the function, not in front
+  of it.
+- The mirror tables have **no write policy for anyone**. The CRM is the system
+  of record; a row edited in the portal would look saved and be silently
+  overwritten by the next sync.
+
+## 2026-08-05 — Zoho token: one mint an hour, not one per isolate
+
+The Clients tab worked for four requests and then failed every request after
+with `token refresh failed: Access Denied`, which reads like a bad credential
+and is not one. Zoho caps how many access tokens a single refresh token may
+mint in a rolling ten-minute window and refuses for the rest of it once the cap
+is passed.
+
+The cap was being hit in about a minute, for two compounding reasons. The token
+cache was an edge-function module variable, so every cold isolate minted its
+own; and nothing serialised a cache miss, so the five module-metadata reads the
+Clients tab issues in parallel all saw an empty cache and all minted. One page
+view cost a double-figure number of tokens.
+
+### Added
+
+- **`private.zoho_token`**, one row, reached only through `zoho_token_get()` /
+  `zoho_token_put()`. The `private` schema is not exposed to PostgREST, both
+  functions are `security definer` with a pinned `search_path`, and EXECUTE is
+  revoked from PUBLIC before being granted to `service_role` alone — a bearer
+  token for the whole CRM is not something a signed-in advisor should be able to
+  read out of the database and replay against Zoho.
+
+### Changed
+
+- **Concurrent cache misses join one in-flight mint** instead of racing. This is
+  the fix that matters most: the parallel reads elsewhere in this codebase are
+  deliberate, and without this every one of them was a separate mint.
+- A 401 retry now **bypasses the shared store**. A token revoked before its
+  stated expiry would otherwise be handed back from the row to every isolate
+  indefinitely.
+- Both halves of the store are best-effort. If it is unreachable the isolate
+  falls back to its own cache, so a broken table degrades this to the previous
+  behaviour rather than taking Zoho offline.
+- `Access Denied` now says on screen that it means either a wrong secret **or**
+  the ten-minute cap, and that if it was working a moment ago it is the second.
+  The two are indistinguishable in Zoho's reply, and the wrong reading sends you
+  to re-issue credentials that were fine.
+
+## 2026-08-05 — Portal: policy terms on the Clients tab
+
+The Clients tab rendered whatever fields a policy record happened to carry,
+because the CRM had never been introspected and inventing field names would have
+produced a table of blanks that looked like missing data rather than a wrong
+guess. With the `zoho-crm-data-operations` MCP server authorised, the schema
+could finally be read — so the guessing is over, and the tab can answer the
+question advisors actually open it for: who lapses next.
+
+### What the CRM turned out to contain
+
+Five policy modules, all linking to `Accounts`, all carrying issue and expiry
+dates — under five different sets of names, which is why a generic renderer
+could never produce a sortable expiry column:
+
+| Module | Issue | Expiry | Type | Client lookup |
+| --- | --- | --- | --- | --- |
+| `Motor_Policies` | `Policy_Issued_on` | `Policy_Expires_on` | date | `Customer_Name` |
+| `Medical_Policies` | `Policy_Issued_on` | `Policy_Expires_on` | date | `Customer_Name` |
+| `General_Insurance` | `Policy_Issued_on` | `Policy_Expires_on` | date | `Customer_Name` |
+| `Policy_Details` | `Policy_Issue_Date` | `Policy_Expiry_Date` | date | **`Account`** |
+| `Renewal_Policy_Details` | `Policy_Issued_Date` | `Policy_Expiry_Date` | **datetime** | `Customer_Name` |
+
+`Name` is the Policy Number in all five.
+
+They are not equivalent, and that matters more than the naming. The first three
+are the live book — client link and both dates populated throughout, expiries
+running into 2027. `Policy_Details` is an endorsement ledger: roughly two thirds
+of a 200-record sample had no expiry at all and most rows are Status
+"Endorsement". `Renewal_Policy_Details` is a dead archive whose most recently
+*modified* rows are 2020–2022 policies, about a third of them linked to no
+client. One client had four live policies against ~40 records total.
+
+### Added
+
+- **Next expiry column**, banded in four steps — lapsed, ≤30 days, ≤90 days,
+  fine. Four bands rather than a gradient because the column is scanned, not
+  read, and a continuous scale makes every row look mildly urgent.
+- **Renewal dates from the live modules only.** An archive that expired in 2022
+  is not a renewal; letting it win the column would have put a permanent false
+  alarm against half the book.
+- **Structured policy cards** — number, type, insurer, status, premium, and the
+  term leading. Everything the metadata could not name still renders in an
+  expandable list, so a field this org uses unexpectedly stays visible.
+- **Collapsed "Historical" section** for the endorsement ledger and the old
+  book. Reachable, never competing with current cover for attention.
+- **Active / On record / Next renewal** summary at the top of the detail panel.
+
+### Changed
+
+- **Fields are resolved from metadata by data type plus a pattern tested against
+  both `api_name` and `field_label`.** Matching either alone misses here: Motor's
+  `Cover_Type` is *labelled* "Policy Type", and `Policy_Details.Account` is
+  *labelled* "Customer Name". Verified: 35/35 resolutions correct across all five
+  modules against live metadata.
+- **The policy count still spans all five modules**, deliberately. A record
+  linked to the client is a record linked to the client, and quietly dropping
+  some would make the portal disagree with Zoho.
+- `detectPolicyModules` now filters on `generated_type` too — subforms and field
+  trackers are `api_supported` and were otherwise eligible to slip through the
+  name match.
+- Expiry-column sorting is scoped to the loaded page and **says so on screen**.
+  Expiry lives on the policy modules, so Zoho cannot order the client query by
+  it; sorting the whole book would mean reading the whole book.
+
+### Notes
+
+- Renewal maths costs three extra COQL aggregates per page (`MIN(expiry)` where
+  expiry is still ahead of today), so a 50-client page is eight aggregate queries
+  rather than five — against 250 calls for the related-list approach.
+- `Renewal_Policy_Details` stores datetimes at `+04:00`. Dates are truncated to
+  their leading `YYYY-MM-DD` rather than parsed, so a UTC render cannot shift a
+  policy a day earlier than the broker wrote it.
+- **Still unproven: the COQL calls themselves.** The edge function's Zoho
+  credentials are rejected (`token refresh failed: Access Denied`) and the MCP
+  server exposes no COQL endpoint, so `COUNT(id) … GROUP BY` and `MIN(expiry)`
+  are written to the documented contract but have never executed. Everything
+  else here was verified against live records.
+- Two data-quality findings for the CRM, not the code: about 20 of 200 sampled
+  motor policies share an expiry of exactly `2026-06-30`, which looks like bulk
+  or placeholder entry and will band as lapsed; and some terms are reversed
+  (issued 2026-05-10, "expires" 2025-08-16).
+
 ## 2026-08-01 — Portal: lead status editing
 
 The leads view was read-only, so `lead_status` could only be changed with the

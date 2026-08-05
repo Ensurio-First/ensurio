@@ -30,6 +30,19 @@ export const supabase = isConfigured
     })
   : null
 
+/*
+ * An expired access token is reported as a 401, not as an answer.
+ *
+ * PostgREST uses PGRST301 for an expired JWT, but the shape has moved between
+ * versions and supabase-js sometimes surfaces only the message, so the text is
+ * checked too rather than trusting one code.
+ */
+function isAuthError(error) {
+  const code = String(error?.code ?? '')
+  if (code === 'PGRST301' || code === 'PGRST302' || code === '401') return true
+  return /\bjwt\b|token .*expired|expired .*token/i.test(String(error?.message ?? ''))
+}
+
 /**
  * Is the signed-in user actually staff?
  *
@@ -38,14 +51,33 @@ export const supabase = isConfigured
  * check a non-staff account would reach the dashboard and simply see an empty
  * table, which reads as "no leads yet" rather than "you should not be here".
  *
- * @returns {Promise<boolean>}
+ * Four answers, not two. "You are not staff" and "I could not ask" are opposite
+ * problems and this used to collapse both into false — so an access token that
+ * expired while the tab sat open told an allowlisted advisor they had been
+ * removed from the roster, and invited them to go and bother an admin about a
+ * roster that was never wrong. The session is refreshed once and the question
+ * asked again before any of that is concluded.
+ *
+ * @returns {Promise<true|false|'expired'|'error'>}
  */
 export async function isStaff() {
   if (!supabase) return false
-  const { data, error } = await supabase.rpc('is_portal_staff')
+
+  let { data, error } = await supabase.rpc('is_portal_staff')
+
+  if (error && isAuthError(error)) {
+    // autoRefreshToken handles this on a timer, which does not help if the
+    // machine slept through the window or the tab was throttled. Force it.
+    const { error: refreshFailed } = await supabase.auth.refreshSession()
+    if (refreshFailed) return 'expired'
+
+    ;({ data, error } = await supabase.rpc('is_portal_staff'))
+    if (error) return isAuthError(error) ? 'expired' : 'error'
+  }
+
   if (error) {
     console.error('staff check failed', error)
-    return false
+    return 'error'
   }
   return data === true
 }
@@ -100,6 +132,96 @@ export async function invokeFn(name, body = {}) {
     ? ` [${detail.zohoCode}${detail.zohoDetails?.api_name ? `: ${detail.zohoDetails.api_name}` : ''}]`
     : ''
   throw new Error(`${detail?.error || error.message || 'Request failed.'}${zoho}`)
+}
+
+/* ── CRM mirror ───────────────────────────────────────────────────────────
+ *
+ * These read public.crm_* rather than calling Zoho. The Clients tab used to hit
+ * the CRM on every render — one list call plus eight aggregates, two to five
+ * seconds, repeated on every tab switch — against an API that meters credits
+ * and caps token mints. Now a scheduled sync does that once and the portal
+ * reads Postgres, which also makes sorting by renewal date across the whole
+ * book possible: expiry lives on the policy modules, so Zoho could never order
+ * a client query by it.
+ */
+
+const CLIENTS_PER_PAGE = 50
+
+/**
+ * A page of clients with their policy totals and next renewal.
+ *
+ * @param {{query?: string, page?: number, sort?: 'expiry'|'name'|'recent'}} opts
+ */
+export async function fetchClients({ query = '', page = 1, sort = 'expiry' } = {}) {
+  if (!supabase) throw new Error('not-configured')
+
+  const from = (page - 1) * CLIENTS_PER_PAGE
+  let q = supabase.from('crm_client_summary').select('*', { count: 'exact' })
+
+  // One box, three fields. Postgres `or` with ilike covers what Zoho's word
+  // search did, without the round trip.
+  if (query) {
+    const safe = query.replace(/[%,()]/g, ' ').trim()
+    if (safe) q = q.or(`name.ilike.%${safe}%,email.ilike.%${safe}%,phone.ilike.%${safe}%`)
+  }
+
+  if (sort === 'expiry') {
+    // Clients with nothing due sort last rather than first — a null renewal is
+    // the absence of urgency, not the most urgent thing on the list.
+    q = q.order('next_expiry', { ascending: true, nullsFirst: false })
+  } else if (sort === 'name') {
+    q = q.order('name', { ascending: true })
+  } else {
+    q = q.order('synced_at', { ascending: false })
+  }
+
+  const { data, error, count } = await q.range(from, from + CLIENTS_PER_PAGE - 1)
+  if (error) throw error
+
+  return {
+    rows: data ?? [],
+    total: count ?? 0,
+    page,
+    hasMore: (count ?? 0) > from + CLIENTS_PER_PAGE,
+  }
+}
+
+/** One client's policies, soonest to lapse first, no-expiry rows last. */
+export async function fetchClientPolicies(clientId) {
+  if (!supabase) throw new Error('not-configured')
+
+  const { data, error } = await supabase
+    .from('crm_policies')
+    .select('*')
+    .eq('client_id', clientId)
+    .order('expires_on', { ascending: false, nullsFirst: false })
+    .order('issued_on', { ascending: false, nullsFirst: false })
+
+  if (error) throw error
+  return data ?? []
+}
+
+/** The most recent sync, successful or not. Null before the first ever run. */
+export async function fetchLastSync() {
+  if (!supabase) throw new Error('not-configured')
+
+  const { data, error } = await supabase
+    .from('crm_sync_runs')
+    .select('*')
+    .order('started_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  if (error) throw error
+  return data
+}
+
+/**
+ * Pull from Zoho now. Slow by nature — it pages the CRM — so the caller should
+ * say so on screen rather than leaving a button looking stuck.
+ */
+export async function runSync(mode = 'incremental') {
+  return await invokeFn('zoho-sync', { mode })
 }
 
 /**

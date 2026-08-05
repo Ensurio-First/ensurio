@@ -18,6 +18,8 @@ export default function App() {
   const [staff, setStaff] = useState(null) // null = not yet checked
   const [ready, setReady] = useState(false)
   const [tab, setTab] = useState('leads')
+  // Bumped by "Try again" so the check re-runs without a full reload.
+  const [recheck, setRecheck] = useState(0)
 
   useEffect(() => {
     if (!supabase) { setReady(true); return }
@@ -40,7 +42,7 @@ export default function App() {
     if (!session) { setStaff(null); return }
     isStaff().then((ok) => { if (!cancelled) setStaff(ok) })
     return () => { cancelled = true }
-  }, [session])
+  }, [session, recheck])
 
   if (!isConfigured) {
     return (
@@ -56,6 +58,38 @@ export default function App() {
   if (!ready) return <Centered><Spinner /></Centered>
   if (!session) return <SignIn />
   if (staff === null) return <Centered><Spinner label="Checking access…" /></Centered>
+
+  /*
+   * An expired session must not read as a revoked one. Both used to land on
+   * "you are not on the staff list", which sends an advisor to an admin to fix
+   * a roster that is correct — the only thing wrong is a token older than an
+   * hour. Signing out clears it and the magic link issues a fresh one.
+   */
+  if (staff === 'expired') {
+    return (
+      <Centered>
+        <Notice
+          title="Session expired"
+          body={`Your sign-in for ${session.user.email} is older than the portal allows and could not be renewed. Sign in again to carry on — your access has not changed.`}
+          action={{ label: 'Sign in again', onClick: () => supabase.auth.signOut() }}
+        />
+      </Centered>
+    )
+  }
+
+  // Reached Supabase, got neither a yes nor a no. Saying "no access" here would
+  // be a guess presented as a finding.
+  if (staff === 'error') {
+    return (
+      <Centered>
+        <Notice
+          title="Could not check access"
+          body="Supabase did not answer the staff check. This is usually a dropped connection rather than a permissions problem — try again, and if it persists check the browser console."
+          action={{ label: 'Try again', onClick: () => { setStaff(null); setRecheck((n) => n + 1) } }}
+        />
+      </Centered>
+    )
+  }
 
   if (staff === false) {
     return (
