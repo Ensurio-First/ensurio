@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Search, AlertTriangle, Mail, Info, CalendarClock } from 'lucide-react'
+import { Search, AlertTriangle, Mail, Info, CalendarClock, Layers, X } from 'lucide-react'
 import {
-  fetchRenewals, fetchRenewalStats, fetchRenewalLines, fetchNoticePlan, RENEWAL_BUCKETS,
+  fetchRenewals, fetchRenewalStats, fetchRenewalLines, fetchNoticePlan,
+  fetchRenewalBreakdown, RENEWAL_BUCKETS, RENEWAL_DIMENSIONS,
 } from './lib/supabase'
 import { formatDate, expiryTone, relativeLabel } from './lib/format'
 
@@ -22,6 +23,9 @@ import { formatDate, expiryTone, relativeLabel } from './lib/format'
 export default function RenewalsView() {
   const [bucket, setBucket] = useState('90')
   const [line, setLine] = useState('')
+  const [type, setType] = useState('')
+  const [insurer, setInsurer] = useState('')
+  const [dimension, setDimension] = useState('type')
   const [q, setQ] = useState('')
   const [submitted, setSubmitted] = useState('')
   const [page, setPage] = useState(1)
@@ -35,6 +39,7 @@ export default function RenewalsView() {
   const [stats, setStats] = useState(null)
   const [lines, setLines] = useState([])
   const [plan, setPlan] = useState(null)
+  const [breakdown, setBreakdown] = useState(null)
 
   useEffect(() => {
     fetchRenewalStats().then(setStats).catch(() => setStats(null))
@@ -42,10 +47,33 @@ export default function RenewalsView() {
     fetchNoticePlan().then(setPlan).catch(() => setPlan(null))
   }, [])
 
+  // The breakdown describes the window, so it follows the window — and the
+  // dimension, which is the whole point of it.
+  useEffect(() => {
+    let cancelled = false
+    setBreakdown(null)
+    fetchRenewalBreakdown(bucket, dimension)
+      .then((b) => { if (!cancelled) setBreakdown(b) })
+      .catch(() => { if (!cancelled) setBreakdown([]) })
+    return () => { cancelled = true }
+  }, [bucket, dimension])
+
+  /* Selecting a slice replaces the previous one rather than stacking: three
+   * simultaneous classifications is a query nobody meant to ask. */
+  const pickSlice = (dim, label) => {
+    setPage(1)
+    setLine(dim === 'line' ? label : '')
+    setType(dim === 'type' ? label : '')
+    setInsurer(dim === 'insurer' ? label : '')
+  }
+
+  const clearSlice = () => { setPage(1); setLine(''); setType(''); setInsurer('') }
+  const activeSlice = type || insurer || line
+
   useEffect(() => {
     let cancelled = false
     setLoading(true); setError('')
-    fetchRenewals({ bucket, line, query: submitted, page })
+    fetchRenewals({ bucket, line, type, insurer, query: submitted, page })
       .then((res) => {
         if (cancelled) return
         setRows(res.rows); setTotal(res.total); setHasMore(res.hasMore)
@@ -53,7 +81,7 @@ export default function RenewalsView() {
       .catch((e) => { if (!cancelled) { setError(e.message || 'Could not load renewals.'); setRows([]) } })
       .finally(() => { if (!cancelled) setLoading(false) })
     return () => { cancelled = true }
-  }, [bucket, line, submitted, page])
+  }, [bucket, line, type, insurer, submitted, page])
 
   const ctrl = { height: '38px', padding: '0 12px', fontFamily: 'var(--font-body)', fontSize: '13px', color: 'var(--text-mid)', background: 'var(--white)', border: '1px solid var(--border-dark)', borderRadius: 'var(--radius-sm)', cursor: 'pointer' }
 
@@ -77,15 +105,30 @@ export default function RenewalsView() {
         <button type="submit" style={{ ...ctrl, fontWeight: 700 }}>Search</button>
         {submitted && <button type="button" onClick={() => { setQ(''); setSubmitted(''); setPage(1) }} style={{ ...ctrl, fontWeight: 600 }}>Clear</button>}
 
-        <select value={line} onChange={(e) => { setLine(e.target.value); setPage(1) }} aria-label="Line of business" style={{ ...ctrl, fontWeight: 600 }}>
+        <select value={line} onChange={(e) => { pickSlice('line', e.target.value) }} aria-label="Line of business" style={{ ...ctrl, fontWeight: 600 }}>
           <option value="">All lines</option>
           {lines.map((l) => <option key={l} value={l}>{l}</option>)}
         </select>
+
+        {activeSlice && (
+          <button type="button" onClick={clearSlice}
+            style={{ ...ctrl, display: 'inline-flex', alignItems: 'center', gap: '6px', fontWeight: 700, borderColor: 'var(--navy)', color: 'var(--navy)' }}>
+            {activeSlice} <X size={13} />
+          </button>
+        )}
 
         <span style={{ fontSize: '11.5px', color: 'var(--text-light)' }}>
           {total.toLocaleString()} polic{total === 1 ? 'y' : 'ies'}
         </span>
       </form>
+
+      <Breakdown
+        groups={breakdown}
+        dimension={dimension}
+        onDimension={setDimension}
+        active={activeSlice}
+        onPick={(label) => pickSlice(dimension, label)}
+      />
 
       <NoticePlan plan={plan} stats={stats} />
 
@@ -196,6 +239,99 @@ function BucketTile({ bucket, stat, on, onClick }) {
         )}
       </div>
     </button>
+  )
+}
+
+/*
+ * How the window breaks down — by line, product or insurer.
+ *
+ * Three dimensions rather than one because they answer different questions:
+ * which part of the book is renewing, which products need which expertise, and
+ * how much sits with a single carrier. That last one is the concentration
+ * question, and it is invisible in a list sorted by date.
+ *
+ * Bars are proportions of the largest row rather than of the total, because at
+ * twenty-plus categories a share-of-total bar is a row of slivers.
+ */
+function Breakdown({ groups, dimension, onDimension, active, onPick }) {
+  const [open, setOpen] = useState(true)
+  const max = Math.max(1, ...(groups ?? []).flatMap((g) => g.items.map((i) => i.total)))
+
+  return (
+    <div style={{ marginBottom: '1rem', background: 'var(--white)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', padding: '11px 14px' }}>
+        <button type="button" onClick={() => setOpen((o) => !o)}
+          style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
+          <Layers size={14} color="var(--text-muted)" />
+          <span style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>
+            Breakdown
+          </span>
+        </button>
+
+        <div style={{ display: 'flex', gap: '2px', background: 'var(--light-bg)', padding: '2px', borderRadius: 'var(--radius-sm)' }}>
+          {RENEWAL_DIMENSIONS.map((d) => (
+            <button key={d.id} type="button" onClick={() => onDimension(d.id)} aria-pressed={dimension === d.id}
+              style={{
+                padding: '5px 11px', border: 'none', borderRadius: 'var(--radius-sm)', cursor: 'pointer',
+                fontSize: '12px', fontWeight: 700,
+                background: dimension === d.id ? 'var(--white)' : 'transparent',
+                color: dimension === d.id ? 'var(--navy)' : 'var(--text-muted)',
+                boxShadow: dimension === d.id ? 'var(--shadow-sm)' : 'none',
+              }}>
+              {d.label}
+            </button>
+          ))}
+        </div>
+
+        <span style={{ marginLeft: 'auto', fontSize: '11.5px', color: 'var(--text-light)' }}>
+          {open ? 'hide' : 'show'}
+        </span>
+      </div>
+
+      {open && (
+        <div style={{ padding: '0 14px 14px' }}>
+          {!groups && <p style={{ fontSize: '12.5px', color: 'var(--text-muted)' }}>Counting…</p>}
+          {groups?.length === 0 && <p style={{ fontSize: '12.5px', color: 'var(--text-muted)' }}>Nothing in this window.</p>}
+
+          {groups?.map((g) => (
+            <div key={g.label ?? 'all'} style={{ marginBottom: '10px' }}>
+              {/* Only the type breakdown nests, so the heading is conditional
+                  rather than a group of one called "All". */}
+              {g.label && (
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '7px', marginBottom: '5px' }}>
+                  <span style={{ fontSize: '11.5px', fontWeight: 700, color: 'var(--navy)' }}>{g.label}</span>
+                  <span style={{ fontSize: '11px', color: 'var(--text-light)' }}>{g.total}</span>
+                </div>
+              )}
+
+              {g.items.map((item) => {
+                const on = active === item.label
+                return (
+                  <button key={item.label} type="button" onClick={() => onPick(item.label)} aria-pressed={on}
+                    style={{
+                      display: 'grid', gridTemplateColumns: '1fr 90px 46px', alignItems: 'center', gap: '10px',
+                      width: '100%', padding: '4px 7px', marginBottom: '2px', textAlign: 'left', cursor: 'pointer',
+                      background: on ? 'var(--light-bg)' : 'transparent',
+                      border: `1px solid ${on ? 'var(--border-dark)' : 'transparent'}`,
+                      borderRadius: 'var(--radius-sm)', fontSize: '12.5px',
+                    }}>
+                    <span style={{ color: 'var(--text-dark)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {item.label}
+                    </span>
+                    <span style={{ height: '6px', background: 'var(--light-bg)', borderRadius: '99px', overflow: 'hidden' }}>
+                      <span style={{ display: 'block', height: '100%', width: `${Math.max(4, (item.total / max) * 100)}%`, background: 'var(--teal)', borderRadius: '99px' }} />
+                    </span>
+                    <span style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontWeight: 700, color: 'var(--text-mid)' }}>
+                      {item.total}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   )
 }
 
