@@ -226,12 +226,20 @@ function applyBucket(q, bucket) {
 }
 
 /** One page of renewals, soonest first. */
-export async function fetchRenewals({ bucket = '90', query = '', line = '', page = 1, perPage = 50 } = {}) {
+export async function fetchRenewals({ bucket = '90', query = '', line = '', type = '', insurer = '', page = 1, perPage = 50 } = {}) {
   if (!supabase) throw new Error('not-configured')
 
   let q = supabase.from('crm_renewals').select('*', { count: 'exact' })
   q = applyBucket(q, bucket)
   if (line) q = q.eq('module_label', line)
+
+  // '(unspecified)' is the breakdown's label for a blank value, so selecting it
+  // has to mean "nothing recorded" rather than a literal string match.
+  if (type === '(unspecified)') q = q.or('policy_type.is.null,policy_type.eq.')
+  else if (type) q = q.eq('policy_type', type)
+
+  if (insurer === '(unspecified)') q = q.or('insurer.is.null,insurer.eq.')
+  else if (insurer) q = q.eq('insurer', insurer)
   if (query) {
     const safe = query.replace(/[%,()]/g, ' ').trim()
     if (safe) {
@@ -272,6 +280,58 @@ export async function fetchRenewalStats() {
     counts[b.id] = { total: await one(b.id), contactable: await one(b.id, true) }
   }
   return counts
+}
+
+/** The dimensions the renewal book can be classified by. */
+export const RENEWAL_DIMENSIONS = [
+  { id: 'line', label: 'Line of business', filter: 'line' },
+  { id: 'type', label: 'Policy type', filter: 'type' },
+  { id: 'insurer', label: 'Insurer', filter: 'insurer' },
+]
+
+/**
+ * Renewals grouped by line, policy type or insurer for a window.
+ *
+ * Aggregated in Postgres rather than in the browser: grouping here would mean
+ * fetching every row to count them — a thousand records to render twenty
+ * numbers, on every window change.
+ *
+ * Only the type breakdown nests under a line. A product belongs to a line;
+ * an insurer spans them and would be wrong to file under one.
+ */
+export async function fetchRenewalBreakdown(bucket = '90', dimension = 'type') {
+  if (!supabase) throw new Error('not-configured')
+  const b = RENEWAL_BUCKETS.find((x) => x.id === bucket) ?? RENEWAL_BUCKETS[5]
+
+  const { data, error } = await supabase.rpc('crm_renewal_breakdown', {
+    p_from: b.from,
+    p_to: b.to,
+    p_dimension: dimension,
+  })
+  if (error) throw error
+
+  const rows = (data ?? []).map((r) => ({
+    label: r.label,
+    parent: r.parent,
+    total: Number(r.total),
+    contactable: Number(r.contactable),
+  }))
+
+  if (dimension !== 'type') {
+    return [{ label: null, total: rows.reduce((n, r) => n + r.total, 0), items: rows }]
+  }
+
+  // Rolled up per line, so a line total sits above its products — the level
+  // most questions are actually asked at.
+  const groups = new Map()
+  for (const r of rows) {
+    const key = r.parent ?? '—'
+    if (!groups.has(key)) groups.set(key, { label: key, total: 0, items: [] })
+    const g = groups.get(key)
+    g.total += r.total
+    g.items.push(r)
+  }
+  return [...groups.values()].sort((a, b2) => b2.total - a.total)
 }
 
 /** The lines of business present in the renewal set, for the filter. */
