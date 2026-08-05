@@ -163,6 +163,9 @@ async function syncPolicies(sb: SupabaseClient, since: string | null) {
       insurer: shape.insurer ? text(r[shape.insurer]) : null,
       status: shape.status ? text(r[shape.status]) : null,
       premium: shape.premium ? text(r[shape.premium]) : null,
+      renewal_email: shape.renewalEmail
+        ? (text(r[shape.renewalEmail])?.trim() || null)
+        : null,
       issued_on: shape.issued ? asDate(r[shape.issued]) : null,
       expires_on: shape.expiry ? asDate(r[shape.expiry]) : null,
       raw: r,

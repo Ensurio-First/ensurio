@@ -58,6 +58,7 @@ export interface PolicyShape {
   insurer: string | null
   status: string | null
   premium: string | null
+  renewalEmail: string | null
 }
 
 let policyModulesCache: PolicyModule[] | null = null
@@ -159,6 +160,17 @@ export async function shapeOf(module: string): Promise<PolicyShape> {
     // Anchored, because every module also carries `Premium_Paid_by_Customer`
     // and similar; metadata order puts the base premium first.
     premium: findField(meta, ['currency'], /^premium/i),
+    /*
+     * Who to chase for THIS policy's renewal.
+     *
+     * Not the client's email — Accounts carries none at all in this org, for
+     * any of the 323 clients. The brokerage keeps the contact per policy
+     * instead, which is right when one company's motor fleet and medical
+     * scheme go to different people. `Renewal_Receiver` is the field they
+     * fill; `Secondary_Email` covers the handful that lack it.
+     */
+    renewalEmail: findField(meta, ['text', 'email'], /renewal.?receiv/i)
+      ?? findField(meta, ['email', 'text'], /secondary.?email/i),
   }
 
   shapeCache.set(module, shape)
