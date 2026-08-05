@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Search, RefreshCw, X, FileText, Info, AlertTriangle, ChevronRight, Archive, Database } from 'lucide-react'
+import { Search, RefreshCw, X, FileText, Info, AlertTriangle, ChevronRight, Archive, Database, Paperclip } from 'lucide-react'
 import { fetchClients, fetchClientPolicies, fetchLastSync, runSync } from './lib/supabase'
 
 /*
@@ -428,16 +428,47 @@ const PROMOTED = new Set(['id', 'Name', 'Modified_Time', 'Created_Time', 'Last_A
   'Created_By', 'Modified_By', 'Owner', 'Tag', 'Record_Image', 'Locked__s', 'Record_Status__s',
   'Currency', 'Exchange_Rate', 'Layout', 'Unsubscribed_Mode', 'Unsubscribed_Time'])
 
+/*
+ * Zoho returns a file-upload field as an array of attachment records, each
+ * carrying ids, sizes, owner and timestamps. Stringifying that put a screenful
+ * of internal identifiers on screen where "Policy(5).pdf · 484 KB" belongs —
+ * the filename is the only part an advisor was ever going to read.
+ */
+function asFiles(v) {
+  if (!Array.isArray(v) || v.length === 0) return null
+  const files = v.filter((f) => f && typeof f === 'object' && f.File_Name__s)
+  if (files.length !== v.length) return null
+  return files.map((f) => ({
+    id: String(f.id ?? f.File_Id__s ?? f.File_Name__s),
+    name: String(f.File_Name__s),
+    size: Number(f.Size__s) || null,
+  }))
+}
+
+function humanSize(bytes) {
+  if (!bytes) return null
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`
+  return `${(bytes / 1048576).toFixed(1)} MB`
+}
+
 function extraFields(policy) {
   const raw = policy.raw ?? {}
   return Object.entries(raw)
     .filter(([k, v]) => !PROMOTED.has(k) && !k.startsWith('$') && v !== null && v !== '' && v !== undefined)
-    .map(([k, v]) => ({
-      key: k.replace(/_/g, ' '),
-      value: typeof v === 'object' && v !== null && 'name' in v ? String(v.name)
-        : typeof v === 'object' ? JSON.stringify(v) : String(v),
-    }))
-    .filter((f) => f.value !== '')
+    .map(([k, v]) => {
+      const files = asFiles(v)
+      if (files) return { key: k.replace(/_/g, ' '), files }
+
+      // A lookup collapses to its name; anything else object-shaped is a field
+      // this code does not understand yet, and a JSON dump of it is noise
+      // rather than information.
+      const value = typeof v === 'object' && v !== null
+        ? ('name' in v ? String(v.name) : Array.isArray(v) ? `${v.length} item(s)` : '')
+        : String(v)
+      return { key: k.replace(/_/g, ' '), value }
+    })
+    .filter((f) => f.files || (f.value !== '' && f.value !== undefined))
     .sort((a, b) => a.key.localeCompare(b.key))
 }
 
@@ -502,7 +533,25 @@ function PolicyCard({ policy, muted }) {
           {extras.map((f) => (
             <div key={f.key} style={{ display: 'grid', gridTemplateColumns: '138px 1fr', gap: '8px', padding: '3px 0', fontSize: '12.5px' }}>
               <span style={{ color: 'var(--text-muted)', fontWeight: 600, textTransform: 'capitalize' }}>{f.key}</span>
-              <span style={{ color: 'var(--text-dark)', minWidth: 0, wordBreak: 'break-word' }}>{f.value}</span>
+              {f.files
+                ? (
+                  <span style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', minWidth: 0 }}>
+                    {f.files.map((file) => (
+                      /* Not a link yet: Zoho attachments need an authenticated
+                         download, so a bare href would 401. Name and size are
+                         enough to know the document exists and which it is. */
+                      <span key={file.id} title={file.name}
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', maxWidth: '100%', padding: '2px 7px', background: 'var(--light-bg)', border: '1px solid var(--border)', borderRadius: '99px', fontSize: '11.5px', color: 'var(--text-dark)' }}>
+                        <Paperclip size={11} style={{ flexShrink: 0, color: 'var(--text-light)' }} />
+                        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{file.name}</span>
+                        {humanSize(file.size) && (
+                          <span style={{ flexShrink: 0, color: 'var(--text-light)' }}>{humanSize(file.size)}</span>
+                        )}
+                      </span>
+                    ))}
+                  </span>
+                )
+                : <span style={{ color: 'var(--text-dark)', minWidth: 0, wordBreak: 'break-word' }}>{f.value}</span>}
             </div>
           ))}
         </div>
