@@ -4,6 +4,45 @@ All notable changes to the Insure First / Ensurio website are documented here.
 Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 The site is a Vite + React SPA deployed on Vercel at **insurefirst.ae**.
 
+## 2026-08-05 — Zoho token: one mint an hour, not one per isolate
+
+The Clients tab worked for four requests and then failed every request after
+with `token refresh failed: Access Denied`, which reads like a bad credential
+and is not one. Zoho caps how many access tokens a single refresh token may
+mint in a rolling ten-minute window and refuses for the rest of it once the cap
+is passed.
+
+The cap was being hit in about a minute, for two compounding reasons. The token
+cache was an edge-function module variable, so every cold isolate minted its
+own; and nothing serialised a cache miss, so the five module-metadata reads the
+Clients tab issues in parallel all saw an empty cache and all minted. One page
+view cost a double-figure number of tokens.
+
+### Added
+
+- **`private.zoho_token`**, one row, reached only through `zoho_token_get()` /
+  `zoho_token_put()`. The `private` schema is not exposed to PostgREST, both
+  functions are `security definer` with a pinned `search_path`, and EXECUTE is
+  revoked from PUBLIC before being granted to `service_role` alone — a bearer
+  token for the whole CRM is not something a signed-in advisor should be able to
+  read out of the database and replay against Zoho.
+
+### Changed
+
+- **Concurrent cache misses join one in-flight mint** instead of racing. This is
+  the fix that matters most: the parallel reads elsewhere in this codebase are
+  deliberate, and without this every one of them was a separate mint.
+- A 401 retry now **bypasses the shared store**. A token revoked before its
+  stated expiry would otherwise be handed back from the row to every isolate
+  indefinitely.
+- Both halves of the store are best-effort. If it is unreachable the isolate
+  falls back to its own cache, so a broken table degrades this to the previous
+  behaviour rather than taking Zoho offline.
+- `Access Denied` now says on screen that it means either a wrong secret **or**
+  the ten-minute cap, and that if it was working a moment ago it is the second.
+  The two are indistinguishable in Zoho's reply, and the wrong reading sends you
+  to re-issue credentials that were fine.
+
 ## 2026-08-05 — Portal: policy terms on the Clients tab
 
 The Clients tab rendered whatever fields a policy record happened to carry,
