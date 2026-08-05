@@ -4,6 +4,7 @@ import SignIn from './SignIn'
 import Shell from './Shell'
 import LeadsView from './LeadsView'
 import ClientsView from './ClientsView'
+import RenewalsView from './RenewalsView'
 
 /*
  * Session gate.
@@ -105,7 +106,9 @@ export default function App() {
 
   return (
     <Shell email={session.user.email} tab={tab} onTab={setTab}>
-      {tab === 'clients' ? <ClientsView /> : <LeadsView />}
+      {tab === 'renewals' ? <RenewalsView />
+        : tab === 'clients' ? <ClientsView />
+          : <LeadsView />}
     </Shell>
   )
 }

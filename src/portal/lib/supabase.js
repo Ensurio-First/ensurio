@@ -201,6 +201,117 @@ export async function fetchClientPolicies(clientId) {
   return data ?? []
 }
 
+/* ── Renewals ────────────────────────────────────────────────────────────
+ *
+ * `crm_renewals` is live-book policies with a real expiry, joined to their
+ * client and carrying the per-policy renewal contact. Legacy modules are
+ * excluded in the view: an endorsement row with no expiry is not a renewal.
+ */
+
+/** The windows the screen is organised around. `to: null` means open-ended. */
+export const RENEWAL_BUCKETS = [
+  { id: 'expired', label: 'Lapsed',    from: null, to: -1,   tone: 'bad' },
+  { id: '7',       label: 'Next 7 days',  from: 0, to: 7,    tone: 'urgent' },
+  { id: '30',      label: 'Next 30 days', from: 0, to: 30,   tone: 'urgent' },
+  { id: '60',      label: 'Next 60 days', from: 0, to: 60,   tone: 'soon' },
+  { id: '90',      label: 'Next 90 days', from: 0, to: 90,   tone: 'soon' },
+  { id: 'future',  label: 'All upcoming', from: 0, to: null, tone: 'ok' },
+]
+
+function applyBucket(q, bucket) {
+  const b = RENEWAL_BUCKETS.find((x) => x.id === bucket) ?? RENEWAL_BUCKETS[5]
+  if (b.from !== null) q = q.gte('days_to_expiry', b.from)
+  if (b.to !== null) q = q.lte('days_to_expiry', b.to)
+  return q
+}
+
+/** One page of renewals, soonest first. */
+export async function fetchRenewals({ bucket = '90', query = '', line = '', page = 1, perPage = 50 } = {}) {
+  if (!supabase) throw new Error('not-configured')
+
+  let q = supabase.from('crm_renewals').select('*', { count: 'exact' })
+  q = applyBucket(q, bucket)
+  if (line) q = q.eq('module_label', line)
+  if (query) {
+    const safe = query.replace(/[%,()]/g, ' ').trim()
+    if (safe) {
+      q = q.or(`client_name.ilike.%${safe}%,policy_number.ilike.%${safe}%,insurer.ilike.%${safe}%,renewal_email.ilike.%${safe}%`)
+    }
+  }
+
+  const from = (page - 1) * perPage
+  const { data, error, count } = await q
+    .order('days_to_expiry', { ascending: true })
+    .range(from, from + perPage - 1)
+
+  if (error) throw error
+  return { rows: data ?? [], total: count ?? 0, page, hasMore: (count ?? 0) > from + perPage }
+}
+
+/**
+ * How many sit in each window, and how many of those could actually be
+ * emailed.
+ *
+ * Counted with head-only requests so the browser never pulls a thousand rows
+ * to display six numbers.
+ */
+export async function fetchRenewalStats() {
+  if (!supabase) throw new Error('not-configured')
+
+  const one = async (bucket, contactableOnly = false) => {
+    let q = supabase.from('crm_renewals').select('id', { count: 'exact', head: true })
+    q = applyBucket(q, bucket)
+    if (contactableOnly) q = q.eq('renewal_email_valid', true)
+    const { count, error } = await q
+    if (error) throw error
+    return count ?? 0
+  }
+
+  const counts = {}
+  for (const b of RENEWAL_BUCKETS) {
+    counts[b.id] = { total: await one(b.id), contactable: await one(b.id, true) }
+  }
+  return counts
+}
+
+/** The lines of business present in the renewal set, for the filter. */
+export async function fetchRenewalLines() {
+  if (!supabase) throw new Error('not-configured')
+  const { data, error } = await supabase.from('crm_renewals').select('module_label')
+  if (error) throw error
+  return [...new Set((data ?? []).map((r) => r.module_label))].sort()
+}
+
+/**
+ * What a reminder rule would do TODAY, if reminders were switched on.
+ *
+ * `dueToday` is the count whose remaining days equal the rule exactly — that is
+ * what a daily job would actually send, as opposed to everything sitting inside
+ * the window, which is what it would have sent over the preceding weeks.
+ */
+export async function fetchNoticePlan(offsets = [60, 30, 7]) {
+  if (!supabase) throw new Error('not-configured')
+
+  const plan = []
+  for (const days of offsets) {
+    const inWindow = await supabase.from('crm_renewals')
+      .select('id', { count: 'exact', head: true })
+      .gte('days_to_expiry', 0).lte('days_to_expiry', days)
+      .eq('renewal_email_valid', true)
+
+    const exact = await supabase.from('crm_renewals')
+      .select('id', { count: 'exact', head: true })
+      .eq('days_to_expiry', days)
+      .eq('renewal_email_valid', true)
+
+    if (inWindow.error) throw inWindow.error
+    if (exact.error) throw exact.error
+
+    plan.push({ days, inWindow: inWindow.count ?? 0, dueToday: exact.count ?? 0 })
+  }
+  return plan
+}
+
 /** The most recent sync, successful or not. Null before the first ever run. */
 export async function fetchLastSync() {
   if (!supabase) throw new Error('not-configured')

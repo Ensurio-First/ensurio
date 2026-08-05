@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Search, RefreshCw, X, FileText, Info, AlertTriangle, ChevronRight, Archive, Database, Paperclip } from 'lucide-react'
 import { fetchClients, fetchClientPolicies, fetchLastSync, runSync } from './lib/supabase'
+import { formatDate, daysUntil, expiryTone, relativeLabel, ago } from './lib/format'
 
 /*
  * Clients and their policies, read from the local CRM mirror.
@@ -16,54 +17,6 @@ import { fetchClients, fetchClientPolicies, fetchLastSync, runSync } from './lib
  * modules, so Zoho cannot order a CLIENT query by it and the live version could
  * only sort the fifty rows already on screen. This sorts the whole book.
  */
-
-/** "26 Feb 2027" — unambiguous in a way that 02/26/27 is not. */
-function formatDate(iso) {
-  if (!iso) return null
-  const [y, m, d] = String(iso).slice(0, 10).split('-').map(Number)
-  if (!y || !m || !d) return String(iso)
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-  return `${String(d).padStart(2, '0')} ${months[m - 1]} ${y}`
-}
-
-/* Compared as calendar dates rather than timestamps, so a policy does not
- * appear to lapse early for anyone reading the portal from another timezone. */
-function daysUntil(iso) {
-  if (!iso) return null
-  const today = new Date().toISOString().slice(0, 10)
-  const ms = Date.parse(`${String(iso).slice(0, 10)}T00:00:00Z`) - Date.parse(`${today}T00:00:00Z`)
-  return Math.round(ms / 86400000)
-}
-
-/*
- * Four bands, not a gradient. The column is scanned, not read: an advisor needs
- * "gone", "this month", "this quarter", "fine" at a glance, and a continuous
- * scale makes every row look mildly urgent.
- */
-function expiryTone(days) {
-  if (days === null) return { color: 'var(--text-light)', weight: 400, bg: 'transparent' }
-  if (days < 0) return { color: '#B42318', weight: 700, bg: '#FEF2F2' }
-  if (days <= 30) return { color: '#B54708', weight: 700, bg: '#FFFAEB' }
-  if (days <= 90) return { color: 'var(--gold-dark)', weight: 600, bg: 'transparent' }
-  return { color: 'var(--text-mid)', weight: 500, bg: 'transparent' }
-}
-
-function relativeLabel(days) {
-  if (days === null) return null
-  if (days < 0) return `${Math.abs(days)}d ago`
-  if (days === 0) return 'today'
-  return `${days}d`
-}
-
-function ago(iso) {
-  if (!iso) return 'never'
-  const mins = Math.round((Date.now() - Date.parse(iso)) / 60000)
-  if (mins < 1) return 'just now'
-  if (mins < 60) return `${mins} min ago`
-  const hrs = Math.round(mins / 60)
-  if (hrs < 24) return `${hrs} hr${hrs === 1 ? '' : 's'} ago`
-  return `${Math.round(hrs / 24)} d ago`
-}
 
 export default function ClientsView() {
   const [rows, setRows] = useState([])
@@ -175,7 +128,10 @@ export default function ClientsView() {
             <table className="portal-table">
               <thead>
                 <tr>
-                  <th>Client</th><th>Email</th><th>Phone</th><th>City</th>
+                  {/* "Contact", not "Email": Accounts carries no email in this
+                      CRM, so this is the renewal contact from the client's most
+                      recent policy — who you would actually write to. */}
+                  <th>Client</th><th>Contact</th><th>Phone</th><th>City</th>
                   <th style={{ textAlign: 'right' }}>Policies</th>
                   <th style={{ textAlign: 'right' }}>Next expiry</th>
                 </tr>
@@ -184,7 +140,7 @@ export default function ClientsView() {
                 {rows.map((r) => (
                   <tr key={r.id} onClick={() => openClient(r)} aria-selected={selected?.id === r.id}>
                     <td style={{ fontWeight: 600, color: 'var(--text-dark)' }}>{r.name}</td>
-                    <td style={{ fontSize: '12.5px', color: 'var(--text-mid)' }}>{r.email || '—'}</td>
+                    <td style={{ fontSize: '12.5px', color: 'var(--text-mid)', wordBreak: 'break-all' }}>{r.contact_email || r.email || '—'}</td>
                     <td style={{ fontSize: '12.5px', color: 'var(--text-mid)' }}>{r.phone || '—'}</td>
                     <td style={{ fontSize: '12.5px', color: 'var(--text-muted)' }}>{r.city || '—'}</td>
                     <td style={{ textAlign: 'right' }}>
@@ -336,7 +292,7 @@ function ClientPanel({ row, policies, loading, error, onClose }) {
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '110px 1fr', gap: '6px 10px', fontSize: '12.5px', marginBottom: '18px' }}>
-            <Detail label="Email" value={row.email} />
+            <Detail label="Contact" value={row.contact_email || row.email} />
             <Detail label="Phone" value={row.phone} />
             <Detail label="City" value={row.city} />
           </div>

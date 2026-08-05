@@ -11,6 +11,7 @@ import { supabase } from './lib/supabase'
 const TABS = [
   { id: 'leads', label: 'Leads' },
   { id: 'clients', label: 'Clients' },
+  { id: 'renewals', label: 'Renewals' },
 ]
 
 export default function Shell({ email, tab, onTab, children }) {
