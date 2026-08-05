@@ -84,6 +84,16 @@ export async function detectPolicyModules(): Promise<PolicyModule[]> {
   policyModulesCache = (res.modules ?? [])
     .filter((m) => m.api_supported)
     .filter((m) => m.generated_type === 'custom' || m.generated_type === 'default')
+    /*
+     * Zoho creates a File_Upload_N__s module behind every file-upload FIELD,
+     * and labels it with the field's own name — so this org has modules called
+     * "Policy Schedule", "Policy Document" and "Policy Cover Document" that are
+     * attachment stores, not cover. They matched the name test below, cost a
+     * metadata call each, and were then discarded for having no client lookup.
+     * Excluded by shape rather than by label, since the labels are whatever
+     * someone typed into a field.
+     */
+    .filter((m) => !/^File_Upload_\d+__s$/.test(m.api_name))
     .filter((m) => {
       const hay = `${m.api_name} ${m.plural_label}`
       return /polic|insur|cover/i.test(hay) && !/claim/i.test(hay)
