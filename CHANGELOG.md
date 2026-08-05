@@ -4,6 +4,89 @@ All notable changes to the Insure First / Ensurio website are documented here.
 Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 The site is a Vite + React SPA deployed on Vercel at **insurefirst.ae**.
 
+## 2026-08-05 — Portal: policy terms on the Clients tab
+
+The Clients tab rendered whatever fields a policy record happened to carry,
+because the CRM had never been introspected and inventing field names would have
+produced a table of blanks that looked like missing data rather than a wrong
+guess. With the `zoho-crm-data-operations` MCP server authorised, the schema
+could finally be read — so the guessing is over, and the tab can answer the
+question advisors actually open it for: who lapses next.
+
+### What the CRM turned out to contain
+
+Five policy modules, all linking to `Accounts`, all carrying issue and expiry
+dates — under five different sets of names, which is why a generic renderer
+could never produce a sortable expiry column:
+
+| Module | Issue | Expiry | Type | Client lookup |
+| --- | --- | --- | --- | --- |
+| `Motor_Policies` | `Policy_Issued_on` | `Policy_Expires_on` | date | `Customer_Name` |
+| `Medical_Policies` | `Policy_Issued_on` | `Policy_Expires_on` | date | `Customer_Name` |
+| `General_Insurance` | `Policy_Issued_on` | `Policy_Expires_on` | date | `Customer_Name` |
+| `Policy_Details` | `Policy_Issue_Date` | `Policy_Expiry_Date` | date | **`Account`** |
+| `Renewal_Policy_Details` | `Policy_Issued_Date` | `Policy_Expiry_Date` | **datetime** | `Customer_Name` |
+
+`Name` is the Policy Number in all five.
+
+They are not equivalent, and that matters more than the naming. The first three
+are the live book — client link and both dates populated throughout, expiries
+running into 2027. `Policy_Details` is an endorsement ledger: roughly two thirds
+of a 200-record sample had no expiry at all and most rows are Status
+"Endorsement". `Renewal_Policy_Details` is a dead archive whose most recently
+*modified* rows are 2020–2022 policies, about a third of them linked to no
+client. One client had four live policies against ~40 records total.
+
+### Added
+
+- **Next expiry column**, banded in four steps — lapsed, ≤30 days, ≤90 days,
+  fine. Four bands rather than a gradient because the column is scanned, not
+  read, and a continuous scale makes every row look mildly urgent.
+- **Renewal dates from the live modules only.** An archive that expired in 2022
+  is not a renewal; letting it win the column would have put a permanent false
+  alarm against half the book.
+- **Structured policy cards** — number, type, insurer, status, premium, and the
+  term leading. Everything the metadata could not name still renders in an
+  expandable list, so a field this org uses unexpectedly stays visible.
+- **Collapsed "Historical" section** for the endorsement ledger and the old
+  book. Reachable, never competing with current cover for attention.
+- **Active / On record / Next renewal** summary at the top of the detail panel.
+
+### Changed
+
+- **Fields are resolved from metadata by data type plus a pattern tested against
+  both `api_name` and `field_label`.** Matching either alone misses here: Motor's
+  `Cover_Type` is *labelled* "Policy Type", and `Policy_Details.Account` is
+  *labelled* "Customer Name". Verified: 35/35 resolutions correct across all five
+  modules against live metadata.
+- **The policy count still spans all five modules**, deliberately. A record
+  linked to the client is a record linked to the client, and quietly dropping
+  some would make the portal disagree with Zoho.
+- `detectPolicyModules` now filters on `generated_type` too — subforms and field
+  trackers are `api_supported` and were otherwise eligible to slip through the
+  name match.
+- Expiry-column sorting is scoped to the loaded page and **says so on screen**.
+  Expiry lives on the policy modules, so Zoho cannot order the client query by
+  it; sorting the whole book would mean reading the whole book.
+
+### Notes
+
+- Renewal maths costs three extra COQL aggregates per page (`MIN(expiry)` where
+  expiry is still ahead of today), so a 50-client page is eight aggregate queries
+  rather than five — against 250 calls for the related-list approach.
+- `Renewal_Policy_Details` stores datetimes at `+04:00`. Dates are truncated to
+  their leading `YYYY-MM-DD` rather than parsed, so a UTC render cannot shift a
+  policy a day earlier than the broker wrote it.
+- **Still unproven: the COQL calls themselves.** The edge function's Zoho
+  credentials are rejected (`token refresh failed: Access Denied`) and the MCP
+  server exposes no COQL endpoint, so `COUNT(id) … GROUP BY` and `MIN(expiry)`
+  are written to the documented contract but have never executed. Everything
+  else here was verified against live records.
+- Two data-quality findings for the CRM, not the code: about 20 of 200 sampled
+  motor policies share an expiry of exactly `2026-06-30`, which looks like bulk
+  or placeholder entry and will band as lapsed; and some terms are reversed
+  (issued 2026-05-10, "expires" 2025-08-16).
+
 ## 2026-08-01 — Portal: lead status editing
 
 The leads view was read-only, so `lead_status` could only be changed with the
