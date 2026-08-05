@@ -30,6 +30,19 @@ export const supabase = isConfigured
     })
   : null
 
+/*
+ * An expired access token is reported as a 401, not as an answer.
+ *
+ * PostgREST uses PGRST301 for an expired JWT, but the shape has moved between
+ * versions and supabase-js sometimes surfaces only the message, so the text is
+ * checked too rather than trusting one code.
+ */
+function isAuthError(error) {
+  const code = String(error?.code ?? '')
+  if (code === 'PGRST301' || code === 'PGRST302' || code === '401') return true
+  return /\bjwt\b|token .*expired|expired .*token/i.test(String(error?.message ?? ''))
+}
+
 /**
  * Is the signed-in user actually staff?
  *
@@ -38,14 +51,33 @@ export const supabase = isConfigured
  * check a non-staff account would reach the dashboard and simply see an empty
  * table, which reads as "no leads yet" rather than "you should not be here".
  *
- * @returns {Promise<boolean>}
+ * Four answers, not two. "You are not staff" and "I could not ask" are opposite
+ * problems and this used to collapse both into false — so an access token that
+ * expired while the tab sat open told an allowlisted advisor they had been
+ * removed from the roster, and invited them to go and bother an admin about a
+ * roster that was never wrong. The session is refreshed once and the question
+ * asked again before any of that is concluded.
+ *
+ * @returns {Promise<true|false|'expired'|'error'>}
  */
 export async function isStaff() {
   if (!supabase) return false
-  const { data, error } = await supabase.rpc('is_portal_staff')
+
+  let { data, error } = await supabase.rpc('is_portal_staff')
+
+  if (error && isAuthError(error)) {
+    // autoRefreshToken handles this on a timer, which does not help if the
+    // machine slept through the window or the tab was throttled. Force it.
+    const { error: refreshFailed } = await supabase.auth.refreshSession()
+    if (refreshFailed) return 'expired'
+
+    ;({ data, error } = await supabase.rpc('is_portal_staff'))
+    if (error) return isAuthError(error) ? 'expired' : 'error'
+  }
+
   if (error) {
     console.error('staff check failed', error)
-    return false
+    return 'error'
   }
   return data === true
 }
