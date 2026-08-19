@@ -86,6 +86,7 @@ export default function ContactSection() {
         message: company ? `${msg}\n\nCompany: ${company}` : msg,
         service: 'Consultancy enquiry',
         source: 'consultancy-page',
+        honeypot: (fd.get('company_website') || '').toString(),
       })
       setStatus('sent')
       formRef.current.reset()
@@ -163,6 +164,9 @@ export default function ContactSection() {
                 </motion.div>
               ) : (
                 <form ref={formRef} onSubmit={handleSubmit} noValidate>
+                  {/* Honeypot — invisible to people, tempting to bots. */}
+                  <input type="text" name="company_website" tabIndex={-1} autoComplete="off" aria-hidden="true"
+                    style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', opacity: 0 }} />
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '10px' }}>
                     <input name="from_name" required placeholder="Full Name" style={inputStyle}
                       onFocus={(e) => (e.target.style.borderColor = 'var(--navy)')}

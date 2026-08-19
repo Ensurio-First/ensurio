@@ -40,6 +40,11 @@ function config() {
     siteUrl: env('SITE_URL', 'https://www.insurefirst.ae').replace(/\/$/, ''),
     phoneDisplay: env('LEAD_PHONE_DISPLAY', '050 976 5976'),
     phoneE164: env('LEAD_PHONE_E164', '+971509765976'),
+    turnstileSecret: env('TURNSTILE_SECRET_KEY'),
+    allowedOrigins: env('ALLOWED_ORIGINS', 'https://www.insurefirst.ae,https://insurefirst.ae')
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean),
   }
 }
 
@@ -85,6 +90,87 @@ function esc(value: unknown): string {
 }
 
 const isValidEmail = (v: unknown) => typeof v === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
+
+/* ── Anti-spam ───────────────────────────────────────────────────────── */
+
+// Link-shaped content in a name or message is the signature of SEO spam.
+const LINK_RE = /(https?:\/\/|www\.[a-z0-9-]|\[url|\[link|t\.me\/|wa\.me\/|bit\.ly\/)/i
+
+// Subjects are the one place client text reaches an email header, so they are
+// held to a whitelist of characters (Latin, Arabic, basic punctuation) rather
+// than a blocklist of tricks.
+const SAFE_SUBJECT_RE = /^[\w ؀-ۿ,.'’&()/-]{4,80}$/
+
+// Throwaway inboxes never belong to a real enquiry about insurance cover.
+const DISPOSABLE_DOMAINS = new Set([
+  'mailinator.com', 'guerrillamail.com', 'sharklasers.com', 'yopmail.com',
+  'temp-mail.org', 'tempmail.com', '10minutemail.com', 'trashmail.com',
+  'getnada.com', 'dispostable.com', 'maildrop.cc', 'mintemail.com',
+  'mohmal.com', 'tempr.email', 'fakeinbox.com', 'mail.tm', 'tempmail.dev',
+])
+
+// The Aug 2026 spam wave submitted plausible emails and phones but machine
+// names — "BbSrUapgeFBjUQHACICrYM", "Xrofooxf Obfepx" — so this looks for what
+// random strings have and human words don't: mixed caps mid-word, long
+// consonant runs, almost no vowels. Thresholds sit above real names (McDonald,
+// Krzysztof, Schmidt all pass), and a hit only quarantines, never drops.
+function looksMachineGenerated(text: string): boolean {
+  for (const tok of text.match(/[A-Za-z]+/g) ?? []) {
+    if (tok.length >= 8 && (tok.match(/[a-z][A-Z]/g) ?? []).length >= 2) return true
+    if (tok.length >= 6) {
+      const letters = tok.toLowerCase()
+      let run = 0
+      let best = 0
+      let vowels = 0
+      for (const ch of letters) {
+        if ('aeiouy'.includes(ch)) {
+          vowels++
+          run = 0
+        } else {
+          run++
+          if (run > best) best = run
+        }
+      }
+      // Vowel scarcity only judges 8+ letter tokens — at 6–7 letters it would
+      // flag real names like Schmidt (one vowel in seven letters).
+      if (best >= 5 || (letters.length >= 8 && vowels / letters.length < 0.18)) return true
+    }
+  }
+  return false
+}
+
+// The site and its preview deployments may submit; other browser origins may
+// not. Absence of an Origin header is not judged here — direct POSTs carry
+// none, and the Turnstile gate is what they cannot pass.
+function isAllowedOrigin(origin: string, allowed: string[]): boolean {
+  if (allowed.includes(origin)) return true
+  try {
+    const host = new URL(origin).hostname
+    return host === 'localhost' || host === '127.0.0.1' || host.endsWith('.vercel.app')
+  } catch {
+    return false
+  }
+}
+
+async function verifyTurnstile(
+  secret: string,
+  token: string,
+  ip: string | null,
+): Promise<'ok' | 'failed' | 'unavailable'> {
+  try {
+    const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ secret, response: token, ...(ip ? { remoteip: ip } : {}) }),
+    })
+    const verdict = await res.json()
+    return verdict.success ? 'ok' : 'failed'
+  } catch (err) {
+    // Cloudflare being unreachable is not the visitor's fault — let it in.
+    console.error('turnstile siteverify unreachable', err)
+    return 'unavailable'
+  }
+}
 
 // Mirrors getScoreColor() in src/components/DiagnosticTool/ScoreResult.jsx
 function scoreBand(score: number) {
@@ -257,7 +343,9 @@ function teamEmailHtml(row: Record<string, unknown>, report: Report | null): str
       ${field('Email', row.email)}
       ${field('Phone', row.phone)}
       ${field('Preferred time', row.preferred_time)}
-      ${field('Service', row.service)}
+      ${/* Always present: a missing service should read as "none chosen",
+           not silently vanish from the table. */ ''}
+      ${field('Service', row.service || 'Not specified')}
       ${field('Tool', row.tool_id)}
       ${field('Source', row.source)}
       ${field('Page', row.page)}
@@ -311,12 +399,47 @@ Deno.serve(async (req: Request) => {
     })
   }
 
-  // Honeypot: bots fill hidden fields. Look successful, save nothing.
-  if (typeof body._hp === 'string' && body._hp.trim() !== '') {
-    return new Response(JSON.stringify({ ok: true, reference: makeReference() }), {
+  // A response that looks exactly like success while saving nothing. Every
+  // hard rejection returns this — a bot must never learn which gate it failed.
+  const fakeOk = () =>
+    new Response(JSON.stringify({ ok: true, reference: makeReference() }), {
       headers: { ...cors, 'Content-Type': 'application/json' },
     })
+
+  // Honeypot: bots fill hidden fields.
+  if (typeof body._hp === 'string' && body._hp.trim() !== '') return fakeOk()
+
+  // Forensics — stored on the row so spam is traceable and rate-limitable.
+  const ip = (req.headers.get('x-forwarded-for') ?? '').split(',')[0].trim() || null
+  const userAgent = req.headers.get('user-agent')?.slice(0, 400) || null
+
+  const cfg = config()
+
+  /*
+   * Suspicion gathered here quarantines rather than drops: the row saves with
+   * lead_status 'spam' and the reasons, no email goes out, and a false positive
+   * is one status click in the portal — never a lost client. Only certainties
+   * (failed Turnstile verification, bot-speed fills) get the tarpit.
+   */
+  const spamReasons: string[] = []
+
+  // Turnstile: the token proves a real browser ran Cloudflare's check on one
+  // of our forms. A failed verification is a bot or a replayed token — tarpit.
+  // A missing token only quarantines (the visitor may block the script), and
+  // an unset secret skips the gate entirely, so deploying this function ahead
+  // of the secret cannot cost leads.
+  if (cfg.turnstileSecret) {
+    const token = typeof body._cf === 'string' ? body._cf.trim() : ''
+    if (!token) {
+      spamReasons.push('no-turnstile-token')
+    } else if ((await verifyTurnstile(cfg.turnstileSecret, token, ip)) === 'failed') {
+      return fakeOk()
+    }
   }
+
+  // _t is ms between page load and submit. Humans find the form, read it and
+  // type; sub-3-second submissions are scripted fills.
+  if (typeof body._t === 'number' && body._t >= 0 && body._t < 3000) return fakeOk()
 
   const name = typeof body.name === 'string' ? body.name.trim() : ''
   if (!name || !isValidEmail(body.email)) {
@@ -326,18 +449,71 @@ Deno.serve(async (req: Request) => {
     })
   }
 
+  const email = String(body.email).trim()
+  const phone = body.phone ? String(body.phone).trim() : null
+  const message = typeof body.message === 'string' ? body.message : null
+
+  if (origin && !isAllowedOrigin(origin, cfg.allowedOrigins)) spamReasons.push('foreign-origin')
+  if (LINK_RE.test(name)) spamReasons.push('link-in-name')
+  if (message && LINK_RE.test(message)) spamReasons.push('link-in-message')
+  if (looksMachineGenerated(name)) spamReasons.push('machine-name')
+  if (message && looksMachineGenerated(message)) spamReasons.push('machine-message')
+  if (name.length > 120) spamReasons.push('name-too-long')
+  if (message && message.length > 4000) spamReasons.push('message-too-long')
+  if (DISPOSABLE_DOMAINS.has(email.toLowerCase().split('@')[1] ?? '')) spamReasons.push('disposable-email')
+  if (phone) {
+    const digits = phone.replace(/\D/g, '')
+    if (digits.length < 7 || digits.length > 15) spamReasons.push('implausible-phone')
+  }
+
   const report: Report | null = body.report && typeof body.report === 'object' ? body.report : null
   const reference = makeReference()
-  const reportTitle = typeof body.reportTitle === 'string' && body.reportTitle.trim()
+
+  // Subjects only carry text that passes the whitelist — a client-supplied
+  // string must never become arbitrary outbound email content.
+  const service = typeof body.service === 'string' && SAFE_SUBJECT_RE.test(body.service.trim())
+    ? body.service.trim()
+    : null
+  const reportTitle = typeof body.reportTitle === 'string' && SAFE_SUBJECT_RE.test(body.reportTitle.trim())
     ? body.reportTitle.trim()
-    : (body.service ? `Your ${body.service} summary` : 'Your enquiry with Insure First')
+    : (service ? `Your ${service} summary` : 'Your enquiry with Insure First')
+
+  const supabase = createClient(
+    Deno.env.get('SUPABASE_URL')!,
+    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
+  )
+
+  // Rate limits: 3 submissions per hour per IP, and per email address — the
+  // Aug 2026 bot hit three forms with the same email inside a minute, and no
+  // legitimate visitor files a fourth enquiry within the hour. A burst means a
+  // bot or someone stuck retrying; either way a human should look before any
+  // more email goes out under our name.
+  const hourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString()
+  const overLimit = async (column: 'ip' | 'email', value: string) => {
+    const { count, error: rlErr } = await supabase
+      .from('leads')
+      .select('id', { count: 'exact', head: true })
+      .eq(column, value)
+      .gte('created_at', hourAgo)
+    if (rlErr) {
+      console.error(`rate-limit count by ${column} failed`, rlErr)
+      return false
+    }
+    return (count ?? 0) >= 3
+  }
+  if (ip && (await overLimit('ip', ip))) spamReasons.push('rate-limit-ip')
+  if (await overLimit('email', email)) spamReasons.push('rate-limit-email')
+
+  const quarantined = spamReasons.length > 0
 
   const row = {
     name,
-    email: String(body.email).trim(),
-    phone: body.phone ? String(body.phone).trim() : null,
-    message: body.message ?? null,
-    service: body.service ?? null,
+    email,
+    phone,
+    message,
+    // The row keeps the raw value (capped) even when it fails the subject
+    // whitelist — the advisor should see what was actually submitted.
+    service: typeof body.service === 'string' ? body.service.slice(0, 200) : null,
     source: body.source ?? 'website',
     page: body.page ?? null,
     preferred_time: body.preferredTime ?? null,
@@ -348,14 +524,12 @@ Deno.serve(async (req: Request) => {
     score: typeof report?.score === 'number' ? Math.round(report.score) : null,
     report,
     reference,
-    email_status: 'pending',
+    ip,
+    user_agent: userAgent,
+    origin,
+    ...(quarantined ? { lead_status: 'spam', spam_reason: spamReasons.join(',') } : {}),
+    email_status: quarantined ? 'skipped' : 'pending',
   }
-
-  const cfg = config()
-  const supabase = createClient(
-    Deno.env.get('SUPABASE_URL')!,
-    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
-  )
 
   // Save first — an email failure must never cost us the lead.
   const { data: inserted, error } = await supabase
@@ -370,6 +544,16 @@ Deno.serve(async (req: Request) => {
       status: 500,
       headers: { ...cors, 'Content-Type': 'application/json' },
     })
+  }
+
+  // Quarantined rows are saved for review but send nothing, and the response
+  // is indistinguishable from a clean submission.
+  if (quarantined) {
+    console.log(`lead ${inserted.id} quarantined: ${spamReasons.join(',')} ip=${ip ?? '?'}`)
+    return new Response(
+      JSON.stringify({ ok: true, id: inserted.id, reference, emailed: false, status: 'skipped' }),
+      { headers: { ...cors, 'Content-Type': 'application/json' } },
+    )
   }
 
   let emailStatus = 'skipped'
@@ -395,7 +579,7 @@ Deno.serve(async (req: Request) => {
       sendEmail(cfg, {
         to: cfg.notify,
         reply_to: [row.email],
-        subject: `New lead: ${name}${row.service ? ` — ${row.service}` : ''}${row.score !== null ? ` (score ${row.score})` : ''}`,
+        subject: `New lead: ${name.slice(0, 80)}${service ? ` — ${service}` : ` — via ${row.source}`}${row.score !== null ? ` (score ${row.score})` : ''}`,
         html: teamEmailHtml({ ...row, id: inserted.id }, report),
       }),
     ])

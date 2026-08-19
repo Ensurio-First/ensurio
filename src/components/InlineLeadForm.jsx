@@ -21,6 +21,7 @@ export default function InlineLeadForm({
   const [form, setForm] = useState({ name: '', email: '', phone: '' })
   const [when, setWhen] = useState('')
   const [wa, setWa] = useState(emptyWhatsApp)
+  const [hp, setHp] = useState('')
   const [status, setStatus] = useState('idle') // idle | invalid | sending | done | error
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))
 
@@ -43,6 +44,7 @@ export default function InlineLeadForm({
         source,
         preferredTime: when || null,
         ...resolveWhatsApp(wa, form.phone),
+        honeypot: hp,
       })
       setStatus('done')
     } catch (err) {
@@ -75,6 +77,11 @@ export default function InlineLeadForm({
     <form onSubmit={submit} noValidate style={{ background: 'var(--white)', padding: '1.5rem 1.6rem', borderTop: '3px solid var(--teal)', textAlign: 'left' }}>
       <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.15rem', fontWeight: 800, color: 'var(--navy)', letterSpacing: '-0.01em', marginBottom: '0.35rem' }}>{heading}</h3>
       <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'var(--text-muted)', margin: '0 0 1rem', lineHeight: 1.55 }}>{note}</p>
+
+      {/* Honeypot — invisible to people, tempting to bots. */}
+      <input type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" value={hp}
+        onChange={(e) => setHp(e.target.value)}
+        style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', opacity: 0 }} />
 
       <input aria-label="Full name" type="text" placeholder="Full name" value={form.name} onChange={(e) => set('name', e.target.value)} style={inputStyle} />
       <input aria-label="Email address" type="email" placeholder="Email address" value={form.email} onChange={(e) => set('email', e.target.value)} style={inputStyle} />

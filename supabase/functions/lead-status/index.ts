@@ -112,7 +112,10 @@ Deno.serve(async (req: Request) => {
     })
   }
 
-  const stage = STAGE[data.lead_status] ?? STAGE.received
+  // Quarantined submissions read as freshly received: whoever is checking must
+  // not learn the spam filter's verdict from the public lookup.
+  const publicStatus = data.lead_status === 'spam' ? 'received' : data.lead_status
+  const stage = STAGE[publicStatus] ?? STAGE.received
 
   return new Response(
     JSON.stringify({
@@ -121,7 +124,7 @@ Deno.serve(async (req: Request) => {
       firstName: String(data.name ?? '').trim().split(/\s+/)[0] || null,
       submittedAt: data.created_at,
       service: data.service,
-      status: data.lead_status,
+      status: publicStatus,
       statusLabel: stage.label,
       statusDetail: stage.detail,
     }),

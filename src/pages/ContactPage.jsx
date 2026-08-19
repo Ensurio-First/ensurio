@@ -119,6 +119,7 @@ function FormSuccess() {
 function ContactForm({ isMobile }) {
   const [form, setForm] = useState({ name: '', email: '', countryCode: '+971', phone: '', enquiry: '', message: '' })
   const [wa, setWa] = useState(emptyWhatsApp)
+  const [hp, setHp] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [errors, setErrors] = useState({})
   const [touched, setTouched] = useState({})
@@ -178,6 +179,7 @@ function ContactForm({ isMobile }) {
         service: service || form.enquiry || null,
         source: service ? 'quote' : 'contact',
         ...resolveWhatsApp(wa, fullPhone),
+        honeypot: hp,
       })
       setSubmitted(true)
     } catch (err) {
@@ -204,6 +206,11 @@ function ContactForm({ isMobile }) {
 
   return (
     <form onSubmit={handleSubmit} noValidate>
+
+      {/* Honeypot — invisible to people, tempting to bots. */}
+      <input type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" value={hp}
+        onChange={(e) => setHp(e.target.value)}
+        style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', opacity: 0 }} />
 
       {/* Name + Email */}
       <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '0 1.25rem' }}>

@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { getTurnstileToken } from './turnstile'
 
 // Credentials come from Vite env vars (safe to expose the anon key in the
 // frontend — Row Level Security protects the data). Set these in a .env.local
@@ -43,6 +44,12 @@ export async function submitLead(lead) {
 
   const payload = { ...lead, page: currentPage(), _hp: lead.honeypot ?? '' }
   delete payload.honeypot
+
+  // Bot signals for the edge function: a Turnstile token proving a real
+  // browser passed Cloudflare's check, and ms-since-page-load — a human
+  // scrolls, reads and types before submitting; a script does not.
+  payload._cf = await getTurnstileToken()
+  payload._t = typeof performance !== 'undefined' ? Math.round(performance.now()) : null
 
   try {
     const res = await fetch(FUNCTION_URL, {
