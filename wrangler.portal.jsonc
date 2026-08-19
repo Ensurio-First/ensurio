@@ -1,0 +1,14 @@
+// Staff portal (portal.insurefirst.ae) on Cloudflare Workers static assets.
+// Deploy: npm run build:portal && npx wrangler deploy -c wrangler.portal.jsonc
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "insurefirst-portal",
+  "compatibility_date": "2026-08-01",
+  "routes": [
+    { "pattern": "portal.insurefirst.ae", "custom_domain": true, "zone_id": "a195155968d0a422c49465c144a8e268" }
+  ],
+  "assets": {
+    "directory": "./dist-portal",
+    "not_found_handling": "single-page-application"
+  }
+}

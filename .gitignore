@@ -4,3 +4,5 @@ dist-portal
 .env
 .env.local
 .DS_Store
+.codex-history
+supabase/.temp

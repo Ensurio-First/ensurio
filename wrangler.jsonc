@@ -1,0 +1,17 @@
+// Public site (insurefirst.ae) on Cloudflare Workers static assets.
+// Deploy: npm run build && npx wrangler deploy
+// The portal is a separate worker — see wrangler.portal.jsonc.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "insurefirst-site",
+  "compatibility_date": "2026-08-01",
+  "routes": [
+    { "pattern": "insurefirst.ae", "custom_domain": true, "zone_id": "a195155968d0a422c49465c144a8e268" },
+    { "pattern": "www.insurefirst.ae", "custom_domain": true, "zone_id": "a195155968d0a422c49465c144a8e268" }
+  ],
+  "assets": {
+    "directory": "./dist",
+    // SPA fallback — replaces the rewrite vercel.json did on Vercel.
+    "not_found_handling": "single-page-application"
+  }
+}
