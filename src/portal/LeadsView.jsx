@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Search, RefreshCw, X, Mail, Phone, FileText, AlertTriangle } from 'lucide-react'
-import { fetchLeads, updateLeadStatus } from './lib/supabase'
+import { fetchLeads, updateLeadStatus, updateLeadStatusBulk, deleteLeads } from './lib/supabase'
 
 /*
  * The leads dashboard.
@@ -11,7 +11,11 @@ import { fetchLeads, updateLeadStatus } from './lib/supabase'
  * which this view will join against rather than querying live.
  */
 
-const STATUSES = ['received', 'contacted', 'in-review', 'advising', 'closed']
+// 'spam' is quarantine, not a workflow stage: submit-lead sets it on suspect
+// submissions (no emails were sent), and restoring one is just clicking
+// 'received'. The default view hides these rows — pick "spam" in the status
+// filter to review them.
+const STATUSES = ['received', 'contacted', 'in-review', 'advising', 'closed', 'spam']
 
 // email_status values meaning the lead did not get their result. 'direct-insert'
 // is the fallback path in src/lib/supabase.js, which saves the row but sends
@@ -26,6 +30,7 @@ const STATUS_STYLE = {
   'in-review': { bg: '#FEF3C7', fg: '#92400E' },
   advising: { bg: 'var(--teal-pale)', fg: 'var(--teal-dark)' },
   closed: { bg: '#F1F5F9', fg: 'var(--text-muted)' },
+  spam: { bg: '#FEE2E2', fg: '#B91C1C' },
 }
 
 const dateFmt = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
@@ -87,6 +92,9 @@ export default function LeadsView() {
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase()
     return leads.filter((l) => {
+      // Quarantined rows never mix into the working view — they appear only
+      // when explicitly asked for via the status filter.
+      if (status === 'all' && l.lead_status === 'spam') return false
       if (status !== 'all' && l.lead_status !== status) return false
       if (tool !== 'all' && l.tool_id !== tool) return false
       if (!needle) return true
@@ -94,6 +102,68 @@ export default function LeadsView() {
         .some((v) => v && String(v).toLowerCase().includes(needle))
     })
   }, [leads, q, status, tool])
+
+  /*
+   * Bulk selection — a checkbox column plus an action bar. The selection is a
+   * Set of ids, pruned whenever the filters change, so an action can never
+   * touch a row the operator is not currently looking at.
+   */
+  const [checked, setChecked] = useState(() => new Set())
+  const [bulkBusy, setBulkBusy] = useState(false)
+  const [bulkError, setBulkError] = useState('')
+
+  useEffect(() => {
+    setChecked((prev) => {
+      const visible = new Set(filtered.map((l) => l.id))
+      const next = new Set([...prev].filter((id) => visible.has(id)))
+      return next.size === prev.size ? prev : next
+    })
+  }, [filtered])
+
+  const toggleOne = (id) =>
+    setChecked((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+
+  const toggleAll = () =>
+    setChecked((prev) => (prev.size === filtered.length ? new Set() : new Set(filtered.map((l) => l.id))))
+
+  const bulkStatus = async (next) => {
+    setBulkBusy(true)
+    setBulkError('')
+    try {
+      const rows = await updateLeadStatusBulk([...checked], next)
+      const byId = new Map(rows.map((r) => [r.id, r]))
+      setLeads((all) => all.map((l) => (byId.has(l.id) ? { ...l, ...byId.get(l.id) } : l)))
+      setSelected((s) => (s && byId.has(s.id) ? { ...s, ...byId.get(s.id) } : s))
+      setChecked(new Set())
+    } catch (e) {
+      setBulkError(e.message || 'Could not update the selected leads.')
+    } finally {
+      setBulkBusy(false)
+    }
+  }
+
+  const bulkDelete = async () => {
+    const n = checked.size
+    const noun = n === 1 ? 'entry' : 'entries'
+    if (!window.confirm(`Permanently delete ${n} ${noun}? This cannot be undone — marking as spam is the reversible option.`)) return
+    setBulkBusy(true)
+    setBulkError('')
+    try {
+      const gone = new Set(await deleteLeads([...checked]))
+      setLeads((all) => all.filter((l) => !gone.has(l.id)))
+      setSelected((s) => (s && gone.has(s.id) ? null : s))
+      setChecked(new Set())
+    } catch (e) {
+      setBulkError(e.message || 'Could not delete the selected leads.')
+    } finally {
+      setBulkBusy(false)
+    }
+  }
 
   // Counts describe what is on screen, so they move with the filters rather
   // than quietly reporting the whole table.
@@ -133,12 +203,35 @@ export default function LeadsView() {
         </p>
       )}
 
+      {checked.size > 0 && (
+        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '10px', padding: '10px 14px', marginBottom: '12px', background: 'var(--white)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)' }}>
+          <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--navy)' }}>{checked.size} selected</span>
+          <BulkButton onClick={() => bulkStatus('spam')} disabled={bulkBusy}>Mark as spam</BulkButton>
+          <BulkButton onClick={() => bulkStatus('received')} disabled={bulkBusy}>Restore to received</BulkButton>
+          <BulkButton danger onClick={bulkDelete} disabled={bulkBusy}>Delete…</BulkButton>
+          <button type="button" onClick={() => setChecked(new Set())} disabled={bulkBusy}
+            style={{ marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer', fontSize: '12.5px', color: 'var(--text-muted)' }}>
+            Clear selection
+          </button>
+          {bulkError && (
+            <span role="alert" style={{ flexBasis: '100%', fontSize: '12.5px', color: 'var(--danger)' }}>{bulkError}</span>
+          )}
+        </div>
+      )}
+
       <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
           <div style={{ flex: 1, minWidth: 0, background: 'var(--white)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
             <div style={{ overflowX: 'auto' }}>
               <table className="portal-table">
                 <thead>
                   <tr>
+                    <th style={{ width: '36px' }}>
+                      <input type="checkbox" aria-label="Select all visible leads"
+                        checked={filtered.length > 0 && checked.size === filtered.length}
+                        onChange={toggleAll}
+                        disabled={filtered.length === 0 || bulkBusy}
+                        style={{ accentColor: 'var(--teal)', cursor: 'pointer' }} />
+                    </th>
                     <th>Received</th><th>Name</th><th>Contact</th>
                     <th>Service</th><th>Tool</th><th style={{ textAlign: 'right' }}>Score</th><th>Status</th>
                   </tr>
@@ -146,6 +239,15 @@ export default function LeadsView() {
                 <tbody>
                   {filtered.map((l) => (
                     <tr key={l.id} onClick={() => setSelected(l)} aria-selected={selected?.id === l.id}>
+                      {/* Checkbox cell swallows the click so selecting a row for
+                          a bulk action does not also open its detail panel. */}
+                      <td onClick={(e) => e.stopPropagation()} style={{ width: '36px' }}>
+                        <input type="checkbox" aria-label={`Select ${l.name || l.email || 'lead'}`}
+                          checked={checked.has(l.id)}
+                          onChange={() => toggleOne(l.id)}
+                          disabled={bulkBusy}
+                          style={{ accentColor: 'var(--teal)', cursor: 'pointer' }} />
+                      </td>
                       <td style={{ whiteSpace: 'nowrap', color: 'var(--text-muted)', fontSize: '12.5px' }}>
                         {dateFmt.format(new Date(l.created_at))}
                         <div style={{ fontSize: '11.5px', color: 'var(--text-light)' }}>{timeFmt.format(new Date(l.created_at))}</div>
@@ -255,6 +357,21 @@ function StatusBadge({ value }) {
   )
 }
 
+function BulkButton({ danger = false, children, ...rest }) {
+  return (
+    <button type="button" {...rest}
+      style={{
+        padding: '6px 12px', borderRadius: 'var(--radius-sm)', fontSize: '12.5px', fontWeight: 700,
+        cursor: rest.disabled ? 'wait' : 'pointer',
+        background: 'var(--white)',
+        color: danger ? 'var(--danger)' : 'var(--text-mid)',
+        border: `1px solid ${danger ? 'var(--danger)' : 'var(--border-dark)'}`,
+      }}>
+      {children}
+    </button>
+  )
+}
+
 /*
  * Stage control. Buttons rather than a dropdown: five options that get clicked
  * dozens of times a day are worth one tap, and it matches how the public tools
@@ -331,9 +448,13 @@ function DetailPanel({ lead, onClose, onStatus, saving, statusError }) {
 
       <StatusPicker lead={lead} onStatus={onStatus} saving={saving} error={statusError} />
 
+      {lead.spam_reason && (
+        <Field label="Quarantined because">{lead.spam_reason.split(',').join(', ')}</Field>
+      )}
       <Field label="Service">{lead.service || '—'}</Field>
       <Field label="Source">{lead.source || '—'}</Field>
       <Field label="Page">{lead.page || '—'}</Field>
+      {lead.ip && <Field label="Submitted from">{lead.ip}{lead.origin ? ` · ${lead.origin}` : ''}</Field>}
       <Field label="Preferred callback">{lead.preferred_time || '—'}</Field>
       <Field label="Tool">{lead.tool_id || '—'}</Field>
       {typeof lead.score === 'number' && <Field label="Score">{lead.score}</Field>}

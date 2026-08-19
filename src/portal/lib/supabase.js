@@ -426,3 +426,42 @@ export async function updateLeadStatus(id, status) {
   }
   return data
 }
+
+/**
+ * Bulk variant of updateLeadStatus for the selection bar. Same grant and
+ * policy as the single-row call; RLS quietly drops rows the caller may not
+ * touch, so the returned rows are the honest set of what actually changed.
+ *
+ * @param {string[]} ids
+ * @param {string} status
+ * @returns {Promise<Array<{id: string, lead_status: string, lead_status_updated_at: string, lead_status_updated_by: string}>>}
+ */
+export async function updateLeadStatusBulk(ids, status) {
+  if (!supabase) throw new Error('not-configured')
+  const { data, error } = await supabase
+    .from('leads')
+    .update({ lead_status: status })
+    .in('id', ids)
+    .select('id, lead_status, lead_status_updated_at, lead_status_updated_by')
+  if (error) throw error
+  return data ?? []
+}
+
+/**
+ * Permanent removal — there is no undo. Quarantining ('spam') is the
+ * reversible path; the portal only calls this behind a confirmation.
+ * Needs the staff DELETE policy (migration 20260819160000).
+ *
+ * @param {string[]} ids
+ * @returns {Promise<string[]>} ids of the rows actually deleted
+ */
+export async function deleteLeads(ids) {
+  if (!supabase) throw new Error('not-configured')
+  const { data, error } = await supabase
+    .from('leads')
+    .delete()
+    .in('id', ids)
+    .select('id')
+  if (error) throw error
+  return (data ?? []).map((r) => r.id)
+}
