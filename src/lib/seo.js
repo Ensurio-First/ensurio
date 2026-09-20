@@ -113,7 +113,32 @@ export const organizationLd = {
   url: SITE_URL,
   telephone: PHONE,
   areaServed: { '@type': 'Country', name: 'United Arab Emirates' },
-  address: { '@type': 'PostalAddress', addressCountry: 'AE', addressRegion: 'Dubai' },
+  address: { '@type': 'PostalAddress', addressCountry: 'AE', addressRegion: 'Dubai', addressLocality: 'Dubai' },
+  /*
+   * The hours shown on the contact page. streetAddress, geo and priceRange are
+   * left out rather than guessed — Google lists them as recommended, and a
+   * wrong address is worse for a local business than an absent one.
+   */
+  openingHoursSpecification: [
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+      opens: '09:00',
+      closes: '18:00',
+    },
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: 'Saturday',
+      opens: '09:00',
+      closes: '13:00',
+    },
+  ],
+  /* Ties the brand to its own profiles, which is how the entity gets recognised. */
+  sameAs: [
+    'https://www.instagram.com/insurefirstcco',
+    'https://www.facebook.com/insurefirstcco',
+    'https://www.linkedin.com/company/insurefirstcco/',
+  ],
   description:
     'Independent, CBUAE-licensed insurance and risk management consultancy in the UAE.',
   image: DEFAULT_OG_IMAGE,
