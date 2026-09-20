@@ -5,6 +5,8 @@ import './styles/responsive.css'
 import './styles/print.css'
 import RiskManagementPage from './pages/RiskManagementPage'
 import ManagementConsultancyPage from './pages/ManagementConsultancyPage'
+import NotFoundPage from './pages/NotFoundPage'
+import { seoFor } from './lib/seo'
 import ServicesPage from './pages/ServicesPage'
 import ContactPage from './pages/ContactPage'
 import BlogPage from './pages/BlogPage'
@@ -72,10 +74,53 @@ function ScrollToTop() {
   return null
 }
 
+/*
+ * Keeps <title>, the meta description and the canonical link in step with the
+ * current route during client-side navigation.
+ *
+ * The prerender build bakes these into each route's static HTML, so a crawler
+ * or a cold page load already has them — this is only for navigation inside the
+ * app, where no new document is fetched. Without it a route that sets no title
+ * of its own inherits whatever the previous route left behind.
+ *
+ * Rendered above <Routes>, so its effect runs before a page's own effect and a
+ * page that still sets its own title keeps the last word.
+ */
+function SeoHead() {
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    const seo = seoFor(pathname)
+    // No entry means an unrouted path; NotFoundPage sets its own head.
+    if (!seo) return
+
+    document.title = seo.title
+
+    let desc = document.querySelector('meta[name="description"]')
+    if (!desc) {
+      desc = document.createElement('meta')
+      desc.setAttribute('name', 'description')
+      document.head.appendChild(desc)
+    }
+    desc.setAttribute('content', seo.description)
+
+    let canon = document.querySelector('link[rel="canonical"]')
+    if (!canon) {
+      canon = document.createElement('link')
+      canon.setAttribute('rel', 'canonical')
+      document.head.appendChild(canon)
+    }
+    canon.setAttribute('href', seo.canonical)
+  }, [pathname])
+
+  return null
+}
+
 export default function App() {
   return (
     <LeadJourneyProvider>
       <ScrollToTop />
+      <SeoHead />
       <Routes>
         <Route path="/" element={<PrototypeHome />} />
         <Route path="/services" element={<ServicesPage />} />
@@ -91,6 +136,7 @@ export default function App() {
         <Route path="/policy-review" element={<PolicyReviewPage />} />
         <Route path="/risk-management" element={<RiskManagementPage />} />
         <Route path="/management-consultancy" element={<ManagementConsultancyPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <QuoteModal />
     </LeadJourneyProvider>

@@ -1,0 +1,145 @@
+# Legacy WordPress URLs -> current SPA routes.
+#
+# The old insurefirst.ae was WordPress with an /insurance-consultancy/<category>/<product>/
+# tree and dated /YYYY/MM/DD/ blog posts. Those URLs are still indexed and still taking
+# traffic (GA4 property 365262845 recorded ~60 distinct legacy paths in the last 12 months).
+#
+# Without these rules the SPA fallback in wrangler.jsonc serves index.html with HTTP 200
+# for every one of them, React Router falls through to NotFoundPage, and a visitor who
+# wanted a specific product gets a generic 404 instead of the page that replaced it.
+#
+# TWO THINGS MATTER HERE, both verified against `wrangler dev`:
+#
+#  1. Trailing slashes are NOT normalized. `/contact-us` and `/contact-us/` are distinct
+#     rules, and WordPress emitted the trailing-slash form, so every literal rule below
+#     is written twice. Drop the `/` variant and the real traffic silently falls through
+#     to the splat rules at the bottom and lands on a category hub instead of the product.
+#
+#  2. First match wins, and every literal is kept above every splat. Wrangler also warns
+#     when a literal sits below a splat, because that costs a slower lookup.
+#
+# Generated pairs are kept in path order; edit both lines of a pair together.
+
+# ============================ LITERAL RULES ==================================
+
+# --- Top level ---------------------------------------------------------------
+/contact-us                                                                                                    /contact  301
+/contact-us/                                                                                                   /contact  301
+/about-us                                                                                                      /about  301
+/about-us/                                                                                                     /about  301
+/insurance-consultancy                                                                                         /services  301
+/insurance-consultancy/                                                                                        /services  301
+# --- Commercial insurance ----------------------------------------------------
+/insurance-consultancy/commercial-insurance/business-interruption-insurance-cover                              /insurance/business-interruption  301
+/insurance-consultancy/commercial-insurance/business-interruption-insurance-cover/                             /insurance/business-interruption  301
+/insurance-consultancy/commercial-insurance/hotel-comprehensive-insurance                                      /industries/hospitality  301
+/insurance-consultancy/commercial-insurance/hotel-comprehensive-insurance/                                     /industries/hospitality  301
+/insurance-consultancy/commercial-insurance/jewelers-block-insurance                                           /insurance/jewelers-block  301
+/insurance-consultancy/commercial-insurance/jewelers-block-insurance/                                          /insurance/jewelers-block  301
+/insurance-consultancy/commercial-insurance/workers-compensation-insurance-cover                               /insurance/employers-liability  301
+/insurance-consultancy/commercial-insurance/workers-compensation-insurance-cover/                              /insurance/employers-liability  301
+/insurance-consultancy/commercial-insurance/burglary-theft-and-robbery-insurance                               /insurance/commercial-property  301
+/insurance-consultancy/commercial-insurance/burglary-theft-and-robbery-insurance/                              /insurance/commercial-property  301
+/insurance-consultancy/commercial-insurance/fire-allied-perils-insurance-cover                                 /insurance/commercial-property  301
+/insurance-consultancy/commercial-insurance/fire-allied-perils-insurance-cover/                                /insurance/commercial-property  301
+/insurance-consultancy/commercial-insurance/property-all-risk-insurance-cover                                  /insurance/commercial-property  301
+/insurance-consultancy/commercial-insurance/property-all-risk-insurance-cover/                                 /insurance/commercial-property  301
+/insurance-consultancy/commercial-insurance/shopkeepers-insurance-policy                                       /insurance/commercial-property  301
+/insurance-consultancy/commercial-insurance/shopkeepers-insurance-policy/                                      /insurance/commercial-property  301
+# --- Professional & legal liability ------------------------------------------
+/insurance-consultancy/professional-legal-liability-insurance/cyber-liability-insurance-cover                  /insurance/cyber  301
+/insurance-consultancy/professional-legal-liability-insurance/cyber-liability-insurance-cover/                 /insurance/cyber  301
+/insurance-consultancy/professional-legal-liability-insurance/employers-legal-liability                        /insurance/employers-liability  301
+/insurance-consultancy/professional-legal-liability-insurance/employers-legal-liability/                       /insurance/employers-liability  301
+/insurance-consultancy/professional-legal-liability-insurance/directors-and-officers-liability-insurance-do    /insurance/directors-officers  301
+/insurance-consultancy/professional-legal-liability-insurance/directors-and-officers-liability-insurance-do/   /insurance/directors-officers  301
+/insurance-consultancy/professional-legal-liability-insurance/product-liability-insurance                      /insurance/public-liability  301
+/insurance-consultancy/professional-legal-liability-insurance/product-liability-insurance/                     /insurance/public-liability  301
+/insurance-consultancy/professional-legal-liability-insurance/freight-forwarders-liability-insurance           /industries/logistics  301
+/insurance-consultancy/professional-legal-liability-insurance/freight-forwarders-liability-insurance/          /industries/logistics  301
+/insurance-consultancy/professional-legal-liability-insurance/architect-design-engineers-liability-insurance   /insurance/professional-indemnity  301
+/insurance-consultancy/professional-legal-liability-insurance/architect-design-engineers-liability-insurance/  /insurance/professional-indemnity  301
+/insurance-consultancy/professional-legal-liability-insurance/doctors-malpractice-insurance                    /insurance/professional-indemnity  301
+/insurance-consultancy/professional-legal-liability-insurance/doctors-malpractice-insurance/                   /insurance/professional-indemnity  301
+/insurance-consultancy/professional-legal-liability-insurance/errors-and-omission-liability-pii-cover          /insurance/professional-indemnity  301
+/insurance-consultancy/professional-legal-liability-insurance/errors-and-omission-liability-pii-cover/         /insurance/professional-indemnity  301
+# --- Personal lines ----------------------------------------------------------
+/insurance-consultancy/personal-lines-of-insurance/group-medical-insurance                                     /insurance/health-medical  301
+/insurance-consultancy/personal-lines-of-insurance/group-medical-insurance/                                    /insurance/health-medical  301
+/insurance-consultancy/personal-lines-of-insurance/health-insurance                                            /insurance/health-medical  301
+/insurance-consultancy/personal-lines-of-insurance/health-insurance/                                           /insurance/health-medical  301
+/insurance-consultancy/personal-lines-of-insurance/group-life-personal-accident-insurance-glpa                 /insurance/personal-accident  301
+/insurance-consultancy/personal-lines-of-insurance/group-life-personal-accident-insurance-glpa/                /insurance/personal-accident  301
+/insurance-consultancy/personal-lines-of-insurance/key-man-insurance                                           /insurance/life-critical-illness  301
+/insurance-consultancy/personal-lines-of-insurance/key-man-insurance/                                          /insurance/life-critical-illness  301
+/insurance-consultancy/personal-lines-of-insurance/mortgage-insurance                                          /insurance/life-critical-illness  301
+/insurance-consultancy/personal-lines-of-insurance/mortgage-insurance/                                         /insurance/life-critical-illness  301
+/insurance-consultancy/personal-lines-of-insurance/term-insurance                                              /insurance/life-critical-illness  301
+/insurance-consultancy/personal-lines-of-insurance/term-insurance/                                             /insurance/life-critical-illness  301
+# No personal motor page exists yet — motor-fleet is the closest, but it is a business product.
+/insurance-consultancy/personal-lines-of-insurance/motor-insurance                                             /insurance/motor-fleet  301
+/insurance-consultancy/personal-lines-of-insurance/motor-insurance/                                            /insurance/motor-fleet  301
+# No travel page exists — send to the personal hub rather than a mismatched product.
+/insurance-consultancy/personal-lines-of-insurance/travel-insurance                                            /insurance-services/personal  301
+/insurance-consultancy/personal-lines-of-insurance/travel-insurance/                                           /insurance-services/personal  301
+# --- Legacy /services/<product> tree (predates the current /services page) ----
+/services/aviation-insurance                                                                                   /insurance/aviation  301
+/services/aviation-insurance/                                                                                  /insurance/aviation  301
+# --- Dated WordPress blog posts ----------------------------------------------
+/2024/12/12/trading-smarter-in-uae-marine-cargo-insurance                                                      /blog/marine-cargo-insurance-dubai  301
+/2024/12/12/trading-smarter-in-uae-marine-cargo-insurance/                                                     /blog/marine-cargo-insurance-dubai  301
+/2024/12/04/directors-and-officers-liability-insurance-a-tool-to-lock-out-legal-risks                          /blog/directors-and-officers-liability-uae  301
+/2024/12/04/directors-and-officers-liability-insurance-a-tool-to-lock-out-legal-risks/                         /blog/directors-and-officers-liability-uae  301
+/2024/12/27/cyber-crime-insurance                                                                              /blog/cyber-insurance-uae  301
+/2024/12/27/cyber-crime-insurance/                                                                             /blog/cyber-insurance-uae  301
+/2024/02/27/understanding-freight-forwarders-liability-insurance-in-the-uae                                    /industries/logistics  301
+/2024/02/27/understanding-freight-forwarders-liability-insurance-in-the-uae/                                   /industries/logistics  301
+/2024/02/27/protecting-your-goods-a-guide-to-warehouse-insurance-in-the-uae                                    /insurance/commercial-property  301
+/2024/02/27/protecting-your-goods-a-guide-to-warehouse-insurance-in-the-uae/                                   /insurance/commercial-property  301
+/2024/12/23/why-is-warehouse-insurance-essential-for-your-inventory                                            /insurance/commercial-property  301
+/2024/12/23/why-is-warehouse-insurance-essential-for-your-inventory/                                           /insurance/commercial-property  301
+/2024/09/10/why-insure-first-consultancy-services-are-essential-for-your-successful-business                   /about  301
+/2024/09/10/why-insure-first-consultancy-services-are-essential-for-your-successful-business/                  /about  301
+# No surety/bonds page exists — business hub is the nearest honest match.
+/2024/12/07/advance-payment-bond-insurance-your-safety-net                                                     /insurance-services/business  301
+/2024/12/07/advance-payment-bond-insurance-your-safety-net/                                                    /insurance-services/business  301
+
+# --- Category roots ----------------------------------------------------------
+# The splats below only match a path WITH a following segment, so the bare
+# category URL needs its own rule or it falls through to the catch-all.
+/insurance-consultancy/commercial-insurance                     /insurance-services/business  301
+/insurance-consultancy/commercial-insurance/                    /insurance-services/business  301
+/insurance-consultancy/engineering-insurance                    /insurance/engineering-construction  301
+/insurance-consultancy/engineering-insurance/                   /insurance/engineering-construction  301
+/insurance-consultancy/marine-insurance                         /insurance/marine-cargo  301
+/insurance-consultancy/marine-insurance/                        /insurance/marine-cargo  301
+/insurance-consultancy/aviation-insurance                       /insurance/aviation  301
+/insurance-consultancy/aviation-insurance/                      /insurance/aviation  301
+/insurance-consultancy/professional-legal-liability-insurance   /insurance-services/professional  301
+/insurance-consultancy/professional-legal-liability-insurance/  /insurance-services/professional  301
+/insurance-consultancy/personal-lines-of-insurance              /insurance-services/personal  301
+/insurance-consultancy/personal-lines-of-insurance/             /insurance-services/personal  301
+/services/marine-insurance                                      /insurance/marine-cargo  301
+/services/marine-insurance/                                     /insurance/marine-cargo  301
+/services/professional-legal-liability-insurance                /insurance-services/professional  301
+/services/professional-legal-liability-insurance/               /insurance-services/professional  301
+
+# ============================= SPLAT RULES ===================================
+# Category-level fallbacks for any old product page not listed above.
+/insurance-consultancy/commercial-insurance/*                                                                  /insurance-services/business  301
+/insurance-consultancy/engineering-insurance/*                                                                 /insurance/engineering-construction  301
+/insurance-consultancy/marine-insurance/*                                                                      /insurance/marine-cargo  301
+/insurance-consultancy/aviation-insurance/*                                                                    /insurance/aviation  301
+/insurance-consultancy/professional-legal-liability-insurance/*                                                /insurance-services/professional  301
+/insurance-consultancy/personal-lines-of-insurance/*                                                           /insurance-services/personal  301
+
+/services/marine-insurance/*                                                                                   /insurance/marine-cargo  301
+/services/professional-legal-liability-insurance/*                                                             /insurance-services/professional  301
+
+# Any other dated path is an old post with no direct equivalent.
+/2023/*                                                                                                        /blog  301
+/2024/*                                                                                                        /blog  301
+/2025/*                                                                                                        /blog  301
+
+# Everything else still under the old tree.
+/insurance-consultancy/*                                                                                       /services  301

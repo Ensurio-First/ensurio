@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 export function useIsMobile(breakpoint = 768) {
-  const [mobile, setMobile] = useState(() => window.innerWidth < breakpoint)
+  // Guarded for the prerender build, which renders these components in Node.
+  // Defaults to the desktop layout there, matching useWindowWidth's 1200 default.
+  const [mobile, setMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < breakpoint)
   useEffect(() => {
     const h = () => setMobile(window.innerWidth < breakpoint)
     window.addEventListener('resize', h, { passive: true })

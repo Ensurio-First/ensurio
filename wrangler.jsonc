@@ -11,7 +11,16 @@
   ],
   "assets": {
     "directory": "./dist",
-    // SPA fallback — replaces the rewrite vercel.json did on Vercel.
-    "not_found_handling": "single-page-application"
+    // Every route is prerendered, so an unmatched URL is genuinely missing and
+    // should say so with a 404 status rather than a 200 SPA shell. Serving the
+    // shell here would now mean serving the prerendered HOMEPAGE — content,
+    // canonical and all — for every dead URL.
+    "not_found_handling": "404-page",
+    // The prerender build writes dist/<route>/index.html. The default
+    // (auto-trailing-slash) would 307 /insurance/x to /insurance/x/, which
+    // contradicts the canonical tags and the sitemap — both of which use the
+    // bare path. Drop the slash instead, so the canonical URL is the one that
+    // actually serves a 200.
+    "html_handling": "drop-trailing-slash"
   }
 }
