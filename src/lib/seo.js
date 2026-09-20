@@ -116,7 +116,8 @@ export const organizationLd = {
 }
 
 /*
- * Pull the FAQ block out of a blog post's body. Posts that have one become
+ * Pull the FAQ block out of a page body — blog posts, service pages and
+ * solution pages all use the same block shape. A page that has one becomes
  * eligible for the FAQ rich result, which is the cheapest SERP real estate
  * available to a page that already ranks.
  */
@@ -164,6 +165,7 @@ export function seoFor(pathname) {
   if (seg[0] === 'insurance' && seg[1]) {
     const s = servicePages.find((p) => p.slug === seg[1])
     if (!s) return null
+    const svcFaq = faqLdFromBody(s.body)
     return {
       ...base,
       title: s.metaTitle || `${s.title} | ${SITE_NAME}`,
@@ -178,6 +180,7 @@ export function seoFor(pathname) {
           provider: { '@id': `${SITE_URL}/#organization` },
           areaServed: { '@type': 'Country', name: 'United Arab Emirates' },
         },
+        ...(svcFaq ? [svcFaq] : []),
         breadcrumbLd([crumb('Insurance', '/services'), crumb(s.title, path)]),
       ],
     }
@@ -197,11 +200,16 @@ export function seoFor(pathname) {
   if (seg[0] === 'solutions' && seg[1]) {
     const s = solutionPages.find((p) => p.slug === seg[1])
     if (!s) return null
+    const solFaq = faqLdFromBody(s.body)
     return {
       ...base,
       title: s.metaTitle || `${s.title} | ${SITE_NAME}`,
       description: clamp(s.metaDescription || s.tagline),
-      jsonLd: [organizationLd, breadcrumbLd([crumb('Services', '/services'), crumb(s.title, path)])],
+      jsonLd: [
+        organizationLd,
+        ...(solFaq ? [solFaq] : []),
+        breadcrumbLd([crumb('Services', '/services'), crumb(s.title, path)]),
+      ],
     }
   }
 

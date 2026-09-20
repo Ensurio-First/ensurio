@@ -158,7 +158,7 @@ export const blogPosts = [
     author: 'Fredrick Lobo',
     image: heroHandshake,
     imageAlt: 'UAE employer arranging group medical insurance for employees',
-    serviceLink: { label: 'Health & Medical Insurance', href: '/insurance/health-medical' },
+    serviceLink: { label: 'Health & Medical Insurance', href: '/insurance/medical-insurance' },
     body: [
       { type: 'p', text: 'In the UAE, providing health insurance to your employees is not a perk — it is a legal obligation. Every employer in Dubai and Abu Dhabi must arrange compliant medical cover for their staff, and the rules are actively enforced. Beyond compliance, a well-designed group plan is one of the most valued benefits you can offer, helping you attract and keep good people.' },
       { type: 'stathero', big: 'Mandatory', headline: 'Every employee in the UAE must be medically insured by their employer.', text: 'Health cover is regulated emirate by emirate — DHA in Dubai, DOH in Abu Dhabi — and non-compliance carries fines and visa consequences. Group medical is both a legal duty and a genuine benefit.', stats: [
@@ -237,7 +237,7 @@ export const blogPosts = [
     author: 'Fredrick Lobo',
     image: industryConstruction,
     imageAlt: 'Construction project in Dubai protected by Contractors All Risks insurance',
-    serviceLink: { label: 'Engineering & Construction Insurance', href: '/insurance/engineering-construction' },
+    serviceLink: { label: 'Engineering & Construction Insurance', href: '/insurance/contractors-all-risks' },
     body: [
       { type: 'p', text: 'Construction is one of the UAE’s largest and most visible industries — and one of its riskiest. A single fire, flood, collapse, or accident on site can cost millions and derail a project’s timeline. Contractors’ All Risks (CAR) insurance is the specialist cover built to protect a construction project from ground-breaking to handover.' },
       { type: 'stathero', big: 'One event', headline: 'can wipe out a project’s entire margin overnight.', text: 'CAR insurance protects the works, the materials, the plant, and the public around a site — under a single project policy that runs for the full build period.', stats: [
@@ -476,7 +476,7 @@ export const blogPosts = [
     author: 'Fredrick Lobo',
     image: industryManufacturing,
     imageAlt: 'UAE workforce covered by workmen’s compensation and employer’s liability insurance',
-    serviceLink: { label: "Employer's Liability & Workmen's Compensation", href: '/insurance/employers-liability' },
+    serviceLink: { label: "Employer's Liability & Workmen's Compensation", href: '/insurance/workmens-compensation' },
     body: [
       { type: 'p', text: 'Under UAE Labour Law, an employer is responsible for compensating employees who are injured, disabled, or killed as a result of their work. That is a legal duty, not a choice — and for a serious incident, the cost can run into hundreds of thousands of dirhams. Workmen’s Compensation and Employer’s Liability insurance are the covers that stand behind that obligation.' },
       { type: 'stathero', big: 'Labour Law', headline: 'makes every UAE employer liable for work-related injury.', text: 'From site labour to office staff, an employer must meet the compensation set out in UAE Labour Law when a worker is hurt on the job. Insurance turns an unpredictable liability into a managed cost.', stats: [

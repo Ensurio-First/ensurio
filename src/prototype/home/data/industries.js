@@ -40,8 +40,8 @@ export const industryPages = [
       { type: 'cta', heading: 'Building something? Insure it properly.', text: 'An independent review that matches your cover to your contract and your site.', primary: { label: 'Book a Review', href: '/contact?service=Construction%20Review' }, secondary: { label: 'Call 050 976 5976', href: 'tel:+971509765976' } },
     ],
     relatedServices: [
-      { label: 'Engineering & Construction', href: '/insurance/engineering-construction' },
-      { label: "Employer's Liability", href: '/insurance/employers-liability' },
+      { label: 'Engineering & Construction', href: '/insurance/contractors-all-risks' },
+      { label: "Employer's Liability", href: '/insurance/workmens-compensation' },
       { label: 'Public & Product Liability', href: '/insurance/public-liability' },
       { label: 'Motor Fleet', href: '/insurance/motor-fleet' },
     ],
@@ -79,7 +79,7 @@ export const industryPages = [
       { label: 'Commercial Property', href: '/insurance/commercial-property' },
       { label: 'Business Interruption', href: '/insurance/business-interruption' },
       { label: 'Public & Product Liability', href: '/insurance/public-liability' },
-      { label: "Employer's Liability", href: '/insurance/employers-liability' },
+      { label: "Employer's Liability", href: '/insurance/workmens-compensation' },
     ],
   },
   {
@@ -151,7 +151,7 @@ export const industryPages = [
       { label: 'Public & Product Liability', href: '/insurance/public-liability' },
       { label: 'Commercial Property', href: '/insurance/commercial-property' },
       { label: 'Business Interruption', href: '/insurance/business-interruption' },
-      { label: "Employer's Liability", href: '/insurance/employers-liability' },
+      { label: "Employer's Liability", href: '/insurance/workmens-compensation' },
     ],
   },
   {
@@ -186,7 +186,7 @@ export const industryPages = [
     relatedServices: [
       { label: 'Aviation Insurance', href: '/insurance/aviation' },
       { label: 'Public & Product Liability', href: '/insurance/public-liability' },
-      { label: "Employer's Liability", href: '/insurance/employers-liability' },
+      { label: "Employer's Liability", href: '/insurance/workmens-compensation' },
       { label: 'Cyber', href: '/insurance/cyber' },
     ],
   },
@@ -220,7 +220,7 @@ export const industryPages = [
       { type: 'cta', heading: 'Cover the project and the professional risk.', text: 'An independent review of your project, machinery, and professional indemnity cover.', primary: { label: 'Book a Review', href: '/contact?service=Engineering%20Review' }, secondary: { label: 'Call 050 976 5976', href: 'tel:+971509765976' } },
     ],
     relatedServices: [
-      { label: 'Engineering & Construction', href: '/insurance/engineering-construction' },
+      { label: 'Engineering & Construction', href: '/insurance/contractors-all-risks' },
       { label: 'Professional Indemnity', href: '/insurance/professional-indemnity' },
       { label: 'Business Interruption', href: '/insurance/business-interruption' },
       { label: 'Public & Product Liability', href: '/insurance/public-liability' },

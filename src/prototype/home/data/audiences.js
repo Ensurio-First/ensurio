@@ -102,9 +102,9 @@ export const audiencePages = [
       { type: 'cta', heading: 'Match your cover to your operations.', text: 'An independent review that aligns your insurance with your contracts and sites.', primary: { label: 'Book a Review', href: '/contact?service=Operations%20Review' }, secondary: { label: 'Call 050 976 5976', href: 'tel:+971509765976' } },
     ],
     relatedServices: [
-      { label: 'Engineering & Construction', href: '/insurance/engineering-construction' },
+      { label: 'Engineering & Construction', href: '/insurance/contractors-all-risks' },
       { label: 'Motor Fleet', href: '/insurance/motor-fleet' },
-      { label: "Employer's Liability", href: '/insurance/employers-liability' },
+      { label: "Employer's Liability", href: '/insurance/workmens-compensation' },
       { label: 'Business Interruption', href: '/insurance/business-interruption' },
     ],
   },
@@ -132,7 +132,7 @@ export const audiencePages = [
     ],
     relatedServices: [
       { label: 'Life & Critical Illness', href: '/insurance/life-critical-illness' },
-      { label: 'Health & Medical', href: '/insurance/health-medical' },
+      { label: 'Health & Medical', href: '/insurance/medical-insurance' },
       { label: 'Home & Contents', href: '/insurance/home-contents' },
       { label: 'Personal Accident', href: '/insurance/personal-accident' },
     ],
