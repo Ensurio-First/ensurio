@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import {
   Shield, Target, Truck, Users, Flame, Gem, Lock, Building2, Store, Package, Check, ArrowRight, Phone,
+  Plane, Warehouse, Ship, Bus, Car, HardHat, Ruler, Factory, UtensilsCrossed, Stethoscope, Gavel,
+  Megaphone, Laptop, PartyPopper, GraduationCap, Sofa, Home, Briefcase, Landmark, Rocket, Globe,
 } from 'lucide-react'
 import CoverageCheck from '../../../components/interactive/CoverageCheck'
 import TcorCalculator from '../../../components/interactive/TcorCalculator'
@@ -58,6 +60,58 @@ function LeadLine({ block, isMobile }) {
   )
 }
 
+
+/*
+ * Chip labels are free text, written per page — 148 distinct ones across 33
+ * blocks today, and a new one appears whenever a page is written. A hand-kept
+ * label-to-icon map would be a list nobody updates, so match on the words
+ * instead: the first rule whose pattern hits the label wins.
+ *
+ * Order is load-bearing, because these labels overlap. "Gold traders" must
+ * reach Gem before it reaches Package; "Hospitality" must reach the restaurant
+ * rule before /hospital/ claims it for a clinic; "Buses & staff transport" must
+ * reach Bus before /transport/ makes it a lorry. Word boundaries matter for the
+ * same reason — a bare /port/ quietly matches "transport" and "sports".
+ *
+ * Anything unmatched falls back to Users, which is right far more often than
+ * not: nearly every one of these lists answers "who it's for".
+ */
+const CHIP_ICON_RULES = [
+  [Gem,             /diamond|gemstone|jewel|gold|silver|platinum|pearl|watch|pawn|luxury bout/i],
+  [Plane,           /airline|airport|aviation|flight|drone|jet|charter|ground handl|mro/i],
+  [Flame,           /oil|gas|petrochem|drilling|pipeline|refin/i],
+  [Warehouse,       /warehous|storage|inventory|stock/i],
+  [Ship,            /freight|shipping|marine|cargo|vessel|\bport\b|maritime/i],
+  [Bus,             /\bbus\b|buses|coach|taxi|limousine/i],
+  [Truck,           /truck|haulage|transport|delivery|distribut|logistic/i],
+  [Car,             /\bcar\b|cars|vehicle|driver|motor|fleet/i],
+  [HardHat,         /contractor|construction|\bepc\b|\bmep\b|fit-out|civil|infrastructure|labour|site\b/i],
+  [Ruler,           /engineer|architect|machinery|surveyor|design/i],
+  [Factory,         /manufactur|factory|production|plant\b|electronic equipment/i],
+  [UtensilsCrossed, /restaurant|caf\u00e9|cafe|hospitality|hotel|catering/i],
+  [Stethoscope,     /clinic|doctor|healthcare|medical|\bhospital\b|malpractice/i],
+  [Gavel,           /law firm|legal|advocate|litigation/i],
+  [Megaphone,       /marketing|agency|agencies|advertis/i],
+  [Laptop,          /software|saas|\bit\b|tech|data|cyber|online|e-commerce|digital/i],
+  [PartyPopper,     /event|exhibition|trade show/i],
+  [GraduationCap,   /student|graduat|school|academ|training/i],
+  [Store,           /retail|boutique|\bshop|store|wholesal|showroom/i],
+  [Package,         /trader|trading|importer|exporter|commodity|goods|merchant|supplier/i],
+  [Sofa,            /furniture|contents|fixture|signage|fit\b|interior/i],
+  [Home,            /homeowner|villa|apartment|tenant|landlord|propert|resident|domestic|household|mortgage/i],
+  [Briefcase,       /consultan|professional|service provider|service compan|intermediar|regulated|accountant|broker|advisor|firm/i],
+  [Rocket,          /startup|\bsme|scale-?up|founder/i],
+  [Globe,           /free ?-?zone|offshore|cross-border|worldwide|international/i],
+  [Landmark,        /\bngo|association|charit|government|authorit|bank|financial/i],
+  [Building2,       /startup|\bsme|free ?-?zone|mainland|\bllc|compan|corporate|board|business|organisation|enterprise|office|building|developer|project owner|facilit/i],
+  [Users,           /employer|\bstaff\b|famil|individual|expat|retiree|\bhnw|people|staff|team|worker|person|owner|self-employed|sole earner|traveller|enthusiast|sponsor|member|client|customer|couple|parent/i],
+]
+
+function chipIcon(label) {
+  for (const [Icon, pattern] of CHIP_ICON_RULES) if (pattern.test(label)) return Icon
+  return Users
+}
+
 /* ── Interest: chip strip / tags ── */
 function Chips({ block, isMobile }) {
   const highlight = block.highlight || 0
@@ -65,8 +119,12 @@ function Chips({ block, isMobile }) {
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', margin: '0.25rem 0 1.5rem' }}>
       {block.items.map((label, i) => {
         const on = i < highlight
+        const Icon = chipIcon(label)
         return (
-          <span key={label} style={{ border: `1px solid ${on ? 'var(--teal)' : 'var(--border-dark)'}`, background: on ? 'var(--teal-pale)' : 'var(--light-bg)', color: on ? 'var(--teal-dark)' : 'var(--text-mid)', fontFamily: 'var(--font-body)', fontSize: isMobile ? '12.5px' : '13px', fontWeight: 600, padding: '7px 14px' }}>{label}</span>
+          <span key={label} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', border: `1px solid ${on ? 'var(--teal)' : 'var(--border-dark)'}`, background: on ? 'var(--teal-pale)' : 'var(--light-bg)', color: on ? 'var(--teal-dark)' : 'var(--text-mid)', fontFamily: 'var(--font-body)', fontSize: isMobile ? '12.5px' : '13px', fontWeight: 600, padding: '7px 14px' }}>
+            <Icon size={15} strokeWidth={1.9} color={on ? 'var(--teal-dark)' : 'var(--teal)'} aria-hidden="true" style={{ flexShrink: 0 }} />
+            {label}
+          </span>
         )
       })}
     </div>
