@@ -154,16 +154,46 @@ function Checklist({ block, isMobile }) {
 }
 
 /* ── Desire: numbered step timeline ── */
+/*
+ * A numbered sequence, laid out as a horizontal track on desktop.
+ *
+ * These are always short procedural lists (4-6 items across the site), and a
+ * full-width stack of them left most of the article column empty while pushing
+ * the rest of the page down. Reading left to right suits a process better and
+ * costs no vertical space.
+ *
+ * The rule above each column has no gap between columns, so adjacent borders
+ * meet and read as one ruler with a tick per step. On a narrower viewport the
+ * track wraps and each row gets its own ruler, which still reads correctly.
+ *
+ * Phones keep the original stack — a five-column track at that width would be
+ * unreadable, and vertical is the right shape there anyway.
+ */
 function Steps({ block, isMobile }) {
-  return (
-    <div style={{ margin: '0.25rem 0 1.75rem' }}>
-      {block.items.map((it, i) => (
-        <div key={i} style={{ display: 'grid', gridTemplateColumns: '46px 1fr', gap: '16px', padding: '15px 0', borderBottom: i < block.items.length - 1 ? '1px solid var(--border)' : 'none' }}>
-          <span style={{ width: '42px', height: '42px', background: 'var(--navy)', color: 'var(--teal)', fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '0.95rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{String(i + 1).padStart(2, '0')}</span>
-          <div>
-            <h4 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, color: 'var(--navy)', fontSize: '1rem', margin: '2px 0 3px' }}>{it.title}</h4>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>{it.text}</p>
+  if (isMobile) {
+    return (
+      <div style={{ margin: '0.25rem 0 1.75rem' }}>
+        {block.items.map((it, i) => (
+          <div key={i} style={{ display: 'grid', gridTemplateColumns: '46px 1fr', gap: '16px', padding: '15px 0', borderBottom: i < block.items.length - 1 ? '1px solid var(--border)' : 'none' }}>
+            <span style={{ width: '42px', height: '42px', background: 'var(--navy)', color: 'var(--teal)', fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '0.95rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{String(i + 1).padStart(2, '0')}</span>
+            <div>
+              <h4 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, color: 'var(--navy)', fontSize: '1rem', margin: '2px 0 3px' }}>{it.title}</h4>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>{it.text}</p>
+            </div>
           </div>
+        ))}
+      </div>
+    )
+  }
+
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(168px, 1fr))', columnGap: 0, rowGap: '1.85rem', margin: '0.5rem 0 2rem' }}>
+      {block.items.map((it, i) => (
+        <div key={i} style={{ position: 'relative', borderTop: '2px solid var(--border)', paddingTop: '1.1rem', paddingRight: '1.6rem' }}>
+          <span aria-hidden="true" style={{ position: 'absolute', top: '-2px', left: 0, width: '32px', height: '2px', background: 'var(--teal)' }} />
+          <span style={{ display: 'block', fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '0.78rem', letterSpacing: '0.1em', color: 'var(--teal)', fontVariantNumeric: 'tabular-nums', marginBottom: '0.5rem' }}>{String(i + 1).padStart(2, '0')}</span>
+          <h4 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, color: 'var(--navy)', fontSize: '1rem', lineHeight: 1.3, margin: '0 0 0.35rem', textWrap: 'balance' }}>{it.title}</h4>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>{it.text}</p>
         </div>
       ))}
     </div>
