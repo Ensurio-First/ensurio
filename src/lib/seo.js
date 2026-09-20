@@ -17,7 +17,7 @@ import { industryPages } from '../prototype/home/data/industries.js'
 import { audiencePages } from '../prototype/home/data/audiences.js'
 import { blogPosts } from '../prototype/home/data/blog.js'
 
-export const SITE_URL = 'https://www.insurefirst.ae'
+export const SITE_URL = 'https://insurefirst.ae'
 export const SITE_NAME = 'Insure First'
 export const LEGAL_NAME = 'Ensurio First RMC FZC'
 export const PHONE = '+971509765976'

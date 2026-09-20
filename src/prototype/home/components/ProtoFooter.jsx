@@ -133,7 +133,7 @@ export default function ProtoFooter() {
         textAlign: 'center',
       }}>
         <p style={{ fontFamily: 'var(--font-body)', fontSize: '12px', color: 'rgba(255,255,255,0.4)', margin: 0 }}>
-          www.insurefirst.ae is powered by Fredrick Insurance Consultant licensed by CBUAE — LICENSE 143
+          insurefirst.ae is powered by Fredrick Insurance Consultant licensed by CBUAE — LICENSE 143
         </p>
       </div>
 
