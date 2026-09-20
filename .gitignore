@@ -6,3 +6,4 @@ dist-portal
 .DS_Store
 .codex-history
 supabase/.temp
+.wrangler

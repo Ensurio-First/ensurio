@@ -5,6 +5,7 @@ import './styles/responsive.css'
 import './styles/print.css'
 import RiskManagementPage from './pages/RiskManagementPage'
 import ManagementConsultancyPage from './pages/ManagementConsultancyPage'
+import NotFoundPage from './pages/NotFoundPage'
 import ServicesPage from './pages/ServicesPage'
 import ContactPage from './pages/ContactPage'
 import BlogPage from './pages/BlogPage'
@@ -91,6 +92,7 @@ export default function App() {
         <Route path="/policy-review" element={<PolicyReviewPage />} />
         <Route path="/risk-management" element={<RiskManagementPage />} />
         <Route path="/management-consultancy" element={<ManagementConsultancyPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <QuoteModal />
     </LeadJourneyProvider>
