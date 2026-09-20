@@ -9,8 +9,21 @@ import { getTurnstileToken } from './turnstile'
 const url = import.meta.env.VITE_SUPABASE_URL
 const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-export const supabase = url && anonKey ? createClient(url, anonKey) : null
-export const isSupabaseConfigured = Boolean(supabase)
+export const isSupabaseConfigured = Boolean(url && anonKey)
+
+/*
+ * Created on first use rather than at import time. The prerender build imports
+ * this module in Node, where constructing a client throws — its realtime layer
+ * looks for a native WebSocket that Node 20 does not have. Nothing on the
+ * server path ever calls these functions, so deferring the construction is
+ * enough, and the browser behaviour is unchanged.
+ */
+let client = null
+const supabase = () => {
+  if (!isSupabaseConfigured) return null
+  if (!client) client = createClient(url, anonKey)
+  return client
+}
 
 const fnUrl = (name) => (url ? `${url.replace(/\/$/, '')}/functions/v1/${name}` : null)
 const FUNCTION_URL = fnUrl('submit-lead')
@@ -40,7 +53,7 @@ const currentPage = () => (typeof window !== 'undefined' ? window.location.pathn
  *          fall back gracefully in previews.
  */
 export async function submitLead(lead) {
-  if (!supabase) throw new Error('not-configured')
+  if (!isSupabaseConfigured) throw new Error('not-configured')
 
   const payload = { ...lead, page: currentPage(), _hp: lead.honeypot ?? '' }
   delete payload.honeypot
@@ -94,7 +107,7 @@ export async function submitLead(lead) {
  * again the moment an anon INSERT policy is restored.
  */
 async function directInsert(lead) {
-  const { data, error } = await supabase
+  const { data, error } = await supabase()
     .from('leads')
     .insert([
       {
@@ -136,7 +149,7 @@ async function directInsert(lead) {
  *   statusLabel?: string, statusDetail?: string}>}
  */
 export async function lookupLeadStatus({ reference, email }) {
-  if (!supabase) throw new Error('not-configured')
+  if (!isSupabaseConfigured) throw new Error('not-configured')
 
   const res = await fetch(fnUrl('lead-status'), {
     method: 'POST',

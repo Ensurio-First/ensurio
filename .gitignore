@@ -7,3 +7,4 @@ dist-portal
 .codex-history
 supabase/.temp
 .wrangler
+.prerender
