@@ -89,6 +89,9 @@ const isoDate = (s) => {
   return i === -1 ? null : `${m[2]}-${String(i + 1).padStart(2, '0')}-01`
 }
 
+/* Structured data needs absolute URLs; Vite gives us root-relative asset paths. */
+const absolute = (path) => (path && path.startsWith('/') ? `${SITE_URL}${path}` : path || null)
+
 const crumb = (name, item) => ({ name, item: `${SITE_URL}${item}` })
 
 const breadcrumbLd = (crumbs) => ({
@@ -113,6 +116,8 @@ export const organizationLd = {
   address: { '@type': 'PostalAddress', addressCountry: 'AE', addressRegion: 'Dubai' },
   description:
     'Independent, CBUAE-licensed insurance and risk management consultancy in the UAE.',
+  image: DEFAULT_OG_IMAGE,
+  logo: DEFAULT_OG_IMAGE,
 }
 
 /*
@@ -175,6 +180,7 @@ export function seoFor(pathname) {
         {
           '@type': 'Service',
           name: s.title,
+          ...(absolute(s.image) ? { image: absolute(s.image) } : {}),
           serviceType: s.title,
           description: clamp(s.metaDescription || s.tagline),
           provider: { '@id': `${SITE_URL}/#organization` },
@@ -253,6 +259,7 @@ export function seoFor(pathname) {
           author: { '@id': `${SITE_URL}/#organization` },
           publisher: { '@id': `${SITE_URL}/#organization` },
           mainEntityOfPage: canonical,
+          ...(absolute(p.image) ? { image: [absolute(p.image)] } : {}),
           ...(isoDate(p.date) ? { datePublished: isoDate(p.date) } : {}),
         },
         ...(faq ? [faq] : []),
