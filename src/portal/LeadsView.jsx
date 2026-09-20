@@ -484,6 +484,16 @@ function DetailPanel({ lead, onClose, onStatus, saving, statusError }) {
         </div>
       )}
 
+      {/*
+        * The contact form asks two questions — which line of insurance, and
+        * what the visitor needs doing. Both land in `details`. Surfacing them
+        * as fields rather than leaving them in the raw JSON below is the whole
+        * point of collecting them: an advisor triaging the list should see
+        * "Group Medical / Claim refused" without opening anything.
+        */}
+      {lead.details?.insuranceLine && <Field label="Insurance">{lead.details.insuranceLine}</Field>}
+      {lead.details?.enquiryType && <Field label="Enquiry">{lead.details.enquiryType}</Field>}
+
       {lead.details && (
         <details style={{ marginTop: '16px' }}>
           <summary style={{ cursor: 'pointer', fontSize: '12px', fontWeight: 700, color: 'var(--text-muted)' }}>Raw answers</summary>

@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { Mail, Phone, MapPin, MessageSquare, CheckCircle2, Clock, Shield, ChevronDown, ClipboardCheck, ShieldAlert, FileText, Headphones, Scale, BarChart3, Building2, Heart } from 'lucide-react'
+import { Mail, Phone, MapPin, MessageSquare, CheckCircle2, Clock, Shield, ChevronDown, ClipboardCheck, ShieldAlert, FileText, Headphones, Scale, BarChart3, ShieldPlus, CalendarClock } from 'lucide-react'
 import ProtoNav from '../prototype/home/components/ProtoNav'
 import ProtoFooter from '../prototype/home/components/ProtoFooter'
 import { useIsMobile } from '../prototype/home/hooks/useIsMobile'
 import { submitLead } from '../lib/supabase'
+import { servicePages, serviceCategories } from '../prototype/home/data/services'
 import WhatsAppConsent, { emptyWhatsApp, resolveWhatsApp } from '../components/WhatsAppConsent'
 import '../prototype/prototype.css'
 
@@ -24,19 +25,38 @@ const COUNTRY_CODES = [
   { code: '+61',  flag: '🇦🇺', label: 'Australia' },
 ]
 
+/*
+ * What the visitor needs. This used to mix the two questions together —
+ * "Insurance Audit" and "Making a claim" are things we do, while "Business
+ * Insurance" and "Personal Insurance" are what the cover is. A lead could say
+ * one or the other but never both, so an enquiry arrived as "Business
+ * Insurance" with no idea whether it was a new policy or a disputed claim.
+ *
+ * These are now purely the errand; `insuranceOptions` below carries the line.
+ * `value` keeps the internal service name on the lead record while the card
+ * shows the visitor a situation they recognise.
+ */
 const enquiryOptions = [
-  { label: 'Insurance Audit', Icon: ClipboardCheck },
-  { label: 'Risk Assessment', Icon: ShieldAlert },
+  { label: 'New cover', value: 'New Cover', Icon: ShieldPlus },
+  { label: 'Renewal coming up', value: 'Renewal', Icon: CalendarClock },
   { label: 'Policy Review', Icon: FileText },
-  // `value` keeps the internal service name on the lead record while the chip
-  // shows the visitor a situation they recognise.
   { label: 'Making a claim', value: 'Claims Advisory', Icon: Headphones },
   { label: 'Claim refused or underpaid', value: 'Legal Claims Support', Icon: Scale },
   { label: 'Coverage Gap Analysis', Icon: BarChart3 },
-  { label: 'Business Insurance', Icon: Building2 },
-  { label: 'Personal Insurance', Icon: Heart },
+  { label: 'Risk Assessment', Icon: ShieldAlert },
+  { label: 'Insurance Audit', Icon: ClipboardCheck },
   { label: 'Other', Icon: MessageSquare },
 ]
+
+/*
+ * Which line of insurance, grouped the way the site groups them. Derived from
+ * the service pages rather than retyped, so a new page appears here the moment
+ * it is published and the labels can never drift out of step.
+ */
+const insuranceOptions = serviceCategories.map((cat) => ({
+  category: cat.title,
+  lines: servicePages.filter((p) => p.category === cat.title).map((p) => p.title),
+}))
 
 const contactDetails = [
   {
@@ -117,7 +137,7 @@ function FormSuccess() {
 
 /* ─── Contact form ─── */
 function ContactForm({ isMobile }) {
-  const [form, setForm] = useState({ name: '', email: '', countryCode: '+971', phone: '', enquiry: '', message: '' })
+  const [form, setForm] = useState({ name: '', email: '', countryCode: '+971', phone: '', enquiry: '', insurance: '', message: '' })
   const [wa, setWa] = useState(emptyWhatsApp)
   const [hp, setHp] = useState('')
   const [submitted, setSubmitted] = useState(false)
@@ -126,10 +146,22 @@ function ContactForm({ isMobile }) {
   const [sending, setSending] = useState(false)
   const [sendError, setSendError] = useState('')
 
-  // Prefill the message when arriving from a service page's "Get a Quote".
+  /*
+   * Arriving from a service page's "Get a Quote". Where ?service= names a real
+   * insurance line, select it in the dropdown rather than only mentioning it in
+   * the message — the visitor came from that page, so answering "which
+   * insurance" for them is one less question. Anything else (a named review, a
+   * campaign) still just seeds the message.
+   */
   useEffect(() => {
     const svc = new URLSearchParams(window.location.search).get('service')
-    if (svc) setForm((f) => (f.message ? f : { ...f, message: `I'd like a quote for ${svc}.` }))
+    if (!svc) return
+    const line = servicePages.find((p) => p.title === svc)?.title
+    setForm((f) => ({
+      ...f,
+      insurance: f.insurance || line || '',
+      message: f.message || `I'd like a quote for ${svc}.`,
+    }))
   }, [])
 
   const isValidEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
@@ -171,13 +203,33 @@ function ContactForm({ isMobile }) {
     try {
       const service = new URLSearchParams(window.location.search).get('service') || null
       const fullPhone = `${form.countryCode} ${form.phone}`.trim()
+      /*
+       * `service` is the one-line summary the portal shows in the list, so it
+       * reads as "Group Medical Insurance — Making a claim" when we know both.
+       * `details` keeps the two answers apart as well, because a composed
+       * string is fine to read and useless to filter on.
+       */
+      const deepLine = servicePages.some((p) => p.title === service) ? service : ''
+      const line = form.insurance || deepLine
+      /*
+       * A ?service= that is not one of our 21 lines — an industry review, a
+       * campaign — is still what the enquiry is about, so it belongs in the
+       * summary. It stays out of `insuranceLine`, which holds only a real line
+       * so that field remains something you can group and filter on.
+       */
+      const subject = line || service || ''
+      const enquiryLabel = enquiryOptions.find((o) => (o.value || o.label) === form.enquiry)?.label || ''
+      const summary = [subject, enquiryLabel].filter(Boolean).join(' — ')
       await submitLead({
         name: form.name,
         email: form.email,
         phone: fullPhone,
         message: form.message,
-        service: service || form.enquiry || null,
+        service: summary || form.enquiry || null,
         source: service ? 'quote' : 'contact',
+        details: (line || form.enquiry)
+          ? { insuranceLine: line || null, enquiryType: form.enquiry || null }
+          : null,
         ...resolveWhatsApp(wa, fullPhone),
         honeypot: hp,
       })
@@ -257,7 +309,7 @@ function ContactForm({ isMobile }) {
 
       {/* Enquiry type — icon selection */}
       <div style={{ marginBottom: '1.5rem' }}>
-        <label style={labelStyle}>What Can We Help With?</label>
+        <label style={labelStyle}>What Do You Need?</label>
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(3, 1fr)', gap: '10px' }}>
           {enquiryOptions.map(({ label, value, Icon }) => {
             const stored = value || label
@@ -277,6 +329,36 @@ function ContactForm({ isMobile }) {
               </button>
             )
           })}
+        </div>
+      </div>
+
+      {/* Which insurance line — optional, and deliberately after the errand */}
+      <div style={{ marginBottom: '1.5rem' }}>
+        <label htmlFor="contact-insurance" style={labelStyle}>
+          Which insurance? <span style={{ fontWeight: 500, textTransform: 'none', letterSpacing: 0, color: 'var(--text-muted)' }}>(optional)</span>
+        </label>
+        <div style={{ position: 'relative' }}>
+          <select
+            id="contact-insurance"
+            value={form.insurance}
+            onChange={(e) => set('insurance', e.target.value)}
+            style={{ ...inputStyle('insurance'), appearance: 'none', WebkitAppearance: 'none', paddingRight: '40px', cursor: 'pointer', color: form.insurance ? 'var(--text-dark)' : 'var(--text-muted)' }}
+          >
+            <option value="">Select an insurance type…</option>
+            {insuranceOptions.map((group) => (
+              <optgroup key={group.category} label={group.category}>
+                {group.lines.map((line) => (
+                  <option key={line} value={line}>{line}</option>
+                ))}
+              </optgroup>
+            ))}
+            <option value="Not sure yet">Not sure yet</option>
+          </select>
+          <ChevronDown
+            size={17}
+            color="var(--text-muted)"
+            style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}
+          />
         </div>
       </div>
 
