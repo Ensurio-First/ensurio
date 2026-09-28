@@ -22,7 +22,7 @@ export default function NotFoundPage() {
 
   useEffect(() => {
     const prevTitle = document.title
-    document.title = 'Page Not Found | Insure First'
+    document.title = 'Page Not Found | Ensurio First'
 
     // The SPA fallback in wrangler.jsonc serves index.html with HTTP 200 for
     // unmatched paths, so this is a soft 404 as far as crawlers are concerned.

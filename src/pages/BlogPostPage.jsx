@@ -26,7 +26,7 @@ export default function BlogPostPage() {
   useEffect(() => {
     if (!post) return
     const prevTitle = document.title
-    document.title = post.metaTitle || `${post.title} | Insure First`
+    document.title = post.metaTitle || `${post.title} | Ensurio First`
 
     let meta = document.querySelector('meta[name="description"]')
     let created = false

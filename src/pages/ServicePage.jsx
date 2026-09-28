@@ -23,7 +23,7 @@ export default function ServicePage() {
   useEffect(() => {
     if (!service) return
     const prevTitle = document.title
-    document.title = service.metaTitle || `${service.title} | Insure First`
+    document.title = service.metaTitle || `${service.title} | Ensurio First`
     let meta = document.querySelector('meta[name="description"]')
     let created = false
     if (!meta) {

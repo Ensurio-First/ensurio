@@ -22,7 +22,7 @@ export default function SolutionPage() {
   useEffect(() => {
     if (!solution) return
     const prevTitle = document.title
-    document.title = solution.metaTitle || `${solution.title} | Insure First`
+    document.title = solution.metaTitle || `${solution.title} | Ensurio First`
     let meta = document.querySelector('meta[name="description"]')
     let created = false
     if (!meta) {

@@ -22,7 +22,7 @@ export default function AudiencePage() {
   useEffect(() => {
     if (!aud) return
     const prevTitle = document.title
-    document.title = aud.metaTitle || `${aud.title} | Insure First`
+    document.title = aud.metaTitle || `${aud.title} | Ensurio First`
     let meta = document.querySelector('meta[name="description"]')
     let created = false
     if (!meta) {

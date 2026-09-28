@@ -16,7 +16,7 @@ export default function CategoryHubPage() {
   useEffect(() => {
     if (!cat) return
     const prevTitle = document.title
-    document.title = `${cat.title} | Insure First`
+    document.title = `${cat.title} | Ensurio First`
     let meta = document.querySelector('meta[name="description"]')
     let created = false
     if (!meta) {

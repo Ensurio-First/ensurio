@@ -18,50 +18,70 @@ import { audiencePages } from '../prototype/home/data/audiences.js'
 import { blogPosts } from '../prototype/home/data/blog.js'
 
 export const SITE_URL = 'https://insurefirst.ae'
-export const SITE_NAME = 'Insure First'
+export const SITE_NAME = 'Ensurio First'
 export const LEGAL_NAME = 'Ensurio First RMC FZC'
+
+/*
+ * Insure First was renamed Ensurio First. The old name still earns about a
+ * quarter of all organic clicks ("insure first", 35 clicks at position 7.7 in
+ * the 16 months to 2026-09-25), and the domain is still insurefirst.ae, so both
+ * names have to keep resolving to one entity in Google's eyes.
+ *
+ * These feed alternateName on the Organization below, which is the machine-
+ * readable half of that. The human half is the homepage and About titles, which
+ * name both, and the line of copy on the About page itself.
+ *
+ * Deep pages carry the new name alone — titles already run to 62 characters and
+ * Google truncates around 60, so spending 14 more on a second brand name there
+ * would cost more in click-through than it buys in recognition. Brand searches
+ * land on the homepage, not on /insurance/<product>.
+ *
+ * Do not drop the old name until "ensurio" actually shows up in Search Console
+ * queries; as of 2026-09-28 it appears in none of the 1,009 recorded.
+ */
+export const ALTERNATE_NAMES = ['Insure First', 'InsureFirst', 'Insure First Insurance Consultancy']
 export const PHONE = '+971509765976'
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-default.png`
 
 /* Static pages carry their copy here; data-driven pages read from the data files. */
 const staticPages = {
   '/': {
-    title: 'Insure First | Independent Insurance Consultancy UAE',
+    title: 'Ensurio First (Insure First) | Insurance Consultancy UAE',
     description:
       'CBUAE-licensed independent insurance consultancy in the UAE. We audit your cover, benchmark your premiums, and fight your claims — working for you, never the insurer.',
   },
   '/services': {
-    title: 'Insurance Services UAE | Insure First',
+    title: 'Insurance Services UAE | Ensurio First',
     description:
       'Independent advisory across commercial, specialist, professional, and personal insurance in the UAE — matched to your risks, not an insurer’s product list.',
   },
   '/about': {
-    title: 'About | Insure First — Independent Insurance Consultancy UAE',
+    title: 'About Ensurio First (formerly Insure First) | UAE',
     description:
       'About Ensurio First (Insure First) — an independent, CBUAE-licensed insurance consultancy in the UAE led by Fredrick Lobo, working only in the client’s interest.',
   },
   '/contact': {
-    title: 'Contact | Insure First — Insurance Consultancy UAE',
+    title: 'Contact Ensurio First (Insure First) | UAE Insurance',
     description:
       'Talk to an independent insurance advisor in the UAE. Book a policy review, get a quote, or get help with a claim. Call 050 976 5976.',
   },
   '/blog': {
-    title: 'Insurance Insights UAE | Insure First',
+    title: 'Insurance Insights UAE | Ensurio First',
     description:
       'Practical guides to UAE insurance — cover explained, claims handled, and the exclusions that catch businesses out.',
   },
   '/policy-review': {
-    title: 'Insurance Policy Review UAE | Insure First',
+    title: 'Insurance Policy Review UAE | Ensurio First',
     description:
       'An independent review of the cover you already hold — what it pays, what it excludes, and where the gaps are, before you need to claim.',
   },
   '/risk-management': {
-    title: 'Risk Management Consultancy UAE | Insure First',
+    title: 'Risk Management Consultancy UAE | Ensurio First',
     description:
       'Our Insurance Optimisation Programme benchmarks your Total Cost of Risk and drives down premiums without cutting the cover you depend on.',
   },
   '/management-consultancy': {
-    title: 'Management Consultancy UAE | Insure First',
+    title: 'Management Consultancy UAE | Ensurio First',
     description:
       'Succession, governance, valuation, and operational advisory for UAE family businesses and SMEs.',
   },
@@ -109,6 +129,7 @@ export const organizationLd = {
   '@type': 'InsuranceAgency',
   '@id': `${SITE_URL}/#organization`,
   name: SITE_NAME,
+  alternateName: ALTERNATE_NAMES,
   legalName: LEGAL_NAME,
   url: SITE_URL,
   telephone: PHONE,

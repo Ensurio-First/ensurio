@@ -53,7 +53,7 @@ export default function PolicyReviewPage() {
 
   useEffect(() => {
     const prevTitle = document.title
-    document.title = 'Insurance Policy Review UAE | Insure First'
+    document.title = 'Insurance Policy Review UAE | Ensurio First'
     let meta = document.querySelector('meta[name="description"]')
     let created = false
     if (!meta) { meta = document.createElement('meta'); meta.setAttribute('name', 'description'); document.head.appendChild(meta); created = true }

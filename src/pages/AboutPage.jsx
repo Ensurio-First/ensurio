@@ -27,7 +27,7 @@ export default function AboutPage() {
 
   useEffect(() => {
     const prevTitle = document.title
-    document.title = 'About | Insure First — Independent Insurance Consultancy UAE'
+    document.title = 'About Ensurio First (formerly Insure First) | UAE'
     let meta = document.querySelector('meta[name="description"]')
     let created = false
     if (!meta) {
@@ -84,6 +84,9 @@ export default function AboutPage() {
               </h2>
               <p style={{ fontFamily: 'var(--font-body)', fontSize: isMobile ? '15px' : '16.5px', color: 'var(--text-dark)', lineHeight: 1.85, marginBottom: '1.1rem' }}>
                 Most people meet insurance through a broker or an agent whose income depends on the sale. We are different. Ensurio First is an independent insurance consultancy — our only interest is making sure your cover actually protects you.
+              </p>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: isMobile ? '15px' : '16.5px', color: 'var(--text-dark)', lineHeight: 1.85, marginBottom: '1.1rem' }}>
+                Insure First is now Ensurio First. Same team, same licence, same office — only the name has changed. You may still find us listed as Insure First, and insurefirst.ae remains our address.
               </p>
               <p style={{ fontFamily: 'var(--font-body)', fontSize: isMobile ? '15px' : '16.5px', color: 'var(--text-dark)', lineHeight: 1.85 }}>
                 We audit your policies, review the wording line by line, assess your real risks, and stand beside you when a claim is disputed. With over 25 years of experience across commercial, industrial, and aviation markets, we have helped more than 130 businesses secure the right cover, resolve complex claims, and cut unnecessary cost.

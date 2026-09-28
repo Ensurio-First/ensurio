@@ -22,7 +22,7 @@ export default function IndustryPage() {
   useEffect(() => {
     if (!ind) return
     const prevTitle = document.title
-    document.title = ind.metaTitle || `${ind.title} Insurance | Insure First`
+    document.title = ind.metaTitle || `${ind.title} Insurance | Ensurio First`
     let meta = document.querySelector('meta[name="description"]')
     let created = false
     if (!meta) {
