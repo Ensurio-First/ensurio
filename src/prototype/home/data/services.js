@@ -158,6 +158,7 @@ export const servicePages = [
       { type: 'h2', text: 'Frequently Asked Questions' },
       { type: 'faq', items: [
         { q: 'What is aircraft hull insurance?', a: 'It covers physical loss or damage to the aircraft itself, usually on an agreed-value all-risks basis.' },
+        { q: 'What is passenger liability insurance?', a: 'It is the section of an aviation policy covering an operator’s legal liability to passengers for death or injury while boarding, in flight or disembarking. It is measured per passenger or per seat, and is required before most aircraft can be operated commercially.' },
         { q: 'Is passenger liability separate from third-party liability?', a: 'They are related sections of the same policy — one covers people aboard, the other covers people and property on the ground.' },
         { q: 'Do private jet owners need aviation insurance?', a: 'Yes. Any owner or operator needs hull and liability cover appropriate to how the aircraft is used.' },
         { q: 'Does it cover drones?', a: 'Commercial drone operators can arrange specialist cover for hull and third-party liability.' },
@@ -1411,7 +1412,7 @@ export const servicePages = [
     category: 'Business Insurance',
     title: 'Warehouse Insurance',
     tagline: 'Cover for the building, the racking, and above all the stock sitting inside it.',
-    metaTitle: 'Warehouse Insurance Dubai & UAE | Ensurio First',
+    metaTitle: 'Warehouse & Storage Insurance Dubai | Ensurio First',
     metaDescription: 'Independent warehouse insurance advisory in Dubai and across the UAE — stock declarations, fire and flood cover, theft, and the sums insured that survive a total loss.',
     image: industryManufacturing,
     imageAlt: 'Racked stock inside a Dubai warehouse',
@@ -1837,6 +1838,284 @@ export const servicePages = [
         { q: 'How does PAR differ from fire and allied perils?', a: 'The burden of proof moves. Under named perils you must show the loss came from a listed peril. Under all risks the insurer must show an exclusion applies, which materially favours the insured on unusual losses.' },
         { q: 'Does Property All Risks cover business interruption?', a: 'Not by itself. Business interruption is a separate section insuring lost gross profit while you cannot trade. It is usually written alongside PAR and follows the same perils.' },
         { q: 'What is average, and why does it matter?', a: 'If your sum insured is below the true reinstatement value, average reduces every claim by the same proportion. Insure a AED 10m facility for AED 6m and a AED 1m fire is settled at AED 600,000, not in full.' },
+      ] },
+    ],
+  },
+
+  {
+    /*
+     * The highest-value gap on the site. GLPA terms carry ~2,300 impressions at
+     * positions 1.4-4.4 — top-five rankings — yet the acronym appeared nowhere
+     * on the current site, so the redirect landed searchers on a personal
+     * accident page that never used the words they searched for. That is why
+     * "glpa meaning" converted 1 click from 1,235 impressions at position 2.3.
+     * The page leads with the definition because most of the demand is people
+     * asking what the acronym on their payslip or policy schedule means.
+     */
+    slug: 'group-life-personal-accident',
+    category: 'Business Insurance',
+    title: 'Group Life & Personal Accident (GLPA) Insurance',
+    tagline: 'One employee benefit combining life cover and 24-hour accident cover for your whole team.',
+    metaTitle: 'GLPA Insurance UAE | Group Life & Personal Accident',
+    metaDescription: 'GLPA stands for Group Life and Personal Accident insurance. Independent UAE advisory on what GLPA covers, what it costs per employee, and how to set the benefit multiple.',
+    image: heroHandshake,
+    imageAlt: 'A UAE workforce covered by a group life and accident scheme',
+    badges: ['CBUAE Licensed', 'Independent Advisory', 'Employee Benefits'],
+    body: [
+      { type: 'lead', text: 'GLPA stands for Group Life and Personal Accident insurance — a single employer-funded policy that pays a lump sum if an employee dies or is seriously injured, whether at work or outside it.' },
+      { type: 'p', text: 'It is written on one schedule for the whole workforce rather than person by person, usually with no medical underwriting below a free cover limit. UAE employers take it on for three reasons: to meet a contractual or tender requirement, to fund end-of-service and repatriation obligations when an employee dies, and to compete for staff. It sits alongside group medical cover, which pays for treatment rather than a lump sum.' },
+
+      { type: 'h2', text: 'What the two halves do' },
+      { type: 'cardgrid', variant: 'cover', columns: 2, items: [
+        { icon: 'users', title: 'Group Life', text: 'Pays a lump sum on death from any cause, usually a multiple of annual salary. Most schemes cover natural causes as well as accidents.' },
+        { icon: 'shield', title: 'Personal Accident', text: 'Pays on accidental death, permanent disability or dismemberment, 24 hours a day, at work and away from it.' },
+      ] },
+
+      { type: 'estimator', config: {
+        title: 'Estimate your GLPA premium',
+        note: 'An indicative annual range. GLPA is rated per employee against the total sum assured.',
+        fields: [
+          { label: 'Number of employees', type: 'range', min: 5, max: 2000, step: 5, default: 60, unit: ' staff' },
+          { label: 'Average annual salary', type: 'range', min: 24000, max: 600000, step: 6000, default: 96000, format: (v) => 'AED ' + v.toLocaleString('en-US') },
+          { label: 'Benefit multiple', type: 'select', default: '24', options: [
+            { value: '12', label: '12 months salary' },
+            { value: '24', label: '24 months salary' },
+            { value: '36', label: '36 months salary' },
+          ] },
+        ],
+        estimate: (vals) => {
+          const [staff, salary, mult] = vals
+          const sumAssured = staff * salary * (Number(mult) / 12)
+          const base = sumAssured * 0.0022
+          return { low: base * 0.75, high: base * 1.45 }
+        },
+        cta: { label: 'Get an exact quote', href: '/contact?service=Group%20Life%20%26%20Personal%20Accident%20Insurance' },
+      } },
+
+      { type: 'h2', text: 'What it covers' },
+      { type: 'cardgrid', variant: 'cover', columns: 4, items: [
+        { icon: 'users', title: 'Death from any cause', text: 'A lump sum to the employee’s beneficiaries.' },
+        { icon: 'shield', title: 'Accidental death', text: 'An additional benefit under the accident section.' },
+        { icon: 'target', title: 'Permanent total disability', text: 'Where an employee can never work again.' },
+        { icon: 'building', title: 'Partial disability', text: 'Scaled benefits for loss of a limb or sight.' },
+        { icon: 'package', title: 'Repatriation', text: 'Costs of returning remains to the home country.' },
+        { icon: 'store', title: 'Terminal illness', text: 'Early payment on a terminal diagnosis, if included.' },
+        { icon: 'lock', title: 'Critical illness', text: 'Optional cover on diagnosis of a listed condition.' },
+        { icon: 'gem', title: 'Weekly indemnity', text: 'Optional income while an employee recovers.' },
+      ] },
+
+      { type: 'h2', text: "Who it's for" },
+      { type: 'chips', items: ['Employers of 5+ staff', 'Construction firms', 'Manufacturers', 'Logistics operators', 'Hospitality groups', 'Contractors bidding for work', 'Free zone companies', 'Professional firms'] },
+
+      { type: 'h2', text: "What's not covered" },
+      { type: 'exclusions', items: ['Suicide within the initial policy period', 'Pre-existing conditions above the free cover limit without underwriting', 'War and active military service', 'Hazardous sports unless declared', 'Self-inflicted injury and substance abuse', 'Employees outside the declared age band', 'Staff not on the declared census at the date of loss'] },
+
+      { type: 'gapcheck', title: 'Does your GLPA scheme do what you think?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'I know my scheme’s free cover limit', gapTitle: 'Senior staff may be uninsured above the limit', consequence: 'Cover is automatic only up to the free cover limit. Salaries above it need individual medical underwriting, and until that is done the excess benefit is not insured — which bites hardest on the highest earners.', severity: 'high' },
+        { statement: 'The employee census is updated when people join and leave', gapTitle: 'New joiners not covered', consequence: 'Benefits are paid against the declared census. A joiner who has not been added, or a leaver still on it, causes a declined claim or wasted premium.', severity: 'high' },
+        { statement: 'I know whether the scheme covers death from natural causes', gapTitle: 'Accident-only cover', consequence: 'A personal accident policy alone pays nothing for death from illness. Many employers believe they hold group life when they hold only the accident half.', severity: 'high' },
+        { statement: 'Cover applies 24 hours, not only during working hours', gapTitle: 'Cover limited to work hours', consequence: 'Occupational-only cover excludes evenings, weekends and home leave — where most accidents actually happen.', severity: 'medium' },
+        { statement: 'The benefit multiple meets our contract and tender requirements', gapTitle: 'Below a contractual requirement', consequence: 'Main contractors and government tenders often specify a minimum multiple. Falling short can disqualify a bid or breach an existing contract.', severity: 'medium' },
+      ], cta: { label: 'Book a benefits review', href: '/contact?service=Group%20Life%20%26%20Personal%20Accident%20Insurance' } },
+
+      { type: 'h2', text: 'How we help' },
+      { type: 'steps', items: [
+        { title: 'Set the benefit multiple', text: 'Against salary, contract requirements and market practice.' },
+        { title: 'Raise the free cover limit', text: 'So senior staff are covered without medical underwriting.' },
+        { title: 'Combine life and accident properly', text: 'One schedule, with no gap between the two sections.' },
+        { title: 'Keep the census clean', text: 'A joiner and leaver process that protects claims.' },
+        { title: 'Support your claims', text: 'Documentation and repatriation, handled with the family.' },
+      ] },
+
+      { type: 'cta', heading: 'Do you know what your GLPA schedule actually pays?', text: 'An independent review checks the free cover limit, the census and the benefit basis before a claim tests them.', primary: { label: 'Get a Quote', href: '/contact?service=Group%20Life%20%26%20Personal%20Accident%20Insurance' }, secondary: { label: 'Call 050 976 5976', href: 'tel:+971509765976' } },
+
+      { type: 'h2', text: 'Frequently Asked Questions' },
+      { type: 'faq', items: [
+        { q: 'What does GLPA stand for?', a: 'GLPA stands for Group Life and Personal Accident insurance. It is an employer-funded policy covering a whole workforce under one schedule, combining a life benefit with 24-hour accident cover.' },
+        { q: 'What is the meaning of GLPA in insurance?', a: 'It describes a combined employee benefit. The group life half pays a lump sum if an employee dies from any cause. The personal accident half pays for accidental death, permanent disability or dismemberment, at work or outside it.' },
+        { q: 'Is GLPA mandatory in the UAE?', a: 'There is no federal requirement for GLPA itself, unlike medical insurance in Dubai and Abu Dhabi. It is commonly required contractually — by main contractors, free zone authorities and tender conditions — and it funds end-of-service and repatriation obligations that do sit in law.' },
+        { q: 'How much does GLPA cost per employee?', a: 'It is priced against total sum assured rather than headcount, so salaries and the benefit multiple drive it more than staff numbers. Office-based workforces rate far lower than construction or industrial ones. Our estimator gives an indicative range.' },
+        { q: 'What is a free cover limit?', a: 'The benefit level the insurer will cover automatically without medical evidence. Employees whose benefit exceeds it must be individually underwritten, and the excess is not insured until that is complete.' },
+        { q: 'Is GLPA the same as group medical insurance?', a: 'No. Group medical pays for treatment — consultations, hospital care, medicine. GLPA pays a cash lump sum on death or serious injury. Most UAE employers carry both.' },
+      ] },
+    ],
+  },
+
+  {
+    // 748 impressions on machinery breakdown terms; "machinery breakdown
+    // insurance dubai" sits at position 16.3 with no page behind it.
+    slug: 'machinery-breakdown',
+    category: 'Specialist Insurance',
+    title: 'Machinery Breakdown Insurance',
+    tagline: 'Cover for sudden mechanical and electrical failure — the gap a property policy leaves open.',
+    metaTitle: 'Machinery Breakdown Insurance UAE | Ensurio First',
+    metaDescription: 'Independent machinery breakdown insurance advisory in the UAE — cover for sudden mechanical and electrical failure of plant, chillers, generators and boilers.',
+    image: industryEngineering,
+    imageAlt: 'Industrial plant and machinery in operation',
+    badges: ['CBUAE Licensed', 'Independent Advisory', 'Plant & Boiler Cover'],
+    body: [
+      { type: 'lead', text: 'Machinery breakdown insurance pays for sudden and unforeseen mechanical or electrical failure of your plant — the one thing a property policy specifically excludes.' },
+      { type: 'p', text: 'Property All Risks covers damage from an external event: fire, impact, water. It does not cover a machine that destroys itself from the inside. A burnt-out motor, a seized compressor, a failed transformer or a cracked chiller falls in the gap between the two policies, and in UAE heat the chillers and generators are exactly what fail.' },
+
+      { type: 'estimator', config: {
+        title: 'Estimate your machinery breakdown premium',
+        note: 'An indicative annual range based on the value of the plant insured.',
+        fields: [
+          { label: 'Value of plant & machinery', type: 'range', min: 100000, max: 100000000, step: 100000, default: 5000000, format: (v) => 'AED ' + v.toLocaleString('en-US') },
+          { label: 'Plant age', type: 'range', min: 0, max: 30, step: 1, default: 8, unit: ' yrs' },
+          { label: 'Plant type', type: 'select', default: 'general', options: [
+            { value: 'general', label: 'General plant & HVAC' },
+            { value: 'process', label: 'Process & production lines' },
+            { value: 'power', label: 'Generators, boilers & pressure plant' },
+          ] },
+        ],
+        estimate: (vals) => {
+          const [value, age, kind] = vals
+          const rate = kind === 'power' ? 0.006 : kind === 'process' ? 0.0045 : 0.003
+          const ageLoad = 1 + Math.max(0, age - 7) * 0.03
+          const base = value * rate * ageLoad
+          return { low: base * 0.75, high: base * 1.4 }
+        },
+        cta: { label: 'Get an exact quote', href: '/contact?service=Machinery%20Breakdown%20Insurance' },
+      } },
+
+      { type: 'h2', text: 'What it covers' },
+      { type: 'cardgrid', variant: 'cover', columns: 4, items: [
+        { icon: 'target', title: 'Mechanical failure', text: 'Seizure, fracture and internal breakage.' },
+        { icon: 'flame', title: 'Electrical failure', text: 'Short circuit, arcing and burnt-out windings.' },
+        { icon: 'building', title: 'Chillers & HVAC', text: 'The plant UAE buildings cannot trade without.' },
+        { icon: 'shield', title: 'Generators', text: 'Standby and prime power sets.' },
+        { icon: 'store', title: 'Boilers & pressure plant', text: 'Including explosion and collapse.' },
+        { icon: 'package', title: 'Production lines', text: 'Process machinery and conveyors.' },
+        { icon: 'truck', title: 'Cranes & lifting plant', text: 'Mechanical failure of fixed lifting equipment.' },
+        { icon: 'gem', title: 'Deterioration of stock', text: 'Optional cover when refrigeration fails.' },
+      ] },
+
+      { type: 'h2', text: "Who it's for" },
+      { type: 'chips', items: ['Manufacturers', 'Cold storage', 'Hotels', 'Hospitals', 'Building owners', 'Food processors', 'Water treatment plants', 'Facilities managers'] },
+
+      { type: 'h2', text: "What's not covered" },
+      { type: 'exclusions', items: ['Wear, tear and gradual deterioration', 'Parts with a short natural life — belts, seals, tools', 'Damage during maintenance or overhaul', 'Faults present before the policy started', 'Failure to follow the maker’s maintenance schedule', 'Overloading beyond the rated capacity', 'Fire and external perils — a property policy exposure'] },
+
+      { type: 'gapcheck', title: 'Would a plant failure be covered?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'I know that my property policy excludes machinery breakdown', gapTitle: 'Assumed cover that is not there', consequence: 'Property All Risks and fire policies exclude internal mechanical and electrical failure as standard. Most owners only discover this when a chiller fails in July.', severity: 'high' },
+        { statement: 'My chillers and generators are specifically listed', gapTitle: 'Key plant not scheduled', consequence: 'Machinery breakdown is usually written against a schedule of listed items. Plant left off the schedule is not covered, however critical it is.', severity: 'high' },
+        { statement: 'I have business interruption following breakdown', gapTitle: 'Downtime uninsured', consequence: 'Repairing a failed production line is the smaller cost. The weeks of lost output while a replacement part ships need a separate breakdown interruption section.', severity: 'high' },
+        { statement: 'Stock in refrigeration is covered if the plant fails', gapTitle: 'Spoilage not insured', consequence: 'Deterioration of stock is an extension, not standard. Cold storage operators can lose an entire chamber of product to a single compressor failure.', severity: 'medium' },
+        { statement: 'Maintenance records are kept and up to date', gapTitle: 'Maintenance condition breached', consequence: 'Cover is conditional on following the manufacturer’s schedule. Missing records give the insurer grounds to decline, even where the failure was genuinely sudden.', severity: 'medium' },
+      ], cta: { label: 'Book a plant review', href: '/contact?service=Machinery%20Breakdown%20Insurance' } },
+
+      { type: 'h2', text: 'How we help' },
+      { type: 'steps', items: [
+        { title: 'Schedule the plant properly', text: 'Every critical item listed, with current values.' },
+        { title: 'Close the property gap', text: 'So breakdown and external perils meet with no space between.' },
+        { title: 'Add breakdown interruption', text: 'Cover for the downtime, not just the repair.' },
+        { title: 'Extend for stock deterioration', text: 'Where refrigeration failure would spoil product.' },
+        { title: 'Support your claims', text: 'Engineer reports and adjusters, managed with you.' },
+      ] },
+
+      { type: 'cta', heading: 'Would your chillers be covered if they failed tomorrow?', text: 'An independent review shows exactly where your property policy stops and breakdown cover has to start.', primary: { label: 'Get a Quote', href: '/contact?service=Machinery%20Breakdown%20Insurance' }, secondary: { label: 'Call 050 976 5976', href: 'tel:+971509765976' } },
+
+      { type: 'h2', text: 'Frequently Asked Questions' },
+      { type: 'faq', items: [
+        { q: 'What is machinery breakdown insurance?', a: 'Cover for sudden and unforeseen mechanical or electrical failure of plant and machinery — the internal failures that property policies exclude. It pays to repair or replace the machine itself.' },
+        { q: 'Is machinery breakdown included in property insurance?', a: 'No. Property All Risks and fire policies specifically exclude mechanical and electrical breakdown. It is bought as a separate section or policy, which is why failed plant is such a common uninsured loss.' },
+        { q: 'Does it cover boilers and pressure vessels?', a: 'Yes, usually under a boiler and pressure plant extension covering explosion and collapse as well as breakdown. Statutory inspection requirements still apply separately.' },
+        { q: 'Does it cover the loss of production while plant is repaired?', a: 'Only with a machinery breakdown interruption section. The base policy pays for the repair, not the output you lose while waiting for parts.' },
+      ] },
+    ],
+  },
+
+  {
+    // ~900 impressions on EEI terms. "eei full form in insurance" ranks 4.8 and
+    // "eei insurance" 9.3, so the page defines the acronym before selling it.
+    slug: 'electronic-equipment',
+    category: 'Specialist Insurance',
+    title: 'Electronic Equipment Insurance (EEI)',
+    tagline: 'All-risks cover for the electronics your operation runs on — servers, medical devices, control systems.',
+    metaTitle: 'Electronic Equipment Insurance (EEI) UAE | Ensurio First',
+    metaDescription: 'EEI stands for Electronic Equipment Insurance. Independent UAE advisory on all-risks cover for servers, medical and control equipment, data restoration and increased cost of working.',
+    image: industryEngineering,
+    imageAlt: 'Server and control room equipment',
+    badges: ['CBUAE Licensed', 'Independent Advisory', 'All-Risks Basis'],
+    body: [
+      { type: 'lead', text: 'EEI stands for Electronic Equipment Insurance — an all-risks policy covering electronic equipment against sudden physical loss or damage, including the data and the cost of working around the failure.' },
+      { type: 'p', text: 'Electronics fail differently from machinery. A voltage spike, a humidity ingress or a cooling failure can destroy a server rack or an MRI scanner without any external event a property policy would recognise. EEI is written on an all-risks basis across three sections: the hardware, the data carriers, and the increased cost of working while the equipment is down.' },
+
+      { type: 'h2', text: 'The three sections of an EEI policy' },
+      { type: 'cardgrid', variant: 'cover', columns: 3, items: [
+        { icon: 'target', title: 'Material damage', text: 'The equipment itself — sudden physical loss or damage from any cause not excluded.' },
+        { icon: 'lock', title: 'External data media', text: 'The cost of replacing carriers and restoring the data held on them.' },
+        { icon: 'building', title: 'Increased cost of working', text: 'Hire of substitute equipment and extra costs to keep operating while repairs happen.' },
+      ] },
+
+      { type: 'estimator', config: {
+        title: 'Estimate your EEI premium',
+        note: 'An indicative annual range based on the value of equipment insured.',
+        fields: [
+          { label: 'Value of electronic equipment', type: 'range', min: 50000, max: 50000000, step: 50000, default: 2000000, format: (v) => 'AED ' + v.toLocaleString('en-US') },
+          { label: 'Equipment type', type: 'select', default: 'it', options: [
+            { value: 'it', label: 'IT & servers' },
+            { value: 'medical', label: 'Medical & diagnostic' },
+            { value: 'control', label: 'Industrial control & instrumentation' },
+          ] },
+          { label: 'Include data & extra cost', type: 'select', default: 'yes', options: [
+            { value: 'yes', label: 'Yes — all three sections' },
+            { value: 'no', label: 'No — equipment only' },
+          ] },
+        ],
+        estimate: (vals) => {
+          const [value, kind, sections] = vals
+          const rate = kind === 'medical' ? 0.0075 : kind === 'control' ? 0.005 : 0.004
+          const base = value * rate * (sections === 'yes' ? 1.3 : 1)
+          return { low: base * 0.75, high: base * 1.4 }
+        },
+        cta: { label: 'Get an exact quote', href: '/contact?service=Electronic%20Equipment%20Insurance' },
+      } },
+
+      { type: 'h2', text: 'What it covers' },
+      { type: 'cardgrid', variant: 'cover', columns: 4, items: [
+        { icon: 'flame', title: 'Electrical surge', text: 'Short circuit, over-voltage and induction damage.' },
+        { icon: 'shield', title: 'Accidental damage', text: 'Dropping, impact and mishandling.' },
+        { icon: 'store', title: 'Humidity & cooling failure', text: 'Condensation and overheating damage.' },
+        { icon: 'lock', title: 'Theft & burglary', text: 'Loss of equipment following forcible entry.' },
+        { icon: 'target', title: 'Data restoration', text: 'Recreating data held on damaged media.' },
+        { icon: 'building', title: 'Substitute hire', text: 'Renting replacement equipment while repairs run.' },
+        { icon: 'package', title: 'Transit & relocation', text: 'Damage while equipment is moved between sites.' },
+        { icon: 'gem', title: 'Software reinstatement', text: 'Reloading licensed software after a failure.' },
+      ] },
+
+      { type: 'h2', text: "Who it's for" },
+      { type: 'chips', items: ['Hospitals & clinics', 'Data centres', 'Laboratories', 'Broadcasters', 'Manufacturers', 'Engineering consultancies', 'Education providers', 'Facilities managers'] },
+
+      { type: 'h2', text: "What's not covered" },
+      { type: 'exclusions', items: ['Wear, tear and gradual deterioration', 'Faults covered by a maker’s warranty or maintenance contract', 'Consumables — bulbs, batteries, toner, filters', 'Cyber attack and malicious software — a cyber exposure', 'Loss of data without physical damage to the carrier', 'Aesthetic damage that does not affect function', 'Equipment used outside the maker’s specification'] },
+
+      { type: 'gapcheck', title: 'Is your critical electronics cover complete?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My electronics are insured on an all-risks basis, not under property', gapTitle: 'Covered only for named perils', consequence: 'Under a property policy, a server destroyed by a voltage spike is an excluded electrical failure. EEI is written all-risks precisely to reach those losses.', severity: 'high' },
+        { statement: 'My policy includes data restoration, not just the hardware', gapTitle: 'Data recovery uninsured', consequence: 'Replacing a server is often the cheaper half. Recreating the records it held can cost many times the hardware, and needs the external data media section.', severity: 'high' },
+        { statement: 'I have increased cost of working cover', gapTitle: 'No funding to keep operating', consequence: 'Without it, hiring substitute equipment during repairs comes out of cash flow — a serious problem for a clinic or laboratory that cannot pause.', severity: 'high' },
+        { statement: 'I know what my maintenance contract already covers', gapTitle: 'Paying twice, or assuming too much', consequence: 'Maintenance contracts cover wear and defined faults, not accidents or surges. The boundary between the two is where claims are disputed.', severity: 'medium' },
+        { statement: 'Cyber and malicious damage is insured separately', gapTitle: 'Cyber loss falls outside EEI', consequence: 'EEI responds to physical damage. A ransomware event that destroys no hardware sits entirely outside it and needs cyber cover.', severity: 'medium' },
+      ], cta: { label: 'Book an equipment review', href: '/contact?service=Electronic%20Equipment%20Insurance' } },
+
+      { type: 'h2', text: 'How we help' },
+      { type: 'steps', items: [
+        { title: 'Schedule the equipment', text: 'Every critical item listed at replacement cost.' },
+        { title: 'Write all three sections', text: 'Hardware, data media and increased cost of working.' },
+        { title: 'Map it against maintenance', text: 'So the contract and the policy meet without a gap.' },
+        { title: 'Separate the cyber exposure', text: 'Physical damage under EEI, data attack under cyber.' },
+        { title: 'Support your claims', text: 'Engineer reports and restoration costs, handled with you.' },
+      ] },
+
+      { type: 'cta', heading: 'What happens if a voltage spike takes out your servers?', text: 'An independent review checks whether your electronics are covered all-risks, and whether the data is covered at all.', primary: { label: 'Get a Quote', href: '/contact?service=Electronic%20Equipment%20Insurance' }, secondary: { label: 'Call 050 976 5976', href: 'tel:+971509765976' } },
+
+      { type: 'h2', text: 'Frequently Asked Questions' },
+      { type: 'faq', items: [
+        { q: 'What is the full form of EEI in insurance?', a: 'EEI stands for Electronic Equipment Insurance. It is an all-risks policy covering electronic equipment against sudden physical loss or damage, together with the data it holds and the extra cost of operating while it is repaired.' },
+        { q: 'What does EEI insurance cover?', a: 'Three things: the equipment itself against sudden damage from causes such as surge, humidity, accident and theft; the external data media and the cost of restoring data; and the increased cost of working, such as hiring substitute equipment.' },
+        { q: 'How is EEI different from machinery breakdown insurance?', a: 'Machinery breakdown covers mechanical and electrical plant — motors, chillers, generators — usually against breakdown only. EEI covers electronics on a wider all-risks basis and adds data and increased cost of working sections that machinery policies do not have.' },
+        { q: 'Does EEI cover cyber attacks?', a: 'No. EEI responds to physical damage. A cyber attack that encrypts or steals data without damaging hardware needs a cyber policy, and the two are usually bought alongside each other.' },
       ] },
     ],
   },
