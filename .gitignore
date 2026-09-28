@@ -8,3 +8,9 @@ dist-portal
 supabase/.temp
 .wrangler
 .prerender
+
+# Search Console and Keyword Planner exports. Kept locally for analysis — this
+# repo is public, and these files carry the full query, click and position
+# history for the site.
+ref/
+.claude-code-history
