@@ -1396,6 +1396,450 @@ export const servicePages = [
       ] },
     ],
   },
+
+  /*
+   * The five lines below were added 2026-09-28 from Search Console data. Each
+   * one already ranked on a legacy WordPress URL with no page behind it on the
+   * current site, so the traffic was landing on a redirect to a category hub.
+   * Impressions quoted are the 16 months to 2026-09-25.
+   */
+
+  {
+    // 5,655 impressions, 75 clicks, best position 2.8 — the site's strongest
+    // organic asset, and it had no page of its own.
+    slug: 'warehouse',
+    category: 'Business Insurance',
+    title: 'Warehouse Insurance',
+    tagline: 'Cover for the building, the racking, and above all the stock sitting inside it.',
+    metaTitle: 'Warehouse Insurance Dubai & UAE | Ensurio First',
+    metaDescription: 'Independent warehouse insurance advisory in Dubai and across the UAE — stock declarations, fire and flood cover, theft, and the sums insured that survive a total loss.',
+    image: industryManufacturing,
+    imageAlt: 'Racked stock inside a Dubai warehouse',
+    badges: ['CBUAE Licensed', 'Independent Advisory', 'Stock Declaration Basis'],
+    body: [
+      { type: 'lead', text: 'Warehouse insurance protects the building, the fit-out and the goods stored inside it — and for most operators the goods are worth many times the shed.' },
+      { type: 'p', text: 'Stock levels in a UAE warehouse move constantly. Cover written against a value you quoted at inception quietly becomes under-insurance the moment a peak season lands, and average applies at the point of claim rather than at renewal. We set the basis so that the sum insured tracks what is actually on the racks.' },
+
+      { type: 'estimator', config: {
+        title: 'Estimate your warehouse premium',
+        note: 'An indicative annual range for building, contents and stock combined.',
+        fields: [
+          { label: 'Peak stock value', type: 'range', min: 100000, max: 50000000, step: 100000, default: 3000000, format: (v) => 'AED ' + v.toLocaleString('en-US') },
+          { label: 'Building & fit-out value', type: 'range', min: 0, max: 30000000, step: 100000, default: 2000000, format: (v) => 'AED ' + v.toLocaleString('en-US') },
+          { label: 'Stored goods', type: 'select', default: 'std', options: [
+            { value: 'std', label: 'General / non-hazardous' },
+            { value: 'elec', label: 'Electronics & high-value' },
+            { value: 'haz', label: 'Flammable or hazardous' },
+          ] },
+        ],
+        estimate: (vals) => {
+          const [stock, building, kind] = vals
+          const rate = kind === 'haz' ? 0.0035 : kind === 'elec' ? 0.0022 : 0.0013
+          const base = stock * rate + building * 0.0009
+          return { low: base * 0.8, high: base * 1.35 }
+        },
+        cta: { label: 'Get an exact quote', href: '/contact?service=Warehouse%20Insurance' },
+      } },
+
+      { type: 'h2', text: 'What it covers' },
+      { type: 'cardgrid', variant: 'cover', columns: 4, items: [
+        { icon: 'flame', title: 'Fire & explosion', text: 'The core peril, including smoke and firefighting damage.' },
+        { icon: 'package', title: 'Stock', text: 'Goods stored, on a declared or floating basis.' },
+        { icon: 'building', title: 'Building & racking', text: 'Structure, fit-out, racking and mezzanines.' },
+        { icon: 'lock', title: 'Burglary & theft', text: 'Forcible entry, and theft by employees if extended.' },
+        { icon: 'shield', title: 'Water damage', text: 'Burst pipes, sprinkler leakage and storm ingress.' },
+        { icon: 'truck', title: 'Loading & handling', text: 'Impact damage from forklifts and vehicles.' },
+        { icon: 'target', title: 'Business interruption', text: 'Lost gross profit while you trade from elsewhere.' },
+        { icon: 'users', title: 'Public liability', text: 'Injury or damage to visitors, drivers and neighbours.' },
+      ] },
+
+      { type: 'h2', text: "Who it's for" },
+      { type: 'chips', items: ['Distributors', 'Importers', 'Traders', 'Third-party logistics', 'E-commerce fulfilment', 'Manufacturers', 'Cold storage', 'Free zone operators'] },
+
+      { type: 'h2', text: "What's not covered" },
+      { type: 'exclusions', items: ['Stock values above the declared sum insured', 'Goods left in the open unless specified', 'Gradual deterioration, damp and mould', 'Theft without forcible entry, unless extended', 'Unexplained inventory shortage', 'Wear and tear to racking and plant', 'Goods held for others, unless declared'] },
+
+      { type: 'gapcheck', title: 'Would your warehouse cover survive a total loss?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My sum insured reflects peak stock, not average stock', gapTitle: 'Under-insured at the worst moment', consequence: 'Average applies at the time of loss. Insure for average and a fire during peak season is settled proportionally — a 40% shortfall on stock means 40% off every claim, not just the excess above the limit.', severity: 'high' },
+        { statement: 'I know whether my stock is insured at cost or at selling price', gapTitle: 'Basis of settlement unclear', consequence: 'Most policies settle stock at cost price. If your business plan assumes you recover margin too, the gap surfaces only after the loss.', severity: 'high' },
+        { statement: 'Goods I hold on behalf of customers are declared', gapTitle: 'Customers’ goods uninsured', consequence: 'Your policy covers your own stock unless goods held in trust are specifically declared. Third-party logistics operators are routinely exposed here.', severity: 'high' },
+        { statement: 'I have business interruption cover, not just property damage', gapTitle: 'No cover for lost trading', consequence: 'Rebuilding a warehouse takes months. Property cover replaces the shed and the stock but pays nothing for the gross profit you lose while you cannot trade.', severity: 'high' },
+        { statement: 'My theft cover does not require forcible entry to respond', gapTitle: 'Theft cover narrower than expected', consequence: 'Standard burglary cover requires visible forcible entry. Stock walking out with staff or a driver is a fidelity or extended theft exposure, bought separately.', severity: 'medium' },
+      ], cta: { label: 'Book a warehouse review', href: '/contact?service=Warehouse%20Insurance' } },
+
+      { type: 'h2', text: 'How we help' },
+      { type: 'steps', items: [
+        { title: 'Set the stock basis correctly', text: 'Declaration or floating cover so peaks are never uninsured.' },
+        { title: 'Value the building properly', text: 'Reinstatement cost including racking, not book value.' },
+        { title: 'Declare goods held for others', text: 'So customers’ stock is covered, not excluded.' },
+        { title: 'Add business interruption', text: 'An indemnity period that matches a realistic rebuild.' },
+        { title: 'Support your claims', text: 'We handle the loss adjuster and the paperwork with you.' },
+      ] },
+
+      { type: 'cta', heading: 'Holding more stock than your policy knows about?', text: 'A short, independent review of your warehouse cover can find under-insurance before a fire does.', primary: { label: 'Get a Quote', href: '/contact?service=Warehouse%20Insurance' }, secondary: { label: 'Call 050 976 5976', href: 'tel:+971509765976' } },
+
+      { type: 'h2', text: 'Frequently Asked Questions' },
+      { type: 'faq', items: [
+        { q: 'How much does warehouse insurance cost in Dubai?', a: 'It is driven mainly by stock value and what the goods are. General non-hazardous stock is rated far lower than electronics or flammable goods, and a sprinklered, alarmed unit in a managed free zone rates better than a standalone shed.' },
+        { q: 'Does it cover stock I hold for my customers?', a: 'Only if goods held in trust are declared. This is the single most common gap for third-party logistics and fulfilment operators, because the value belongs to someone else but the liability sits with you.' },
+        { q: 'What is a stock declaration policy?', a: 'You insure a peak limit and declare actual values periodically, usually monthly. Premium is adjusted at the end of the year against what you really held, so seasonal businesses do not overpay in quiet months or run uninsured in busy ones.' },
+        { q: 'Is flood damage covered in the UAE?', a: 'Storm and flood are usually included in a standard property section, but ground-level storage is where claims are lost. If stock sits directly on the floor rather than on racking or pallets, expect scrutiny.' },
+      ] },
+    ],
+  },
+
+  {
+    // 7,183 impressions across hull and machinery terms, best position 6.0.
+    slug: 'hull-machinery',
+    category: 'Specialist Insurance',
+    title: 'Hull & Machinery Insurance',
+    tagline: 'Cover for the vessel itself — the hull, the engines, and the equipment that moves it.',
+    metaTitle: 'Hull & Machinery Insurance UAE | Ensurio First',
+    metaDescription: 'Independent hull and machinery insurance advisory in the UAE — physical damage to the vessel and its machinery, and how H&M differs from P&I liability cover.',
+    image: industryLogistics,
+    imageAlt: 'Commercial vessel alongside a UAE port',
+    badges: ['CBUAE Licensed', 'Specialist Marine Market', 'H&M and P&I'],
+    body: [
+      { type: 'lead', text: 'Hull and machinery insurance covers physical loss or damage to the vessel itself — the structure, the engines and the equipment on board.' },
+      { type: 'p', text: 'It is the marine equivalent of comprehensive motor cover, and it is routinely confused with P&I. Hull and machinery pays for damage to your vessel. Protection and indemnity pays for what your vessel does to other people — crew injury, pollution, collision liability, wreck removal. Most operators need both, and a gap between them is only discovered after an incident.' },
+
+      { type: 'h2', text: 'H&M and P&I are not the same cover' },
+      { type: 'cardgrid', variant: 'cover', columns: 2, items: [
+        { icon: 'shield', title: 'Hull & Machinery pays for', text: 'Damage to your own vessel — grounding, fire, heavy weather, machinery breakdown, and your share of collision damage.' },
+        { icon: 'users', title: 'Protection & Indemnity pays for', text: 'Your liability to others — crew injury and repatriation, pollution, cargo claims, wreck removal, and damage to fixed objects.' },
+      ] },
+
+      { type: 'estimator', config: {
+        title: 'Estimate your hull & machinery premium',
+        note: 'An indicative annual range based on insured value and trading pattern.',
+        fields: [
+          { label: 'Insured value of the vessel', type: 'range', min: 250000, max: 200000000, step: 250000, default: 8000000, format: (v) => 'AED ' + v.toLocaleString('en-US') },
+          { label: 'Vessel age', type: 'range', min: 0, max: 40, step: 1, default: 12, unit: ' yrs' },
+          { label: 'Trading area', type: 'select', default: 'gulf', options: [
+            { value: 'port', label: 'Port and coastal only' },
+            { value: 'gulf', label: 'Arabian Gulf' },
+            { value: 'world', label: 'Worldwide' },
+          ] },
+        ],
+        estimate: (vals) => {
+          const [value, age, area] = vals
+          const areaRate = area === 'port' ? 0.006 : area === 'world' ? 0.014 : 0.009
+          const ageLoad = 1 + Math.max(0, age - 10) * 0.025
+          const base = value * areaRate * ageLoad
+          return { low: base * 0.75, high: base * 1.4 }
+        },
+        cta: { label: 'Get an exact quote', href: '/contact?service=Hull%20%26%20Machinery%20Insurance' },
+      } },
+
+      { type: 'h2', text: 'What it covers' },
+      { type: 'cardgrid', variant: 'cover', columns: 4, items: [
+        { icon: 'shield', title: 'Hull damage', text: 'Grounding, stranding, heavy weather and impact.' },
+        { icon: 'flame', title: 'Fire & explosion', text: 'Engine room and accommodation fires.' },
+        { icon: 'target', title: 'Machinery breakdown', text: 'Main engines, generators and shafting.' },
+        { icon: 'truck', title: 'Collision liability', text: 'Your share of damage to the other vessel.' },
+        { icon: 'package', title: 'General average', text: 'Your contribution to a declared sacrifice.' },
+        { icon: 'users', title: 'Salvage & sue and labour', text: 'Costs of saving the vessel after a casualty.' },
+        { icon: 'lock', title: 'Total loss', text: 'Actual or constructive total loss of the vessel.' },
+        { icon: 'gem', title: 'Equipment on board', text: 'Navigation, deck gear and specialist plant.' },
+      ] },
+
+      { type: 'h2', text: "Who it's for" },
+      { type: 'chips', items: ['Shipowners', 'Barge operators', 'Tug and workboat fleets', 'Offshore support vessels', 'Dredging contractors', 'Fishing operators', 'Yacht owners', 'Ship managers'] },
+
+      { type: 'h2', text: "What's not covered" },
+      { type: 'exclusions', items: ['Wear, tear and gradual deterioration', 'Unseaworthiness known to the owner', 'Crew injury and repatriation — a P&I exposure', 'Pollution liability — a P&I exposure', 'Cargo damage claims — a P&I exposure', 'Trading outside the agreed navigation limits', 'Lack of due diligence in maintenance'] },
+
+      { type: 'gapcheck', title: 'Is your marine programme complete?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'I hold P&I cover as well as hull and machinery', gapTitle: 'Liability side uninsured', consequence: 'H&M pays for your vessel and stops there. Crew injury, pollution and wreck removal sit with P&I, and a wreck removal order alone can exceed the value of the vessel.', severity: 'high' },
+        { statement: 'My navigation limits match where the vessel actually trades', gapTitle: 'Trading outside the warranty', consequence: 'Cover is written against agreed limits. A single voyage beyond them can suspend the policy for the duration, leaving a casualty entirely uninsured.', severity: 'high' },
+        { statement: 'The insured value reflects current market value', gapTitle: 'Valuation out of date', consequence: 'Marine policies are usually valued. Insure below market and you are under-compensated on total loss; insure well above and underwriters may dispute the figure at claim stage.', severity: 'high' },
+        { statement: 'Class and statutory certificates are current', gapTitle: 'Class condition breached', consequence: 'Cover is conditional on maintaining class. A lapsed survey or an outstanding condition of class gives underwriters a defence that applies to the whole loss.', severity: 'high' },
+        { statement: 'I know what my deductible is for machinery claims', gapTitle: 'Machinery deductible underestimated', consequence: 'Machinery damage usually carries a separate, much higher deductible than hull damage, and many engine claims fall entirely inside it.', severity: 'medium' },
+      ], cta: { label: 'Book a marine review', href: '/contact?service=Hull%20%26%20Machinery%20Insurance' } },
+
+      { type: 'h2', text: 'How we help' },
+      { type: 'steps', items: [
+        { title: 'Place H&M and P&I together', text: 'One programme, so nothing falls between the two.' },
+        { title: 'Set navigation limits realistically', text: 'Matched to where the vessel genuinely trades.' },
+        { title: 'Agree the insured value', text: 'Supported by valuation evidence underwriters accept.' },
+        { title: 'Structure deductibles', text: 'Balanced against premium and your claims history.' },
+        { title: 'Manage casualty response', text: 'Surveyors, adjusters and salvage, coordinated for you.' },
+      ] },
+
+      { type: 'cta', heading: 'Not sure where H&M ends and P&I begins?', text: 'An independent review maps your marine programme and shows exactly where the gap sits.', primary: { label: 'Get a Quote', href: '/contact?service=Hull%20%26%20Machinery%20Insurance' }, secondary: { label: 'Call 050 976 5976', href: 'tel:+971509765976' } },
+
+      { type: 'h2', text: 'Frequently Asked Questions' },
+      { type: 'faq', items: [
+        { q: 'What is the difference between H&M and P&I insurance?', a: 'Hull and machinery covers physical damage to your own vessel. Protection and indemnity covers your liabilities to other people — crew, cargo owners, other vessels and the environment. They are separate policies and most commercial operators carry both.' },
+        { q: 'Does hull and machinery cover engine breakdown?', a: 'Damage to machinery is covered, but subject to a due diligence condition and usually a higher deductible than hull damage. Gradual wear and failure to maintain are excluded, so the cause matters more than the consequence.' },
+        { q: 'What are the Institute Time Clauses?', a: 'The standard London market wordings for hull cover, most often the Institute Time Clauses Hulls. They define the perils, the collision liability share and the conditions on class and navigation limits.' },
+        { q: 'Is a yacht insured under hull and machinery?', a: 'Private yachts are usually written on a dedicated yacht policy combining hull damage with third-party liability, rather than commercial H&M. Commercially operated or chartered vessels are treated differently again.' },
+      ] },
+    ],
+  },
+
+  {
+    // 3,649 impressions, 21 clicks, best position 4.3 on haulier terms.
+    slug: 'goods-in-transit',
+    category: 'Specialist Insurance',
+    title: 'Goods in Transit & Haulier Liability',
+    tagline: 'Cover for goods moving by road — whether you own them or carry them for someone else.',
+    metaTitle: 'Goods in Transit & Haulier Liability UAE | Ensurio First',
+    metaDescription: 'Independent goods in transit and haulier liability insurance advisory in the UAE — cover for your own goods on the road and for the cargo you carry for customers.',
+    image: industryLogistics,
+    imageAlt: 'Freight vehicles on a UAE highway',
+    badges: ['CBUAE Licensed', 'Independent Advisory', 'Own Goods & Carried Goods'],
+    body: [
+      { type: 'lead', text: 'Two different policies cover goods on a truck, and which one you need depends on whether the goods are yours.' },
+      { type: 'p', text: 'Goods in transit insures your own property while it moves. Haulier liability — sometimes called carrier’s liability — insures your legal responsibility for other people’s cargo while you carry it. Transport operators frequently buy one and assume it does the job of both, then find a customer’s claim falls outside the policy entirely.' },
+
+      { type: 'h2', text: 'Which cover do you need?' },
+      { type: 'cardgrid', variant: 'cover', columns: 2, items: [
+        { icon: 'package', title: 'Goods in Transit', text: 'For goods you own. Pays the value of your property if it is lost or damaged in transit, regardless of who was at fault.' },
+        { icon: 'truck', title: 'Haulier Liability', text: 'For goods you carry for others. Pays what you are legally liable for as a carrier, which may be far less than the cargo is worth.' },
+      ] },
+
+      { type: 'estimator', config: {
+        title: 'Estimate your transit premium',
+        note: 'An indicative annual range based on load values and fleet size.',
+        fields: [
+          { label: 'Maximum value per load', type: 'range', min: 25000, max: 5000000, step: 25000, default: 250000, format: (v) => 'AED ' + v.toLocaleString('en-US') },
+          { label: 'Vehicles in the fleet', type: 'range', min: 1, max: 200, step: 1, default: 8, unit: ' veh' },
+          { label: 'Goods carried', type: 'select', default: 'general', options: [
+            { value: 'general', label: 'General freight' },
+            { value: 'high', label: 'Electronics & high-value' },
+            { value: 'temp', label: 'Temperature controlled' },
+          ] },
+        ],
+        estimate: (vals) => {
+          const [load, fleet, kind] = vals
+          const rate = kind === 'high' ? 0.09 : kind === 'temp' ? 0.07 : 0.045
+          const base = load * rate + fleet * 900
+          return { low: base * 0.8, high: base * 1.4 }
+        },
+        cta: { label: 'Get an exact quote', href: '/contact?service=Goods%20in%20Transit%20Insurance' },
+      } },
+
+      { type: 'h2', text: 'What it covers' },
+      { type: 'cardgrid', variant: 'cover', columns: 4, items: [
+        { icon: 'truck', title: 'Accident damage', text: 'Collision, overturning and impact in transit.' },
+        { icon: 'lock', title: 'Theft & hijack', text: 'Theft of the load, including from a secured vehicle.' },
+        { icon: 'flame', title: 'Fire', text: 'Loss of the load to vehicle or cargo fire.' },
+        { icon: 'package', title: 'Loading & unloading', text: 'Damage while the load is handled at either end.' },
+        { icon: 'building', title: 'Overnight storage', text: 'Goods held in transit depots between legs.' },
+        { icon: 'shield', title: 'Legal liability', text: 'Your liability as carrier for customers’ goods.' },
+        { icon: 'target', title: 'Debris removal', text: 'Clearing a spilled or damaged load from the road.' },
+        { icon: 'gem', title: 'High-value extensions', text: 'Specified cover for electronics and valuables.' },
+      ] },
+
+      { type: 'h2', text: "Who it's for" },
+      { type: 'chips', items: ['Hauliers', 'Freight forwarders', 'Third-party logistics', 'Distributors', 'Courier fleets', 'Cold chain operators', 'Construction suppliers', 'Traders'] },
+
+      { type: 'h2', text: "What's not covered" },
+      { type: 'exclusions', items: ['Loads left in an unattended, unsecured vehicle', 'Goods outside the declared maximum load value', 'Inherent vice and inadequate packing', 'Consequential loss and delay', 'Temperature failure without a specified extension', 'Contraband and undeclared dangerous goods', 'Loss discovered only at a later stock count'] },
+
+      { type: 'gapcheck', title: 'Is the load actually insured?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'I know whether I hold goods in transit or haulier liability cover', gapTitle: 'Wrong policy for the risk', consequence: 'Liability cover responds only where you are legally at fault. A customer whose cargo burns in a fire you did not cause may recover nothing, and will look to you anyway.', severity: 'high' },
+        { statement: 'My limit per load covers the most valuable load I ever carry', gapTitle: 'Limit set on the average load', consequence: 'Limits are per vehicle or per load. One consolidated high-value shipment can exceed a limit set against the day-to-day average, and the excess is uninsured.', severity: 'high' },
+        { statement: 'Overnight and depot storage is included', gapTitle: 'Cover lapses between legs', consequence: 'Many transit policies cover only while the goods are on a moving vehicle. Theft from a yard overnight is then outside both the transit and the property policy.', severity: 'high' },
+        { statement: 'My trading conditions limit my liability as a carrier', gapTitle: 'Unlimited contractual liability', consequence: 'Without standard trading conditions you carry full value liability for every consignment. Signing a customer’s contract can also strip out the limits your insurer assumed applied.', severity: 'high' },
+        { statement: 'Subcontracted loads are covered when another carrier moves them', gapTitle: 'Subcontractors uninsured', consequence: 'Passing a load to a subcontractor rarely passes the liability with it. If their cover fails, the claim returns to you as principal.', severity: 'medium' },
+      ], cta: { label: 'Book a transit review', href: '/contact?service=Goods%20in%20Transit%20Insurance' } },
+
+      { type: 'h2', text: 'How we help' },
+      { type: 'steps', items: [
+        { title: 'Identify which cover you need', text: 'Own goods, carried goods, or both in one programme.' },
+        { title: 'Set limits against peak loads', text: 'Not the average consignment value.' },
+        { title: 'Close the storage gap', text: 'Depot and overnight cover written into the policy.' },
+        { title: 'Review your trading conditions', text: 'So contractual liability matches what is insured.' },
+        { title: 'Support your claims', text: 'Evidence, customer claims and recovery, handled with you.' },
+      ] },
+
+      { type: 'cta', heading: 'Carrying goods you do not own?', text: 'An independent review shows whether your policy answers a customer’s claim — or leaves it with you.', primary: { label: 'Get a Quote', href: '/contact?service=Goods%20in%20Transit%20Insurance' }, secondary: { label: 'Call 050 976 5976', href: 'tel:+971509765976' } },
+
+      { type: 'h2', text: 'Frequently Asked Questions' },
+      { type: 'faq', items: [
+        { q: 'What is haulier liability insurance?', a: 'It covers your legal liability as a carrier for loss or damage to goods belonging to your customers while you are carrying them. It responds to your liability, not automatically to the value of the cargo.' },
+        { q: 'How is it different from goods in transit insurance?', a: 'Goods in transit covers property you own. Haulier liability covers property you are carrying for someone else. A transport business moving its own stock and its customers’ stock needs both.' },
+        { q: 'Does motor insurance cover the load?', a: 'No. Commercial motor covers the vehicle and third-party injury or damage. The goods on the vehicle are a separate insurance, which is why a load lost in an accident is often uninsured.' },
+        { q: 'Are goods covered while parked overnight?', a: 'Only if the policy says so. Many transit wordings respond while goods are on a moving vehicle and exclude static risk, so depot and overnight storage should be written in explicitly.' },
+      ] },
+    ],
+  },
+
+  {
+    // 4,881 impressions on keyman and group life terms, best position 1.4.
+    slug: 'keyman',
+    category: 'Business Insurance',
+    title: 'Keyman Insurance',
+    tagline: 'Protect the business against the loss of the person it depends on most.',
+    metaTitle: 'Keyman Insurance Dubai & UAE | Ensurio First',
+    metaDescription: 'Independent keyman insurance advisory in Dubai and the UAE — cover owned by the business against the death or critical illness of a founder, director or key employee.',
+    image: blogSigning,
+    imageAlt: 'Business owners reviewing an agreement',
+    badges: ['CBUAE Licensed', 'Independent Advisory', 'Business-Owned Cover'],
+    body: [
+      { type: 'lead', text: 'Keyman insurance is a life or critical illness policy owned by the company on the life of a person the company cannot easily replace.' },
+      { type: 'p', text: 'In an owner-led UAE business, one person often holds the bank relationship, the licence, the supplier terms and the customer trust. The policy pays the company, not the family, so there is cash to steady the business, service debt and buy time to recruit. It sits alongside personal life cover rather than replacing it.' },
+
+      { type: 'estimator', config: {
+        title: 'Estimate the cover you need',
+        note: 'A common starting point is a multiple of the key person’s contribution to gross profit.',
+        fields: [
+          { label: 'Annual gross profit', type: 'range', min: 500000, max: 100000000, step: 500000, default: 6000000, format: (v) => 'AED ' + v.toLocaleString('en-US') },
+          { label: 'Their share of it', type: 'range', min: 5, max: 90, step: 5, default: 35, unit: '%' },
+          { label: 'Years to replace them', type: 'range', min: 1, max: 5, step: 1, default: 2, unit: ' yrs' },
+        ],
+        estimate: (vals) => {
+          const [profit, share, years] = vals
+          const base = profit * (share / 100) * years
+          return { low: base * 0.9, high: base * 1.5 }
+        },
+        cta: { label: 'Discuss your cover', href: '/contact?service=Keyman%20Insurance' },
+      } },
+
+      { type: 'h2', text: 'What it covers' },
+      { type: 'cardgrid', variant: 'cover', columns: 4, items: [
+        { icon: 'shield', title: 'Death of the key person', text: 'A lump sum paid to the company.' },
+        { icon: 'target', title: 'Critical illness', text: 'Optional cover on diagnosis of a listed condition.' },
+        { icon: 'users', title: 'Permanent disability', text: 'Where the person cannot return to the role.' },
+        { icon: 'building', title: 'Loan protection', text: 'Repays borrowing personally guaranteed by them.' },
+        { icon: 'package', title: 'Recruitment costs', text: 'Funds the search for and onboarding of a successor.' },
+        { icon: 'store', title: 'Profit protection', text: 'Replaces the gross profit tied to the individual.' },
+        { icon: 'lock', title: 'Shareholder protection', text: 'Funds the purchase of a deceased partner’s shares.' },
+        { icon: 'gem', title: 'Supplier confidence', text: 'Demonstrates continuity to banks and creditors.' },
+      ] },
+
+      { type: 'h2', text: "Who it's for" },
+      { type: 'chips', items: ['Founder-led businesses', 'Family businesses', 'Professional partnerships', 'SMEs with bank debt', 'Trading companies', 'Contracting firms', 'Consultancies', 'Businesses with two or three shareholders'] },
+
+      { type: 'h2', text: "What's not covered" },
+      { type: 'exclusions', items: ['Conditions not disclosed at application', 'Death within the suicide exclusion period', 'Pre-existing illness in the critical illness section', 'Hazardous pursuits not declared', 'Cover lapsed for non-payment of premium', 'Loss of the person to a competitor — this is not a resignation policy'] },
+
+      { type: 'gapcheck', title: 'What happens to the business without them?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'I know which single person the business could not absorb losing', gapTitle: 'Key person dependency unmapped', consequence: 'Most owners name someone immediately. Until it is written down with the revenue and relationships attached, the exposure is never sized and never covered.', severity: 'high' },
+        { statement: 'Company borrowing is not personally guaranteed by one individual', gapTitle: 'Debt falls due on death', consequence: 'Banks commonly call in facilities, or demand new security, when a personal guarantor dies. Without cover the company funds that from working capital at the worst moment.', severity: 'high' },
+        { statement: 'The policy is owned by the company, not the individual', gapTitle: 'Proceeds go to the wrong place', consequence: 'A personal policy pays the family. The company gets nothing, even though it is the business that loses the revenue and carries the debt.', severity: 'high' },
+        { statement: 'We have a shareholder agreement that says what happens to the shares', gapTitle: 'No funded succession', consequence: 'Without a cross-option agreement and the money to honour it, surviving shareholders can end up in business with a deceased partner’s heirs.', severity: 'high' },
+        { statement: 'The sum insured has been reviewed since the business grew', gapTitle: 'Cover set at an old size', consequence: 'Keyman cover is often arranged once at the bank’s request and never revisited, leaving a figure that reflects the business as it was years ago.', severity: 'medium' },
+      ], cta: { label: 'Book a succession review', href: '/contact?service=Keyman%20Insurance' } },
+
+      { type: 'h2', text: 'How we help' },
+      { type: 'steps', items: [
+        { title: 'Identify the key people', text: 'Who holds the revenue, the relationships and the licence.' },
+        { title: 'Size the cover', text: 'Against gross profit, debt and realistic replacement time.' },
+        { title: 'Structure the ownership', text: 'Company-owned, so proceeds reach the business.' },
+        { title: 'Align it with the shareholder agreement', text: 'Cross-option arrangements funded, not just drafted.' },
+        { title: 'Review it as you grow', text: 'So the sum insured tracks the business, not its history.' },
+      ] },
+
+      { type: 'cta', heading: 'Could the business survive losing one person?', text: 'An independent review sizes the exposure and shows what it costs to cover it.', primary: { label: 'Get a Quote', href: '/contact?service=Keyman%20Insurance' }, secondary: { label: 'Call 050 976 5976', href: 'tel:+971509765976' } },
+
+      { type: 'h2', text: 'Frequently Asked Questions' },
+      { type: 'faq', items: [
+        { q: 'What is keyman insurance?', a: 'A life, and often critical illness, policy taken out by a company on someone it depends on. The company pays the premium, owns the policy and receives the payout, so the money is there to stabilise the business.' },
+        { q: 'Who counts as a key person?', a: 'Anyone whose absence would measurably cost the business money — typically a founder or managing director, but often a sales lead holding the major accounts or a technical specialist the licence depends on.' },
+        { q: 'How much keyman cover should a business have?', a: 'A common approach is the person’s share of gross profit multiplied by the years it would realistically take to replace them, plus any debt they personally guarantee. Two to five times their profit contribution is a frequent range.' },
+        { q: 'Is keyman insurance different from group life cover?', a: 'Yes. Group life is an employee benefit paying the employee’s family. Keyman cover is a business asset paying the company. Many UAE businesses carry group life and mistakenly assume it protects the company too.' },
+      ] },
+    ],
+  },
+
+  {
+    // ~7,500 impressions on property all risks terms, but position 32-44 —
+    // the highest-volume gap on the site. Kept distinct from commercial-property,
+    // which stays on fire & allied perils (named perils) rather than all-risks.
+    slug: 'property-all-risks',
+    category: 'Business Insurance',
+    title: 'Property All Risks Insurance',
+    tagline: 'All-risks cover for buildings, plant and stock — broader than a named-perils fire policy.',
+    metaTitle: 'Property All Risks Insurance UAE | Ensurio First',
+    metaDescription: 'Independent Property All Risks (PAR) insurance advisory in the UAE — all-risks cover for buildings, plant and stock, and how it differs from fire and allied perils.',
+    image: industryConstruction,
+    imageAlt: 'Commercial buildings and plant in the UAE',
+    badges: ['CBUAE Licensed', 'Independent Advisory', 'All-Risks Basis'],
+    body: [
+      { type: 'lead', text: 'Property All Risks covers sudden and accidental physical loss or damage to your property, unless the policy specifically excludes it.' },
+      { type: 'p', text: 'That is the opposite of a fire and allied perils policy, which pays only for the perils it names. The practical difference shows up in the odd losses — impact, accidental damage, an escape of water nobody anticipated — that a named-perils wording simply does not reach. PAR is the standard basis for larger UAE commercial and industrial risks.' },
+
+      { type: 'h2', text: 'All risks or named perils?' },
+      { type: 'cardgrid', variant: 'cover', columns: 2, items: [
+        { icon: 'shield', title: 'Property All Risks', text: 'Everything sudden and accidental is covered unless excluded. The insurer has to prove an exclusion applies.' },
+        { icon: 'flame', title: 'Fire & Allied Perils', text: 'Only the listed perils are covered. You have to show the loss was caused by one of them.' },
+      ] },
+
+      { type: 'estimator', config: {
+        title: 'Estimate your property all risks premium',
+        note: 'An indicative annual range across buildings, plant and stock.',
+        fields: [
+          { label: 'Total sum insured', type: 'range', min: 500000, max: 300000000, step: 500000, default: 15000000, format: (v) => 'AED ' + v.toLocaleString('en-US') },
+          { label: 'Occupancy', type: 'select', default: 'commercial', options: [
+            { value: 'office', label: 'Office or retail' },
+            { value: 'commercial', label: 'Warehouse or light industrial' },
+            { value: 'heavy', label: 'Heavy industrial or process' },
+          ] },
+          { label: 'Fire protection', type: 'select', default: 'std', options: [
+            { value: 'full', label: 'Sprinklered and alarmed' },
+            { value: 'std', label: 'Detection only' },
+            { value: 'min', label: 'Extinguishers only' },
+          ] },
+        ],
+        estimate: (vals) => {
+          const [tsi, occ, prot] = vals
+          const occRate = occ === 'office' ? 0.0007 : occ === 'heavy' ? 0.0022 : 0.0012
+          const protFactor = prot === 'full' ? 0.8 : prot === 'min' ? 1.3 : 1
+          const base = tsi * occRate * protFactor
+          return { low: base * 0.8, high: base * 1.35 }
+        },
+        cta: { label: 'Get an exact quote', href: '/contact?service=Property%20All%20Risks%20Insurance' },
+      } },
+
+      { type: 'h2', text: 'What it covers' },
+      { type: 'cardgrid', variant: 'cover', columns: 4, items: [
+        { icon: 'building', title: 'Buildings', text: 'Structure, fit-out and landlord improvements.' },
+        { icon: 'target', title: 'Plant & machinery', text: 'Production equipment and fixed plant.' },
+        { icon: 'package', title: 'Stock', text: 'Raw materials, work in progress and finished goods.' },
+        { icon: 'flame', title: 'Fire & explosion', text: 'Including smoke and firefighting damage.' },
+        { icon: 'shield', title: 'Accidental damage', text: 'Sudden damage a named-perils policy would miss.' },
+        { icon: 'truck', title: 'Impact', text: 'Vehicle, crane and dropped-load damage.' },
+        { icon: 'lock', title: 'Burglary', text: 'Theft following forcible entry.' },
+        { icon: 'store', title: 'Escape of water', text: 'Burst pipes, tanks and sprinkler leakage.' },
+      ] },
+
+      { type: 'h2', text: "Who it's for" },
+      { type: 'chips', items: ['Manufacturers', 'Warehouse operators', 'Retail chains', 'Hotels', 'Property owners', 'Free zone tenants', 'Processing plants', 'Landlords'] },
+
+      { type: 'h2', text: "What's not covered" },
+      { type: 'exclusions', items: ['Wear, tear and gradual deterioration', 'Faulty design, material or workmanship', 'Mechanical or electrical breakdown, unless extended', 'Damage during construction — a contractors all risks exposure', 'Loss of market and consequential loss', 'Terrorism, unless bought back', 'Unoccupied premises beyond the stated period'] },
+
+      { type: 'gapcheck', title: 'Is your property cover on the right basis?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'I know whether my policy is all risks or named perils', gapTitle: 'Narrower cover than assumed', consequence: 'Most UAE property policies are issued as fire and allied perils. Accidental damage and impact losses are then outside the cover, and the first anyone notices is at the claim.', severity: 'high' },
+        { statement: 'Sums insured are reinstatement cost, not book value', gapTitle: 'Insured at depreciated value', consequence: 'Book value falls every year while rebuilding costs rise. Insuring at net book value guarantees under-insurance, and average reduces every claim proportionally.', severity: 'high' },
+        { statement: 'My sums insured have been reviewed in the last 24 months', gapTitle: 'Values out of date', consequence: 'Construction and equipment costs in the UAE have moved materially. A schedule set three years ago will not rebuild what is standing today.', severity: 'high' },
+        { statement: 'Business interruption is insured alongside the property', gapTitle: 'Income unprotected', consequence: 'Property cover rebuilds the asset. It pays nothing for the months of lost gross profit while the rebuild happens, which is usually the larger loss.', severity: 'high' },
+        { statement: 'Machinery breakdown is covered or separately insured', gapTitle: 'Breakdown falls between policies', consequence: 'PAR excludes internal mechanical and electrical failure. Without a machinery breakdown section, a failed transformer or chiller sits in the gap between policies.', severity: 'medium' },
+      ], cta: { label: 'Book a property review', href: '/contact?service=Property%20All%20Risks%20Insurance' } },
+
+      { type: 'h2', text: 'How we help' },
+      { type: 'steps', items: [
+        { title: 'Move you to the right basis', text: 'All risks where the exposure justifies it.' },
+        { title: 'Rebuild the sums insured', text: 'Reinstatement cost across buildings, plant and stock.' },
+        { title: 'Remove the average trap', text: 'Values evidenced, so proportional reduction cannot bite.' },
+        { title: 'Add the missing sections', text: 'Business interruption and machinery breakdown.' },
+        { title: 'Support your claims', text: 'Loss adjusters and documentation, managed with you.' },
+      ] },
+
+      { type: 'cta', heading: 'Is your property policy all risks, or only named perils?', text: 'An independent review of the wording answers it in an afternoon — before a loss does.', primary: { label: 'Get a Quote', href: '/contact?service=Property%20All%20Risks%20Insurance' }, secondary: { label: 'Call 050 976 5976', href: 'tel:+971509765976' } },
+
+      { type: 'h2', text: 'Frequently Asked Questions' },
+      { type: 'faq', items: [
+        { q: 'What is Property All Risks insurance?', a: 'A policy covering sudden and accidental physical loss or damage to insured property unless an exclusion applies. It is broader than fire and allied perils, where only the named perils are covered.' },
+        { q: 'How does PAR differ from fire and allied perils?', a: 'The burden of proof moves. Under named perils you must show the loss came from a listed peril. Under all risks the insurer must show an exclusion applies, which materially favours the insured on unusual losses.' },
+        { q: 'Does Property All Risks cover business interruption?', a: 'Not by itself. Business interruption is a separate section insuring lost gross profit while you cannot trade. It is usually written alongside PAR and follows the same perils.' },
+        { q: 'What is average, and why does it matter?', a: 'If your sum insured is below the true reinstatement value, average reduces every claim by the same proportion. Insure a AED 10m facility for AED 6m and a AED 1m fire is settled at AED 600,000, not in full.' },
+      ] },
+    ],
+  },
 ]
 
 /*

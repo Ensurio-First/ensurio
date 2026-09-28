@@ -34,6 +34,11 @@
 
   <!-- Insurance line pages -->
   <url><loc>https://insurefirst.ae/insurance/marine-cargo</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://insurefirst.ae/insurance/warehouse</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://insurefirst.ae/insurance/hull-machinery</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://insurefirst.ae/insurance/goods-in-transit</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://insurefirst.ae/insurance/keyman</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://insurefirst.ae/insurance/property-all-risks</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://insurefirst.ae/insurance/aviation</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://insurefirst.ae/insurance/contractors-all-risks</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://insurefirst.ae/insurance/energy-oil</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>

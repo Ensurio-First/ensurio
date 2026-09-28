@@ -42,8 +42,8 @@
 /insurance-consultancy/commercial-insurance/burglary-theft-and-robbery-insurance/                              /insurance/commercial-property  301
 /insurance-consultancy/commercial-insurance/fire-allied-perils-insurance-cover                                 /insurance/commercial-property  301
 /insurance-consultancy/commercial-insurance/fire-allied-perils-insurance-cover/                                /insurance/commercial-property  301
-/insurance-consultancy/commercial-insurance/property-all-risk-insurance-cover                                  /insurance/commercial-property  301
-/insurance-consultancy/commercial-insurance/property-all-risk-insurance-cover/                                 /insurance/commercial-property  301
+/insurance-consultancy/commercial-insurance/property-all-risk-insurance-cover                                  /insurance/property-all-risks  301
+/insurance-consultancy/commercial-insurance/property-all-risk-insurance-cover/                                 /insurance/property-all-risks  301
 /insurance-consultancy/commercial-insurance/shopkeepers-insurance-policy                                       /insurance/commercial-property  301
 /insurance-consultancy/commercial-insurance/shopkeepers-insurance-policy/                                      /insurance/commercial-property  301
 # --- Professional & legal liability ------------------------------------------
@@ -70,8 +70,8 @@
 /insurance-consultancy/personal-lines-of-insurance/health-insurance/                                           /insurance/medical-insurance  301
 /insurance-consultancy/personal-lines-of-insurance/group-life-personal-accident-insurance-glpa                 /insurance/personal-accident  301
 /insurance-consultancy/personal-lines-of-insurance/group-life-personal-accident-insurance-glpa/                /insurance/personal-accident  301
-/insurance-consultancy/personal-lines-of-insurance/key-man-insurance                                           /insurance/life-critical-illness  301
-/insurance-consultancy/personal-lines-of-insurance/key-man-insurance/                                          /insurance/life-critical-illness  301
+/insurance-consultancy/personal-lines-of-insurance/key-man-insurance                                           /insurance/keyman  301
+/insurance-consultancy/personal-lines-of-insurance/key-man-insurance/                                          /insurance/keyman  301
 /insurance-consultancy/personal-lines-of-insurance/mortgage-insurance                                          /insurance/life-critical-illness  301
 /insurance-consultancy/personal-lines-of-insurance/mortgage-insurance/                                         /insurance/life-critical-illness  301
 /insurance-consultancy/personal-lines-of-insurance/term-insurance                                              /insurance/life-critical-illness  301
@@ -93,10 +93,10 @@
 /2024/12/27/cyber-crime-insurance/                                                                             /blog/cyber-insurance-uae  301
 /2024/02/27/understanding-freight-forwarders-liability-insurance-in-the-uae                                    /industries/logistics  301
 /2024/02/27/understanding-freight-forwarders-liability-insurance-in-the-uae/                                   /industries/logistics  301
-/2024/02/27/protecting-your-goods-a-guide-to-warehouse-insurance-in-the-uae                                    /insurance/commercial-property  301
-/2024/02/27/protecting-your-goods-a-guide-to-warehouse-insurance-in-the-uae/                                   /insurance/commercial-property  301
-/2024/12/23/why-is-warehouse-insurance-essential-for-your-inventory                                            /insurance/commercial-property  301
-/2024/12/23/why-is-warehouse-insurance-essential-for-your-inventory/                                           /insurance/commercial-property  301
+/2024/02/27/protecting-your-goods-a-guide-to-warehouse-insurance-in-the-uae                                    /insurance/warehouse  301
+/2024/02/27/protecting-your-goods-a-guide-to-warehouse-insurance-in-the-uae/                                   /insurance/warehouse  301
+/2024/12/23/why-is-warehouse-insurance-essential-for-your-inventory                                            /insurance/warehouse  301
+/2024/12/23/why-is-warehouse-insurance-essential-for-your-inventory/                                           /insurance/warehouse  301
 /2024/09/10/why-insure-first-consultancy-services-are-essential-for-your-successful-business                   /about  301
 /2024/09/10/why-insure-first-consultancy-services-are-essential-for-your-successful-business/                  /about  301
 # No surety/bonds page exists — business hub is the nearest honest match.
@@ -151,8 +151,8 @@
 /2024/06/03/understanding-commercial-insurance-a-guide-for-dubai-businesses/                                   /insurance-services/business  301
 /2024/10/30/professional-indemnity-insurance                                                                   /blog/professional-indemnity-insurance-uae  301
 /2024/10/30/professional-indemnity-insurance/                                                                  /blog/professional-indemnity-insurance-uae  301
-/2024/02/27/navigating-marine-insurance-in-the-uae-understanding-hull-and-machinery-hm-vs-protection-and-indemnity-pi-insurance /insurance/marine-cargo  301
-/2024/02/27/navigating-marine-insurance-in-the-uae-understanding-hull-and-machinery-hm-vs-protection-and-indemnity-pi-insurance/ /insurance/marine-cargo  301
+/2024/02/27/navigating-marine-insurance-in-the-uae-understanding-hull-and-machinery-hm-vs-protection-and-indemnity-pi-insurance /insurance/hull-machinery  301
+/2024/02/27/navigating-marine-insurance-in-the-uae-understanding-hull-and-machinery-hm-vs-protection-and-indemnity-pi-insurance/ /insurance/hull-machinery  301
 /2024/06/06/marine-cargo-insurance-protecting-your-shipments-at-sea                                            /blog/marine-cargo-insurance-dubai  301
 /2024/06/06/marine-cargo-insurance-protecting-your-shipments-at-sea/                                           /blog/marine-cargo-insurance-dubai  301
 /2024/03/22/navigating-the-skies-a-guide-to-aviation-insurance-and-private-jet-insurance-in-the-uae            /blog/aviation-insurance-uae  301
@@ -187,8 +187,8 @@
 /2024/02/27/cyber-attacks-a-growing-concern-for-businesses-in-the-uae/                                         /blog/cyber-insurance-uae  301
 /2024/09/19/how-our-insurance-consultancy-saves-your-money                                                     /management-consultancy  301
 /2024/09/19/how-our-insurance-consultancy-saves-your-money/                                                    /management-consultancy  301
-/2024/12/18/is-your-fleet-locked-in-with-hull-and-machinery-insurance                                          /insurance/marine-cargo  301
-/2024/12/18/is-your-fleet-locked-in-with-hull-and-machinery-insurance/                                         /insurance/marine-cargo  301
+/2024/12/18/is-your-fleet-locked-in-with-hull-and-machinery-insurance                                          /insurance/hull-machinery  301
+/2024/12/18/is-your-fleet-locked-in-with-hull-and-machinery-insurance/                                         /insurance/hull-machinery  301
 /2024/09/17/common-insurance-mistakes-business-owners-make                                                     /who-we-help/business-owners  301
 /2024/09/17/common-insurance-mistakes-business-owners-make/                                                    /who-we-help/business-owners  301
 /2024/10/16/how-insurance-consulting-assists-your-business-growth                                              /management-consultancy  301
@@ -213,18 +213,18 @@
 /2024/09/28/important-facts-business-owners-commonly-overlook-in-insurance-policies/                           /who-we-help/business-owners  301
 /2024/09/12/insure-first-consultancy-the-smooth-sailor-of-business-insurance                                   /insurance-services/business  301
 /2024/09/12/insure-first-consultancy-the-smooth-sailor-of-business-insurance/                                  /insurance-services/business  301
-/insurance-consultancy/marine-insurance/haulers-liability-insurance-goods-transporters-risk                    /insurance/marine-cargo  301
-/insurance-consultancy/marine-insurance/haulers-liability-insurance-goods-transporters-risk/                   /insurance/marine-cargo  301
-/insurance-consultancy/marine-insurance/hull-machinery-insurance                                               /insurance/marine-cargo  301
-/insurance-consultancy/marine-insurance/hull-machinery-insurance/                                              /insurance/marine-cargo  301
+/insurance-consultancy/marine-insurance/haulers-liability-insurance-goods-transporters-risk                    /insurance/goods-in-transit  301
+/insurance-consultancy/marine-insurance/haulers-liability-insurance-goods-transporters-risk/                   /insurance/goods-in-transit  301
+/insurance-consultancy/marine-insurance/hull-machinery-insurance                                               /insurance/hull-machinery  301
+/insurance-consultancy/marine-insurance/hull-machinery-insurance/                                              /insurance/hull-machinery  301
 /insurance-consultancy/marine-insurance/marine-cargo-insurance                                                 /insurance/marine-cargo  301
 /insurance-consultancy/marine-insurance/marine-cargo-insurance/                                                /insurance/marine-cargo  301
 /insurance-consultancy/marine-insurance/yacht-insurance                                                        /insurance-services/specialist  301
 /insurance-consultancy/marine-insurance/yacht-insurance/                                                       /insurance-services/specialist  301
-/services/marine-insurance/haulers-liability-insurance-goods-transporters-risk                                 /insurance/marine-cargo  301
-/services/marine-insurance/haulers-liability-insurance-goods-transporters-risk/                                /insurance/marine-cargo  301
-/services/marine-insurance/hull-machinery-insurance                                                            /insurance/marine-cargo  301
-/services/marine-insurance/hull-machinery-insurance/                                                           /insurance/marine-cargo  301
+/services/marine-insurance/haulers-liability-insurance-goods-transporters-risk                                 /insurance/goods-in-transit  301
+/services/marine-insurance/haulers-liability-insurance-goods-transporters-risk/                                /insurance/goods-in-transit  301
+/services/marine-insurance/hull-machinery-insurance                                                            /insurance/hull-machinery  301
+/services/marine-insurance/hull-machinery-insurance/                                                           /insurance/hull-machinery  301
 /insurance-consultancy/professional-legal-liability-insurance/third-party-public-liability-insurance           /insurance/public-liability  301
 /insurance-consultancy/professional-legal-liability-insurance/third-party-public-liability-insurance/          /insurance/public-liability  301
 /services/professional-legal-liability-insurance/employers-legal-liability                                     /insurance/workmens-compensation  301
