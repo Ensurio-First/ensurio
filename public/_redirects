@@ -134,6 +134,136 @@
 /insurance/health-medical              /insurance/medical-insurance  301
 /insurance/health-medical/             /insurance/medical-insurance  301
 
+# --- Recovered from Search Console 2026-09-28 ---------------------------------
+# Every path below was earning Google impressions while a splat rule sent it to a
+# generic hub (/services or /blog). A redirect to an unrelated page is treated as
+# a soft 404, so the old page's ranking was discarded rather than passed on.
+# 51,575 impressions across these 58 URLs. Targets verified against the route
+# table in src/prototype/home/data/ - every one resolves to a real page.
+#
+# These are literal rules on purpose. In production Cloudflare does not honour
+# the file order of the splat rules below: a request for
+# /insurance-consultancy/engineering-insurance/contractors-all-risk-cover/ matched
+# the catch-all /insurance-consultancy/* instead of the engineering splat above it.
+# Literal rules do match reliably, so anything with traffic is listed explicitly.
+
+/2024/06/03/understanding-commercial-insurance-a-guide-for-dubai-businesses                                    /insurance-services/business  301
+/2024/06/03/understanding-commercial-insurance-a-guide-for-dubai-businesses/                                   /insurance-services/business  301
+/2024/10/30/professional-indemnity-insurance                                                                   /blog/professional-indemnity-insurance-uae  301
+/2024/10/30/professional-indemnity-insurance/                                                                  /blog/professional-indemnity-insurance-uae  301
+/2024/02/27/navigating-marine-insurance-in-the-uae-understanding-hull-and-machinery-hm-vs-protection-and-indemnity-pi-insurance /insurance/marine-cargo  301
+/2024/02/27/navigating-marine-insurance-in-the-uae-understanding-hull-and-machinery-hm-vs-protection-and-indemnity-pi-insurance/ /insurance/marine-cargo  301
+/2024/06/06/marine-cargo-insurance-protecting-your-shipments-at-sea                                            /blog/marine-cargo-insurance-dubai  301
+/2024/06/06/marine-cargo-insurance-protecting-your-shipments-at-sea/                                           /blog/marine-cargo-insurance-dubai  301
+/2024/03/22/navigating-the-skies-a-guide-to-aviation-insurance-and-private-jet-insurance-in-the-uae            /blog/aviation-insurance-uae  301
+/2024/03/22/navigating-the-skies-a-guide-to-aviation-insurance-and-private-jet-insurance-in-the-uae/           /blog/aviation-insurance-uae  301
+/2024/03/04/mental-health-medical-conditions-and-medical-insurance                                             /insurance/medical-insurance  301
+/2024/03/04/mental-health-medical-conditions-and-medical-insurance/                                            /insurance/medical-insurance  301
+/2023/08/27/workmens-compensation-benefits-in-the-uae                                                          /blog/workmen-compensation-employers-liability-uae  301
+/2023/08/27/workmens-compensation-benefits-in-the-uae/                                                         /blog/workmen-compensation-employers-liability-uae  301
+/2024/11/27/workmen-compensation-insurance-putting-your-team-first                                             /blog/workmen-compensation-employers-liability-uae  301
+/2024/11/27/workmen-compensation-insurance-putting-your-team-first/                                            /blog/workmen-compensation-employers-liability-uae  301
+/2024/03/23/public-liability-insurance-coverage                                                                /blog/public-liability-insurance-uae  301
+/2024/03/23/public-liability-insurance-coverage/                                                               /blog/public-liability-insurance-uae  301
+/2024/09/24/understand-how-to-calculate-insurance-premiums                                                     /solutions/policy-review  301
+/2024/09/24/understand-how-to-calculate-insurance-premiums/                                                    /solutions/policy-review  301
+/2024/11/29/public-liability-insurance-the-business-buffer                                                     /blog/public-liability-insurance-uae  301
+/2024/11/29/public-liability-insurance-the-business-buffer/                                                    /blog/public-liability-insurance-uae  301
+/2024/12/20/uae-aviation-insurance                                                                             /blog/aviation-insurance-uae  301
+/2024/12/20/uae-aviation-insurance/                                                                            /blog/aviation-insurance-uae  301
+/2024/09/26/why-regular-revision-of-insurance-policy-is-important                                              /solutions/policy-review  301
+/2024/09/26/why-regular-revision-of-insurance-policy-is-important/                                             /solutions/policy-review  301
+/2024/12/02/product-liability-insurance-making-your-goods-liability-simple                                     /insurance/public-liability  301
+/2024/12/02/product-liability-insurance-making-your-goods-liability-simple/                                    /insurance/public-liability  301
+/2024/02/27/maximizing-legal-expertise-in-insurance-consulting-and-claims-handling-a-lawyers-journey           /solutions/legal-claims-support  301
+/2024/02/27/maximizing-legal-expertise-in-insurance-consulting-and-claims-handling-a-lawyers-journey/          /solutions/legal-claims-support  301
+/2024/10/14/top-benefits-of-consulting-with-an-insurance-expert                                                /management-consultancy  301
+/2024/10/14/top-benefits-of-consulting-with-an-insurance-expert/                                               /management-consultancy  301
+/2024/10/18/leading-reasons-for-insurance-claim-denials-and-how-to-avoid-them                                  /solutions/claims-advisory  301
+/2024/10/18/leading-reasons-for-insurance-claim-denials-and-how-to-avoid-them/                                 /solutions/claims-advisory  301
+/2024/03/23/protecting-financial-institutions-with-bankers-blanket-insurance                                   /insurance-services/business  301
+/2024/03/23/protecting-financial-institutions-with-bankers-blanket-insurance/                                  /insurance-services/business  301
+/2024/02/27/cyber-attacks-a-growing-concern-for-businesses-in-the-uae                                          /blog/cyber-insurance-uae  301
+/2024/02/27/cyber-attacks-a-growing-concern-for-businesses-in-the-uae/                                         /blog/cyber-insurance-uae  301
+/2024/09/19/how-our-insurance-consultancy-saves-your-money                                                     /management-consultancy  301
+/2024/09/19/how-our-insurance-consultancy-saves-your-money/                                                    /management-consultancy  301
+/2024/12/18/is-your-fleet-locked-in-with-hull-and-machinery-insurance                                          /insurance/marine-cargo  301
+/2024/12/18/is-your-fleet-locked-in-with-hull-and-machinery-insurance/                                         /insurance/marine-cargo  301
+/2024/09/17/common-insurance-mistakes-business-owners-make                                                     /who-we-help/business-owners  301
+/2024/09/17/common-insurance-mistakes-business-owners-make/                                                    /who-we-help/business-owners  301
+/2024/10/16/how-insurance-consulting-assists-your-business-growth                                              /management-consultancy  301
+/2024/10/16/how-insurance-consulting-assists-your-business-growth/                                             /management-consultancy  301
+/2024/11/25/disaster-proofing-first-and-allied-perils-insurance                                                /blog/property-fire-insurance-uae  301
+/2024/11/25/disaster-proofing-first-and-allied-perils-insurance/                                               /blog/property-fire-insurance-uae  301
+/2024/09/21/5-proven-strategies-to-lower-your-business-insurance-premiums                                      /who-we-help/business-owners  301
+/2024/09/21/5-proven-strategies-to-lower-your-business-insurance-premiums/                                     /who-we-help/business-owners  301
+/2024/10/09/a-comprehensive-guide-to-choose-the-right-insurance-consultant                                     /management-consultancy  301
+/2024/10/09/a-comprehensive-guide-to-choose-the-right-insurance-consultant/                                    /management-consultancy  301
+/2024/11/22/why-customized-property-insurance-matter                                                           /insurance/commercial-property  301
+/2024/11/22/why-customized-property-insurance-matter/                                                          /insurance/commercial-property  301
+/2024/12/10/group-medical-insurance-prioritizing-everyones-wellness                                            /blog/group-medical-insurance-uae  301
+/2024/12/10/group-medical-insurance-prioritizing-everyones-wellness/                                           /blog/group-medical-insurance-uae  301
+/2024/10/07/decoding-the-insurance-tips-useful-for-business-owners                                             /who-we-help/business-owners  301
+/2024/10/07/decoding-the-insurance-tips-useful-for-business-owners/                                            /who-we-help/business-owners  301
+/2024/10/21/how-our-services-ensure-your-claims-are-approved                                                   /solutions/claims-advisory  301
+/2024/10/21/how-our-services-ensure-your-claims-are-approved/                                                  /solutions/claims-advisory  301
+/2024/10/01/how-to-avoid-claim-denials-by-ensuring-policy-accuracy                                             /solutions/claims-advisory  301
+/2024/10/01/how-to-avoid-claim-denials-by-ensuring-policy-accuracy/                                            /solutions/claims-advisory  301
+/2024/09/28/important-facts-business-owners-commonly-overlook-in-insurance-policies                            /who-we-help/business-owners  301
+/2024/09/28/important-facts-business-owners-commonly-overlook-in-insurance-policies/                           /who-we-help/business-owners  301
+/2024/09/12/insure-first-consultancy-the-smooth-sailor-of-business-insurance                                   /insurance-services/business  301
+/2024/09/12/insure-first-consultancy-the-smooth-sailor-of-business-insurance/                                  /insurance-services/business  301
+/insurance-consultancy/marine-insurance/haulers-liability-insurance-goods-transporters-risk                    /insurance/marine-cargo  301
+/insurance-consultancy/marine-insurance/haulers-liability-insurance-goods-transporters-risk/                   /insurance/marine-cargo  301
+/insurance-consultancy/marine-insurance/hull-machinery-insurance                                               /insurance/marine-cargo  301
+/insurance-consultancy/marine-insurance/hull-machinery-insurance/                                              /insurance/marine-cargo  301
+/insurance-consultancy/marine-insurance/marine-cargo-insurance                                                 /insurance/marine-cargo  301
+/insurance-consultancy/marine-insurance/marine-cargo-insurance/                                                /insurance/marine-cargo  301
+/insurance-consultancy/marine-insurance/yacht-insurance                                                        /insurance-services/specialist  301
+/insurance-consultancy/marine-insurance/yacht-insurance/                                                       /insurance-services/specialist  301
+/services/marine-insurance/haulers-liability-insurance-goods-transporters-risk                                 /insurance/marine-cargo  301
+/services/marine-insurance/haulers-liability-insurance-goods-transporters-risk/                                /insurance/marine-cargo  301
+/services/marine-insurance/hull-machinery-insurance                                                            /insurance/marine-cargo  301
+/services/marine-insurance/hull-machinery-insurance/                                                           /insurance/marine-cargo  301
+/insurance-consultancy/professional-legal-liability-insurance/third-party-public-liability-insurance           /insurance/public-liability  301
+/insurance-consultancy/professional-legal-liability-insurance/third-party-public-liability-insurance/          /insurance/public-liability  301
+/services/professional-legal-liability-insurance/employers-legal-liability                                     /insurance/workmens-compensation  301
+/services/professional-legal-liability-insurance/employers-legal-liability/                                    /insurance/workmens-compensation  301
+/services/professional-legal-liability-insurance/freight-forwarders-liability-insurance                        /industries/logistics  301
+/services/professional-legal-liability-insurance/freight-forwarders-liability-insurance/                       /industries/logistics  301
+/services/professional-legal-liability-insurance/product-liability-insurance                                   /insurance/public-liability  301
+/services/professional-legal-liability-insurance/product-liability-insurance/                                  /insurance/public-liability  301
+/services/professional-legal-liability-insurance/directors-and-officers-liability-insurance-do                 /insurance/directors-officers  301
+/services/professional-legal-liability-insurance/directors-and-officers-liability-insurance-do/                /insurance/directors-officers  301
+/insurance-consultancy/engineering-insurance/electronic-equipment-insurance-eei                                /insurance/contractors-all-risks  301
+/insurance-consultancy/engineering-insurance/electronic-equipment-insurance-eei/                               /insurance/contractors-all-risks  301
+/insurance-consultancy/engineering-insurance/contractors-all-risk-cover                                        /insurance/contractors-all-risks  301
+/insurance-consultancy/engineering-insurance/contractors-all-risk-cover/                                       /insurance/contractors-all-risks  301
+/insurance-consultancy/engineering-insurance/machinery-break-down-insurance                                    /insurance/contractors-all-risks  301
+/insurance-consultancy/engineering-insurance/machinery-break-down-insurance/                                   /insurance/contractors-all-risks  301
+/insurance-consultancy/engineering-insurance/erection-all-risk-cover                                           /insurance/contractors-all-risks  301
+/insurance-consultancy/engineering-insurance/erection-all-risk-cover/                                          /insurance/contractors-all-risks  301
+/insurance-consultancy/engineering-insurance/contractors-plant-and-equipment                                   /insurance/contractors-all-risks  301
+/insurance-consultancy/engineering-insurance/contractors-plant-and-equipment/                                  /insurance/contractors-all-risks  301
+/insurance-consultancy/engineering-insurance/boiler-insurance                                                  /insurance/contractors-all-risks  301
+/insurance-consultancy/engineering-insurance/boiler-insurance/                                                 /insurance/contractors-all-risks  301
+/insurance-consultancy/aviation-insurance/passenger-liability                                                  /insurance/aviation  301
+/insurance-consultancy/aviation-insurance/passenger-liability/                                                 /insurance/aviation  301
+/insurance-consultancy/aviation-insurance/aircraft-insurance                                                   /insurance/aviation  301
+/insurance-consultancy/aviation-insurance/aircraft-insurance/                                                  /insurance/aviation  301
+/insurance-consultancy/commercial-insurance/commercial-auto-insurance                                          /insurance/motor-fleet  301
+/insurance-consultancy/commercial-insurance/commercial-auto-insurance/                                         /insurance/motor-fleet  301
+/insurance-consultancy/commercial-insurance/fidelity-guarantee-insurance                                       /insurance-services/business  301
+/insurance-consultancy/commercial-insurance/fidelity-guarantee-insurance/                                      /insurance-services/business  301
+/insurance-consultancy/commercial-insurance/bankers-blanket-insurance                                          /insurance-services/business  301
+/insurance-consultancy/commercial-insurance/bankers-blanket-insurance/                                         /insurance-services/business  301
+/insurance-consultancy/commercial-insurance/money-insurance                                                    /insurance-services/business  301
+/insurance-consultancy/commercial-insurance/money-insurance/                                                   /insurance-services/business  301
+/insurance-consultancy/personal-lines-of-insurance/home-insurance                                              /insurance/home-contents  301
+/insurance-consultancy/personal-lines-of-insurance/home-insurance/                                             /insurance/home-contents  301
+/insurance-consultancy/personal-lines-of-insurance/life-insurance                                              /insurance/life-critical-illness  301
+/insurance-consultancy/personal-lines-of-insurance/life-insurance/                                             /insurance/life-critical-illness  301
+
 # ============================= SPLAT RULES ===================================
 # Category-level fallbacks for any old product page not listed above.
 /insurance-consultancy/commercial-insurance/*                                                                  /insurance-services/business  301
