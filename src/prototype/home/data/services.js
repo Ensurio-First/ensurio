@@ -1200,6 +1200,10 @@ export const servicePages = [
         { q: 'Does it cover my family?', a: 'Yes — family plans cover spouses and children, and employers can extend cover to dependants.' },
         { q: 'Can expats get health insurance?', a: 'Yes — cover is widely available to residents, with a choice of networks and benefit levels.' },
         { q: 'What is a network?', a: 'The list of hospitals and clinics where your plan is accepted — we make sure the ones you use are included.' },
+        /* Psychiatric and mental health queries earn 320 impressions at position
+         * 9.9, and neither word appeared anywhere on the site. */
+        { q: 'Does UAE health insurance cover mental health treatment?', a: 'Increasingly yes, but the benefit varies more than any other. Dubai and Abu Dhabi both require a minimum level of psychiatric cover, and plans differ widely above it on session limits, whether outpatient therapy is included and whether inpatient psychiatric care is covered at all. It is worth checking the schedule rather than assuming.' },
+        { q: 'Are pre-existing psychiatric conditions covered?', a: 'They are treated like any other pre-existing condition: declared at inception and they can be covered, sometimes after a waiting period. Undeclared, they can be excluded permanently, which is the most common reason a mental health claim is refused.' },
       ] },
     ],
   },
@@ -1660,7 +1664,9 @@ export const servicePages = [
 
       { type: 'h2', text: 'Frequently Asked Questions' },
       { type: 'faq', items: [
-        { q: 'What is haulier liability insurance?', a: 'It covers your legal liability as a carrier for loss or damage to goods belonging to your customers while you are carrying them. It responds to your liability, not automatically to the value of the cargo.' },
+        /* "haulers liability insurance" (US spelling) ranks 4.3 and the word
+         * appeared nowhere, so both spellings are given here. */
+        { q: 'What is haulier liability insurance?', a: 'It covers your legal liability as a carrier — spelled haulier in the UK and Gulf markets, haulers in US usage — for loss or damage to goods belonging to your customers while you are carrying them. It responds to your liability, not automatically to the value of the cargo.' },
         { q: 'How is it different from goods in transit insurance?', a: 'Goods in transit covers property you own. Haulier liability covers property you are carrying for someone else. A transport business moving its own stock and its customers’ stock needs both.' },
         { q: 'Does motor insurance cover the load?', a: 'No. Commercial motor covers the vehicle and third-party injury or damage. The goods on the vehicle are a separate insurance, which is why a load lost in an accident is often uninsured.' },
         { q: 'Are goods covered while parked overnight?', a: 'Only if the policy says so. Many transit wordings respond while goods are on a moving vehicle and exclude static risk, so depot and overnight storage should be written in explicitly.' },
@@ -1675,12 +1681,17 @@ export const servicePages = [
     title: 'Keyman Insurance',
     tagline: 'Protect the business against the loss of the person it depends on most.',
     metaTitle: 'Keyman Insurance Dubai & UAE | Ensurio First',
-    metaDescription: 'Independent keyman insurance advisory in Dubai and the UAE — cover owned by the business against the death or critical illness of a founder, director or key employee.',
+    metaDescription: 'Independent keyman insurance advisory in Dubai and the UAE — also written as key man insurance. Cover owned by the business against the death or critical illness of a founder, director or key employee.',
     image: blogSigning,
     imageAlt: 'Business owners reviewing an agreement',
     badges: ['CBUAE Licensed', 'Independent Advisory', 'Business-Owned Cover'],
     body: [
-      { type: 'lead', text: 'Keyman insurance is a life or critical illness policy owned by the company on the life of a person the company cannot easily replace.' },
+      /*
+       * "key man insurance uae" earns 631 impressions at position 10.5 while
+       * this page only ever wrote the closed-up spelling, so the spaced form is
+       * used here deliberately.
+       */
+      { type: 'lead', text: 'Keyman insurance — also written as key man insurance — is a life or critical illness policy owned by the company on the life of a person the company cannot easily replace.' },
       { type: 'p', text: 'In an owner-led UAE business, one person often holds the bank relationship, the licence, the supplier terms and the customer trust. The policy pays the company, not the family, so there is cash to steady the business, service debt and buy time to recruit. It sits alongside personal life cover rather than replacing it.' },
 
       { type: 'estimator', config: {
@@ -2116,6 +2127,239 @@ export const servicePages = [
         { q: 'What does EEI insurance cover?', a: 'Three things: the equipment itself against sudden damage from causes such as surge, humidity, accident and theft; the external data media and the cost of restoring data; and the increased cost of working, such as hiring substitute equipment.' },
         { q: 'How is EEI different from machinery breakdown insurance?', a: 'Machinery breakdown covers mechanical and electrical plant — motors, chillers, generators — usually against breakdown only. EEI covers electronics on a wider all-risks basis and adds data and increased cost of working sections that machinery policies do not have.' },
         { q: 'Does EEI cover cyber attacks?', a: 'No. EEI responds to physical damage. A cyber attack that encrypts or steals data without damaging hardware needs a cyber policy, and the two are usually bought alongside each other.' },
+      ] },
+    ],
+  },
+
+  /*
+   * Added 2026-09-28 from a content-coverage audit: these three concepts earned
+   * impressions while the words appeared on no page of the site at all.
+   */
+
+  {
+    // 1,431 impressions, best position 8.6, and "malpractice" appeared nowhere.
+    slug: 'medical-malpractice',
+    category: 'Professional Protection',
+    title: 'Medical Malpractice Insurance',
+    tagline: 'Professional indemnity for clinicians and healthcare facilities — a licensing requirement, not an option.',
+    metaTitle: 'Medical Malpractice Insurance UAE | Ensurio First',
+    metaDescription: 'Independent medical malpractice insurance advisory in the UAE — DHA, DoH and MoH licensing cover for doctors, dentists, nurses, clinics and hospitals.',
+    image: blogSigning,
+    imageAlt: 'A clinician reviewing patient records',
+    badges: ['CBUAE Licensed', 'Independent Advisory', 'DHA / DoH Compliant'],
+    body: [
+      { type: 'lead', text: 'Medical malpractice insurance covers a clinician or facility against claims of negligence in the delivery of care — and in the UAE you cannot hold a licence to practise without it.' },
+      { type: 'p', text: 'DHA in Dubai, DoH in Abu Dhabi and MoH in the northern emirates all require evidence of cover before issuing or renewing a professional licence, with minimum limits set by specialty. Surgeons, obstetricians and anaesthetists sit at the higher end. It is professional indemnity written for clinical risk, and a general PI policy will not satisfy the regulator.' },
+
+      { type: 'estimator', config: {
+        title: 'Estimate your malpractice premium',
+        note: 'Premium is driven far more by specialty than by revenue.',
+        fields: [
+          { label: 'Limit of indemnity', type: 'range', min: 1000000, max: 20000000, step: 500000, default: 3000000, format: (v) => 'AED ' + v.toLocaleString('en-US') },
+          { label: 'Specialty risk', type: 'select', default: 'med', options: [
+            { value: 'low', label: 'GP, dentistry, allied health' },
+            { value: 'med', label: 'Physician specialties' },
+            { value: 'high', label: 'Surgery, obstetrics, anaesthesia' },
+          ] },
+          { label: 'Practitioners covered', type: 'range', min: 1, max: 100, step: 1, default: 1, unit: ' staff' },
+        ],
+        estimate: (vals) => {
+          const [limit, risk, heads] = vals
+          const rate = risk === 'low' ? 0.0022 : risk === 'high' ? 0.011 : 0.005
+          const base = limit * rate * (1 + (heads - 1) * 0.65)
+          return { low: base * 0.75, high: base * 1.45 }
+        },
+        cta: { label: 'Get an exact quote', href: '/contact?service=Medical%20Malpractice%20Insurance' },
+      } },
+
+      { type: 'h2', text: 'What it covers' },
+      { type: 'cardgrid', variant: 'cover', columns: 4, items: [
+        { icon: 'shield', title: 'Clinical negligence', text: 'Claims arising from diagnosis, treatment or advice.' },
+        { icon: 'users', title: 'Legal defence costs', text: 'Representation, often the largest single cost.' },
+        { icon: 'building', title: 'Regulatory investigation', text: 'DHA, DoH and MoH inquiries into your conduct.' },
+        { icon: 'target', title: 'Good Samaritan acts', text: 'Care given in an emergency outside your practice.' },
+        { icon: 'lock', title: 'Loss of documents', text: 'Reconstituting lost or damaged patient records.' },
+        { icon: 'store', title: 'Breach of confidentiality', text: 'Inadvertent disclosure of patient information.' },
+        { icon: 'package', title: 'Vicarious liability', text: 'Acts of employed or supervised staff.' },
+        { icon: 'gem', title: 'Retroactive cover', text: 'Incidents before inception, if the date is agreed.' },
+      ] },
+
+      { type: 'h2', text: "Who it's for" },
+      { type: 'chips', items: ['Doctors', 'Surgeons', 'Dentists', 'Nurses', 'Clinics', 'Hospitals', 'Physiotherapists', 'Diagnostic centres'] },
+
+      { type: 'h2', text: "What's not covered" },
+      { type: 'exclusions', items: ['Treatment outside your licensed scope of practice', 'Criminal acts and deliberate harm', 'Practising without a valid licence', 'Claims arising before the retroactive date', 'Cosmetic outcomes where no negligence occurred', 'Fines and punitive damages where uninsurable', 'Contractual liabilities beyond common law duty'] },
+
+      { type: 'gapcheck', title: 'Would your malpractice cover respond?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My limit meets the minimum my licensing authority requires', gapTitle: 'Below the regulatory minimum', consequence: 'DHA and DoH set minimum limits by specialty. Falling below can block a licence renewal, which stops you practising regardless of whether a claim ever arises.', severity: 'high' },
+        { statement: 'I know whether my policy is claims-made or occurrence based', gapTitle: 'Gap on changing insurer', consequence: 'Almost all malpractice cover is claims-made: it responds only while live. Switching insurer or retiring without run-off leaves past treatment uninsured even though you were covered at the time.', severity: 'high' },
+        { statement: 'My retroactive date covers my full time in practice', gapTitle: 'Earlier treatment uninsured', consequence: 'A retroactive date set at inception excludes everything before it. Claims commonly surface years after treatment, so a recent date leaves a long tail exposed.', severity: 'high' },
+        { statement: 'The facility’s policy covers me personally, or I hold my own', gapTitle: 'Relying on an employer’s policy', consequence: 'A hospital policy protects the hospital first. Where interests diverge — and in a serious claim they do — a clinician without personal cover can be left funding their own defence.', severity: 'high' },
+        { statement: 'I have run-off cover arranged for when I stop practising', gapTitle: 'No run-off', consequence: 'Without run-off, cover ends when the policy does. Claims arising after you retire or leave the UAE fall on you personally.', severity: 'medium' },
+      ], cta: { label: 'Book a malpractice review', href: '/contact?service=Medical%20Malpractice%20Insurance' } },
+
+      { type: 'h2', text: 'How we help' },
+      { type: 'steps', items: [
+        { title: 'Match the regulator', text: 'Limits that satisfy DHA, DoH or MoH for your specialty.' },
+        { title: 'Set the retroactive date', text: 'Back to the start of practice wherever insurers allow.' },
+        { title: 'Separate personal from facility cover', text: 'So your defence is not tied to your employer’s interests.' },
+        { title: 'Arrange run-off', text: 'For retirement, relocation or a change of insurer.' },
+        { title: 'Support your claims', text: 'Defence counsel and regulator correspondence, with you.' },
+      ] },
+
+      { type: 'cta', heading: 'Is your malpractice cover enough to renew your licence?', text: 'An independent review checks your limit, your retroactive date and whether you are covered personally.', primary: { label: 'Get a Quote', href: '/contact?service=Medical%20Malpractice%20Insurance' }, secondary: { label: 'Call 050 976 5976', href: 'tel:+971509765976' } },
+
+      { type: 'h2', text: 'Frequently Asked Questions' },
+      { type: 'faq', items: [
+        { q: 'Is medical malpractice insurance mandatory in the UAE?', a: 'Yes. DHA, DoH and MoH all require evidence of cover before issuing or renewing a professional licence, with minimum limits that vary by specialty. You cannot lawfully practise without it.' },
+        { q: 'How much medical malpractice cover do I need?', a: 'The regulator sets a floor, but the floor is rarely the right answer. Surgery, obstetrics and anaesthesia carry the highest claim values, and limits are commonly set well above the minimum for those specialties.' },
+        { q: 'What is claims-made cover?', a: 'The policy responds to claims first made while it is in force, not to when the treatment happened. That is why run-off cover matters: stop the policy and past treatment stops being insured.' },
+        { q: 'Does my hospital’s policy cover me personally?', a: 'It may extend to you, but it protects the facility first. Where the hospital’s interests and yours diverge in a serious claim, clinicians without their own cover can end up funding their own defence.' },
+      ] },
+    ],
+  },
+
+  {
+    // 1,082 impressions across shopkeeper terms, and the word appeared nowhere.
+    slug: 'shopkeepers',
+    category: 'Business Insurance',
+    title: 'Shopkeepers Insurance',
+    tagline: 'One package policy covering the shop, the stock, the till and your liability to customers.',
+    metaTitle: 'Shopkeepers Insurance UAE | Ensurio First',
+    metaDescription: 'Independent shopkeepers insurance advisory in the UAE — a package policy covering shop contents, stock, money, glass and public liability for retail businesses.',
+    image: industryHospitality,
+    imageAlt: 'A retail shopfront in the UAE',
+    badges: ['CBUAE Licensed', 'Independent Advisory', 'SME Package Policy'],
+    body: [
+      { type: 'lead', text: 'Shopkeepers insurance bundles the covers a retail business needs into one package policy rather than four or five separate ones.' },
+      { type: 'p', text: 'For a single shop or a small chain, buying property, stock, money, glass and liability separately costs more and leaves seams between the policies. A package written for retail closes those seams and is usually cheaper, and it is the standard way UAE SMEs insure a trading premises.' },
+
+      { type: 'estimator', config: {
+        title: 'Estimate your shopkeepers premium',
+        note: 'An indicative annual range for a single retail unit.',
+        fields: [
+          { label: 'Stock & contents value', type: 'range', min: 50000, max: 5000000, step: 50000, default: 400000, format: (v) => 'AED ' + v.toLocaleString('en-US') },
+          { label: 'Trade', type: 'select', default: 'general', options: [
+            { value: 'general', label: 'General retail & grocery' },
+            { value: 'food', label: 'Restaurant & food service' },
+            { value: 'high', label: 'Electronics, jewellery & luxury' },
+          ] },
+          { label: 'Number of outlets', type: 'range', min: 1, max: 30, step: 1, default: 1, unit: ' shops' },
+        ],
+        estimate: (vals) => {
+          const [stock, trade, shops] = vals
+          const rate = trade === 'high' ? 0.009 : trade === 'food' ? 0.007 : 0.0045
+          const base = stock * rate * shops + shops * 1200
+          return { low: base * 0.8, high: base * 1.4 }
+        },
+        cta: { label: 'Get an exact quote', href: '/contact?service=Shopkeepers%20Insurance' },
+      } },
+
+      { type: 'h2', text: 'What it covers' },
+      { type: 'cardgrid', variant: 'cover', columns: 4, items: [
+        { icon: 'store', title: 'Shop contents & fit-out', text: 'Fixtures, fittings and equipment.' },
+        { icon: 'package', title: 'Stock', text: 'Goods held for sale, including seasonal peaks.' },
+        { icon: 'flame', title: 'Fire & allied perils', text: 'Fire, explosion, storm and water damage.' },
+        { icon: 'lock', title: 'Burglary & theft', text: 'Loss following forcible entry to the premises.' },
+        { icon: 'gem', title: 'Money', text: 'Cash on the premises, in transit and in the safe.' },
+        { icon: 'shield', title: 'Plate glass', text: 'Shopfront glazing, mirrors and display cases.' },
+        { icon: 'users', title: 'Public liability', text: 'Injury to customers on your premises.' },
+        { icon: 'target', title: 'Business interruption', text: 'Lost profit while the shop cannot trade.' },
+      ] },
+
+      { type: 'h2', text: "Who it's for" },
+      { type: 'chips', items: ['Grocery & supermarkets', 'Fashion & apparel', 'Electronics retail', 'Pharmacies', 'Restaurants & cafés', 'Salons', 'Mobile phone shops', 'Small retail chains'] },
+
+      { type: 'h2', text: "What's not covered" },
+      { type: 'exclusions', items: ['Stock values above the declared sum insured', 'Unexplained shortage at stocktake', 'Theft by employees, unless fidelity is added', 'Money left outside the safe overnight', 'Goods left outside the shop', 'Wear and tear to fit-out', 'Trading from premises left unoccupied beyond the stated period'] },
+
+      { type: 'gapcheck', title: 'Does your shop policy cover the whole business?', subtitle: 'Five questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'My stock sum insured reflects peak trading, not a quiet month', gapTitle: 'Under-insured at the busiest time', consequence: 'Average applies at the time of loss. Insure for a quiet month and a fire during Ramadan or back-to-school is settled proportionally.', severity: 'high' },
+        { statement: 'I have public liability cover for customer injury', gapTitle: 'No liability cover', consequence: 'A slip on a wet floor is the most common retail claim. Property cover pays nothing towards a customer’s injury claim or the legal costs of defending it.', severity: 'high' },
+        { statement: 'Business interruption is included, not just property damage', gapTitle: 'No income while closed', consequence: 'A fire closes the shop for months. Rebuilding the fit-out is covered; the rent and the lost trading income are a separate section.', severity: 'high' },
+        { statement: 'Money cover matches the cash I actually hold', gapTitle: 'Cash limits too low', consequence: 'Money limits are set separately for the till, the safe and cash in transit to the bank. Weekend takings routinely exceed the limit people assume applies.', severity: 'medium' },
+        { statement: 'Theft by staff is covered, or I know it is not', gapTitle: 'Employee dishonesty excluded', consequence: 'Burglary cover needs forcible entry. Stock or cash taken by an employee is a fidelity guarantee exposure and is not included as standard.', severity: 'medium' },
+      ], cta: { label: 'Book a shop review', href: '/contact?service=Shopkeepers%20Insurance' } },
+
+      { type: 'h2', text: 'How we help' },
+      { type: 'steps', items: [
+        { title: 'Package the covers', text: 'One policy instead of four, with no seams between them.' },
+        { title: 'Set stock at peak', text: 'So seasonal trading is never under-insured.' },
+        { title: 'Match money limits to takings', text: 'Till, safe and transit set against real cash flow.' },
+        { title: 'Add liability and interruption', text: 'The two sections SMEs most often go without.' },
+        { title: 'Support your claims', text: 'Adjusters and evidence, handled with you.' },
+      ] },
+
+      { type: 'cta', heading: 'Insuring the shop but not the trading?', text: 'An independent review checks stock values, liability and whether you could survive being closed.', primary: { label: 'Get a Quote', href: '/contact?service=Shopkeepers%20Insurance' }, secondary: { label: 'Call 050 976 5976', href: 'tel:+971509765976' } },
+
+      { type: 'h2', text: 'Frequently Asked Questions' },
+      { type: 'faq', items: [
+        { q: 'What is shopkeepers insurance?', a: 'A package policy for retail businesses combining shop contents and stock, money, plate glass, public liability and business interruption under one schedule, rather than buying each cover separately.' },
+        { q: 'Is it mandatory in the UAE?', a: 'There is no federal requirement, but landlords and mall operators almost always require public liability cover as a condition of the lease, and trade licence renewal can depend on the lease being in good standing.' },
+        { q: 'Does it cover stock theft by employees?', a: 'Not as standard. Burglary cover requires forcible entry to the premises. Theft by staff needs a fidelity guarantee extension, which is a common gap for retailers.' },
+        { q: 'What if I have more than one shop?', a: 'Multiple outlets can sit on one policy with a schedule of locations, which is usually cheaper and easier to administer than separate policies per branch.' },
+      ] },
+    ],
+  },
+
+  {
+    /*
+     * 422 impressions and 1,100 monthly planner searches for a word that
+     * appeared nowhere on the site. Takaful is not a separate product line but a
+     * Sharia-compliant structure the same covers can be written under, so this
+     * page explains the structure and points at the lines rather than pretending
+     * to be a product of its own.
+     */
+    slug: 'takaful',
+    category: 'Specialist Insurance',
+    title: 'Takaful — Sharia-Compliant Insurance',
+    tagline: 'The same protection, structured as mutual contribution rather than risk transfer.',
+    metaTitle: 'Takaful Insurance UAE | Sharia-Compliant Cover',
+    metaDescription: 'Independent advisory on takaful in the UAE — how Sharia-compliant cover differs from conventional insurance, the wakala and mudarabah models, and which lines are available as takaful.',
+    image: blogDubai,
+    imageAlt: 'A UAE business district skyline',
+    badges: ['CBUAE Licensed', 'Independent Advisory', 'Sharia-Compliant Options'],
+    body: [
+      { type: 'lead', text: 'Takaful is insurance structured to comply with Sharia principles — participants contribute to a shared fund that pays members’ losses, rather than transferring risk to a company in exchange for a premium.' },
+      { type: 'p', text: 'The practical cover is usually equivalent to a conventional policy. What differs is the structure: contributions go into a mutual fund, the operator manages it for a fee rather than owning the underwriting profit, investments avoid interest and prohibited sectors, and any surplus can be returned to participants. Most UAE insurance lines are available in a takaful form, and we place either depending on what a client requires.' },
+
+      { type: 'h2', text: 'Takaful and conventional insurance compared' },
+      { type: 'cardgrid', variant: 'cover', columns: 2, items: [
+        { icon: 'users', title: 'Takaful', text: 'Participants contribute to a shared fund (tabarru). The operator manages it for a fee. Surplus may be distributed back. Investments are screened for Sharia compliance.' },
+        { icon: 'building', title: 'Conventional', text: 'The insured pays a premium and the insurer assumes the risk, keeps the underwriting profit and invests without Sharia screening.' },
+      ] },
+
+      { type: 'h2', text: 'How takaful is structured' },
+      { type: 'steps', items: [
+        { title: 'Contribution, not premium', text: 'Participants pay into a mutual fund as a donation (tabarru).' },
+        { title: 'The operator manages the fund', text: 'Under a wakala fee, a mudarabah profit share, or a hybrid of both.' },
+        { title: 'Claims are paid from the fund', text: 'Not from the operator’s own balance sheet.' },
+        { title: 'Investments are screened', text: 'No interest-bearing instruments or prohibited sectors.' },
+        { title: 'Surplus may be shared', text: 'If the fund runs a surplus, it can be returned to participants.' },
+      ] },
+
+      { type: 'h2', text: 'Available as takaful' },
+      { type: 'chips', items: ['Property & fire', 'Motor & fleet', 'Marine cargo', 'Engineering & contractors', 'Group medical', 'Group life', 'Public liability', 'Family takaful'] },
+
+      { type: 'h2', text: 'What to check before you choose' },
+      { type: 'exclusions', items: ['Whether the operator has an active Sharia supervisory board', 'Whether surplus is actually distributed, and on what basis', 'How the wakala fee compares with a conventional premium', 'Whether the wording matches the conventional equivalent cover', 'Whether reinsurance (retakaful) is itself Sharia-compliant', 'Whether the capacity exists for your size of risk'] },
+
+      { type: 'gapcheck', title: 'Is takaful the right structure for you?', subtitle: 'Four questions. "Not sure" is a valid answer — and the most common one.', items: [
+        { statement: 'I know whether my current policies are takaful or conventional', gapTitle: 'Structure unknown', consequence: 'Many UAE businesses hold a mix without realising. If Sharia compliance matters to your shareholders or your customers, it is worth knowing which is which.', severity: 'medium' },
+        { statement: 'My takaful cover is equivalent to the conventional wording', gapTitle: 'Cover may be narrower', consequence: 'Compliance is about structure, not scope. A takaful policy should match the conventional wording clause for clause, and where it does not, the difference should be a deliberate choice.', severity: 'high' },
+        { statement: 'I know whether surplus has ever been distributed', gapTitle: 'Surplus sharing in name only', consequence: 'Surplus distribution is a defining feature of takaful, but practice varies widely between operators. It is a fair question to ask before placing.', severity: 'medium' },
+        { statement: 'There is enough takaful capacity for my sums insured', gapTitle: 'Capacity shortfall on large risks', consequence: 'Takaful capacity is thinner than the conventional market on very large or specialist risks. Large placements sometimes need a conventional layer above the takaful one.', severity: 'medium' },
+      ], cta: { label: 'Discuss takaful options', href: '/contact?service=Takaful' } },
+
+      { type: 'cta', heading: 'Want your cover placed as takaful?', text: 'We place both, and we will tell you honestly where the takaful market is competitive and where it is not.', primary: { label: 'Get a Quote', href: '/contact?service=Takaful' }, secondary: { label: 'Call 050 976 5976', href: 'tel:+971509765976' } },
+
+      { type: 'h2', text: 'Frequently Asked Questions' },
+      { type: 'faq', items: [
+        { q: 'What is takaful?', a: 'A Sharia-compliant form of insurance in which participants contribute to a shared fund that pays members’ claims, rather than transferring risk to an insurer for a premium. The operator manages the fund for a fee instead of owning the underwriting profit.' },
+        { q: 'What is the difference between takaful and conventional insurance?', a: 'The cover is usually equivalent; the structure differs. Takaful uses mutual contribution, Sharia-screened investments, a Sharia supervisory board and the possibility of surplus being returned to participants. Conventional insurance transfers risk to a company that keeps the profit.' },
+        { q: 'What are the wakala and mudarabah models?', a: 'Two ways the operator is paid. Under wakala it charges a fixed management fee on contributions. Under mudarabah it shares in the fund’s investment profit. Many UAE operators use a hybrid of the two.' },
+        { q: 'Is takaful more expensive than conventional insurance?', a: 'Not inherently. On common lines such as motor, property and medical it is competitive. On very large or specialist risks capacity is thinner, and a conventional placement may price better — we compare both rather than assume.' },
+        { q: 'Can non-Muslims buy takaful?', a: 'Yes. Takaful is open to anyone in the UAE, and it is bought by businesses and individuals of all faiths, often for the surplus-sharing structure rather than for religious reasons.' },
       ] },
     ],
   },
